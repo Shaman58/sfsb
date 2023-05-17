@@ -1,19 +1,16 @@
 package ru.erp.sfsb.model;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
-
-import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Getter
 @Setter
@@ -21,17 +18,15 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @AllArgsConstructor
 @Entity
 @Table(name = "items")
-public class Item {
+public class Item extends AbstractEntity {
 
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    private Long id;
     @ManyToOne
     private Technology technology;
     private boolean isCustomerMaterial;
     private Integer quantity;
+    @JdbcTypeCode(SqlTypes.NUMERIC)
     private Duration estimatedDuration;
+    @JdbcTypeCode(SqlTypes.NUMERIC)
     private Duration actualDuration;
     private boolean isAccepted;
-    private LocalDateTime createdDate;
 }

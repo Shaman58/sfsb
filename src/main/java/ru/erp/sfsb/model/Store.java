@@ -1,14 +1,6 @@
 package ru.erp.sfsb.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.MapKeyColumn;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,20 +8,14 @@ import lombok.Setter;
 
 import java.util.Map;
 
-import static jakarta.persistence.GenerationType.IDENTITY;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "stores")
-public class Store {
+public class Store extends AbstractEntity {
 
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "id")
-    private Long id;
     @ElementCollection
     @JoinTable(name = "store_workpiece_mapping",
             joinColumns = {@JoinColumn(name = "store_id", referencedColumnName = "id")})

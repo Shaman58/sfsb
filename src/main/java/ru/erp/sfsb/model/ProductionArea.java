@@ -1,8 +1,6 @@
 package ru.erp.sfsb.model;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -15,7 +13,6 @@ import java.util.List;
 
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.CascadeType.PERSIST;
-import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Getter
 @Setter
@@ -23,11 +20,8 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @AllArgsConstructor
 @Entity
 @Table(name = "areas")
-public class ProductionArea {
+public class ProductionArea extends AbstractEntity {
 
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    private Long id;
     private String areaName;
     @OneToMany(cascade = ALL)
     private List<ProductionUnit> productionUnits;

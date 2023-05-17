@@ -26,11 +26,8 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @AllArgsConstructor
 @Entity
 @Table(name = "technologies")
-public class Technology {
+public class Technology extends AbstractEntity {
 
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    private Long id;
     private String drawingNumber;
     private String drawingName;
     @ManyToOne
@@ -48,5 +45,4 @@ public class Technology {
     private Integer quantityOfPartsFromWorkpiece;
     @ManyToOne
     private Workpiece workpiece;
-    private LocalDateTime dateTime;
 }

@@ -3,7 +3,6 @@ package ru.erp.sfsb.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,12 +16,12 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "employees")
-public class Employee extends AbstractEntity {
+@Table(name = "dictionary")
+public class Dictionary {
 
-    private String firstName;
-    private String lastName;
-    private String position;
-    @ManyToOne
-    private Department department;
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
+    private Long id;
+    private String dbName;
+    private String presentation;
 }

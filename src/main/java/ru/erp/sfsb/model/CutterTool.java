@@ -1,16 +1,17 @@
 package ru.erp.sfsb.model;
 
+import io.hypersistence.utils.hibernate.type.money.MonetaryAmountType;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.javamoney.moneta.Money;
+import org.hibernate.annotations.CompositeType;
 
-import static jakarta.persistence.GenerationType.IDENTITY;
+import javax.money.MonetaryAmount;
 
 @Getter
 @Setter
@@ -18,12 +19,19 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @AllArgsConstructor
 @Entity
 @Table(name = "cutters")
-public class CutterTool {
+public class CutterTool extends AbstractEntity {
 
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    private Long id;
     private String toolName;
     private String description;
-    private Money price;
+    @AttributeOverride(
+            name = "amount",
+            column = @Column(name = "price_amount")
+    )
+    @AttributeOverride(
+            name = "currency",
+            column = @Column(name = "price_currency")
+    )
+    @CompositeType(MonetaryAmountType.class)
+    @SuppressWarnings("JpaAttributeTypeInspection")
+    private MonetaryAmount price;
 }
