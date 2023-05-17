@@ -2,7 +2,7 @@ package ru.erp.sfsb.service;
 
 import java.util.List;
 
-public abstract interface AbstractService<D> {
+public abstract interface Service<D> {
 
     List<D> getAll();
 

@@ -1,7 +1,6 @@
 package ru.erp.sfsb.mapper;
 
 import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 import ru.erp.sfsb.dto.AdditionalToolDto;
@@ -11,11 +10,16 @@ import ru.erp.sfsb.model.Workpiece;
 import ru.erp.sfsb.service.WorkpieceService;
 
 @Component
-@RequiredArgsConstructor
 public class AdditionalToolMapper extends AbstractMapper<AdditionalTool, AdditionalToolDto> {
 
     private final ModelMapper mapper;
     private final WorkpieceService workpieceService;
+
+    public AdditionalToolMapper(ModelMapper mapper, WorkpieceService workpieceService) {
+        super(AdditionalTool.class, AdditionalToolDto.class);
+        this.mapper = mapper;
+        this.workpieceService = workpieceService;
+    }
 
     @PostConstruct
     private void setupMapper() {

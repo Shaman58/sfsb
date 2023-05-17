@@ -1,56 +1,35 @@
 package ru.erp.sfsb.service.impl;
 
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import ru.erp.sfsb.dto.WorkpieceDto;
-import ru.erp.sfsb.exception.EntityNotFoundException;
+import ru.erp.sfsb.mapper.WorkpieceMapper;
 import ru.erp.sfsb.model.Workpiece;
 import ru.erp.sfsb.repository.WorkpieceRepository;
+import ru.erp.sfsb.service.MaterialService;
 import ru.erp.sfsb.service.WorkpieceService;
 
-import java.util.List;
-
-import static java.lang.String.format;
-import static java.util.stream.Collectors.toList;
-
-@RequiredArgsConstructor
-@Slf4j
 @Service
-public class WorkpieceServiceImpl implements WorkpieceService {
+@Slf4j
+public class WorkpieceServiceImpl extends AbstractService<WorkpieceDto, Workpiece, WorkpieceRepository, WorkpieceMapper> implements WorkpieceService {
 
-    private final WorkpieceRepository workpieceRepository;
-    private final ModelMapper mapper;
+    private final WorkpieceMapper mapper;
+    private final WorkpieceRepository repository;
+    private final MaterialService materialService;
 
-    @Override
-    @Transactional
-    public List<WorkpieceDto> getAll() {
-        log.info("Looking all workpieces in DB");
-        return workpieceRepository.findAll().stream().map(p -> mapper.map(p, WorkpieceDto.class)).collect(toList());
-    }
-
-    @Override
-    @Transactional
-    public WorkpieceDto get(Long id) {
-        log.info("Looking workpiece with id={} in DB", id);
-        var workpiece = workpieceRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException(format("There is no workpiece with id=%d in database", id)));
-        return mapper.map(workpiece, WorkpieceDto.class);
+    public WorkpieceServiceImpl(WorkpieceMapper mapper, WorkpieceRepository repository, MaterialService materialService) {
+        super(mapper, repository, "Workpiece");
+        this.mapper = mapper;
+        this.repository = repository;
+        this.materialService = materialService;
     }
 
     @Override
     @Transactional
     public WorkpieceDto save(WorkpieceDto workpieceDto) {
-        log.info("Saving workpiece into DB");
-        return mapper.map(workpieceRepository.save(mapper.map(workpieceDto, Workpiece.class)), WorkpieceDto.class);
-    }
-
-    @Override
-    @Transactional
-    public void delete(Long id) {
-        log.info("Deleting workpiece with id {} in DB", id);
-        workpieceRepository.deleteById(id);
+        log.info("Saving Workpiece into DB");
+        workpieceDto.setMaterialDto(materialService.get(workpieceDto.getMaterialDto().getId()));
+        return mapper.toDto(repository.save(mapper.toEntity(workpieceDto)));
     }
 }

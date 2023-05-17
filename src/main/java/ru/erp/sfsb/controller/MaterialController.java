@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.erp.sfsb.dto.MaterialDto;
-import ru.erp.sfsb.service.MaterialService;
+import ru.erp.sfsb.service.impl.MaterialServiceImpl;
 
 import java.net.URI;
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.List;
 @RequestMapping("/api/material")
 public class MaterialController {
 
-    private final MaterialService materialService;
+    private final MaterialServiceImpl materialService;
 
     @GetMapping()
     public ResponseEntity<List<MaterialDto>> getAll() {
