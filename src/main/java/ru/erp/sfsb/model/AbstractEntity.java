@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -22,8 +24,12 @@ public abstract class AbstractEntity implements Serializable {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
     @Column(name = "created", updatable = false)
+    @CreatedDate
+    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime created;
     @Column(name = "updated", insertable = false)
+    @LastModifiedDate
+    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime updated;
 
     @PrePersist

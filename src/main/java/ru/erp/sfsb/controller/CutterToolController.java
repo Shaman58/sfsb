@@ -29,7 +29,7 @@ public class CutterToolController {
 
     @PostMapping()
     public ResponseEntity<CutterToolDto> save(@RequestBody CutterToolDto cutterToolDto) {
-        var uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/material").toUriString());
+        var uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/cutter").toUriString());
         return ResponseEntity.created(uri).body(cutterToolService.save(cutterToolDto));
     }
 }

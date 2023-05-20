@@ -32,5 +32,5 @@ public class ProductionUnit extends AbstractEntity {
     )
     @CompositeType(MonetaryAmountType.class)
     @SuppressWarnings("JpaAttributeTypeInspection")
-    private MonetaryAmount cost;
+    private MonetaryAmount price;
 }

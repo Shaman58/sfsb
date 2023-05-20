@@ -7,18 +7,15 @@ import ru.erp.sfsb.dto.AdditionalToolDto;
 import ru.erp.sfsb.dto.WorkpieceDto;
 import ru.erp.sfsb.model.AdditionalTool;
 import ru.erp.sfsb.model.Workpiece;
-import ru.erp.sfsb.service.WorkpieceService;
 
 @Component
 public class AdditionalToolMapper extends AbstractMapper<AdditionalTool, AdditionalToolDto> {
 
     private final ModelMapper mapper;
-    private final WorkpieceService workpieceService;
 
-    public AdditionalToolMapper(ModelMapper mapper, WorkpieceService workpieceService) {
+    public AdditionalToolMapper(ModelMapper mapper) {
         super(AdditionalTool.class, AdditionalToolDto.class);
         this.mapper = mapper;
-        this.workpieceService = workpieceService;
     }
 
     @PostConstruct
@@ -38,6 +35,6 @@ public class AdditionalToolMapper extends AbstractMapper<AdditionalTool, Additio
 
     @Override
     protected void mapSpecificFields(AdditionalToolDto source, AdditionalTool destination) {
-        destination.setWorkpiece(mapper.map(workpieceService.get(source.getWorkpieceDto().getId()), Workpiece.class));
+        destination.setWorkpiece(mapper.map(source.getWorkpieceDto(), Workpiece.class));
     }
 }
