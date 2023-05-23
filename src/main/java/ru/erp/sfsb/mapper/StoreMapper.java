@@ -3,14 +3,8 @@ package ru.erp.sfsb.mapper;
 import jakarta.annotation.PostConstruct;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
-import ru.erp.sfsb.dto.CutterToolDto;
-import ru.erp.sfsb.dto.MeasureToolDto;
-import ru.erp.sfsb.dto.StoreDto;
-import ru.erp.sfsb.dto.WorkpieceDto;
-import ru.erp.sfsb.model.CutterTool;
-import ru.erp.sfsb.model.MeasureTool;
-import ru.erp.sfsb.model.Store;
-import ru.erp.sfsb.model.Workpiece;
+import ru.erp.sfsb.dto.*;
+import ru.erp.sfsb.model.*;
 
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -30,11 +24,13 @@ public class StoreMapper extends AbstractMapper<Store, StoreDto> {
                 .addMappings(m -> m.skip(StoreDto::setWorkpiecesDto))
                 .addMappings(m -> m.skip(StoreDto::setCuttingToolsDto))
                 .addMappings(m -> m.skip(StoreDto::setMeasuringToolsDto))
+                .addMappings(m -> m.skip(StoreDto::setToolingsDto))
                 .setPostConverter(toDtoConverter());
         mapper.createTypeMap(StoreDto.class, Store.class)
                 .addMappings(m -> m.skip(Store::setWorkpieces))
                 .addMappings(m -> m.skip(Store::setCuttingTools))
                 .addMappings(m -> m.skip(Store::setMeasuringTools))
+                .addMappings(m -> m.skip(Store::setToolings))
                 .setPostConverter(toEntityConverter());
     }
 
@@ -52,6 +48,10 @@ public class StoreMapper extends AbstractMapper<Store, StoreDto> {
                 entry -> mapper.map(entry.getKey(), MeasureToolDto.class),
                 Map.Entry::getValue
         )));
+        destination.setToolingsDto(source.getToolings().entrySet().stream().collect(Collectors.toMap(
+                entry -> mapper.map(entry.getKey(), ToolingDto.class),
+                Map.Entry::getValue
+        )));
     }
 
     @Override
@@ -66,6 +66,10 @@ public class StoreMapper extends AbstractMapper<Store, StoreDto> {
         )));
         destination.setMeasuringTools(source.getMeasuringToolsDto().entrySet().stream().collect(Collectors.toMap(
                 entry -> mapper.map(entry.getKey(), MeasureTool.class),
+                Map.Entry::getValue
+        )));
+        destination.setToolings(source.getToolingsDto().entrySet().stream().collect(Collectors.toMap(
+                entry -> mapper.map(entry.getKey(), Tooling.class),
                 Map.Entry::getValue
         )));
     }

@@ -17,4 +17,5 @@ public class StoreDto extends AbstractDto {
     private Map<WorkpieceDto, Integer> workpiecesDto;
     private Map<CutterToolDto, Integer> cuttingToolsDto;
     private Map<MeasureToolDto, Integer> measuringToolsDto;
+    private Map<ToolingDto, Integer> toolingsDto;
 }

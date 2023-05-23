@@ -7,10 +7,7 @@ import ru.erp.sfsb.dto.StoreDto;
 import ru.erp.sfsb.mapper.StoreMapper;
 import ru.erp.sfsb.model.Store;
 import ru.erp.sfsb.repository.StoreRepository;
-import ru.erp.sfsb.service.CutterToolService;
-import ru.erp.sfsb.service.MeasureToolService;
-import ru.erp.sfsb.service.StoreService;
-import ru.erp.sfsb.service.WorkpieceService;
+import ru.erp.sfsb.service.*;
 
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -25,14 +22,16 @@ public class StoreServiceImpl extends AbstractService<StoreDto, Store, StoreRepo
     private final MeasureToolService measureToolService;
     private final CutterToolService cutterToolService;
     private final WorkpieceService workpieceService;
+    private final ToolingService toolingService;
 
-    public StoreServiceImpl(StoreMapper mapper, StoreRepository repository, MeasureToolService measureToolService, CutterToolService cutterToolService, WorkpieceService workpieceService) {
+    public StoreServiceImpl(StoreMapper mapper, StoreRepository repository, MeasureToolService measureToolService, CutterToolService cutterToolService, WorkpieceService workpieceService, ToolingService toolingService) {
         super(mapper, repository, "Store");
         this.mapper = mapper;
         this.repository = repository;
         this.measureToolService = measureToolService;
         this.cutterToolService = cutterToolService;
         this.workpieceService = workpieceService;
+        this.toolingService = toolingService;
     }
 
     @Override
@@ -49,6 +48,10 @@ public class StoreServiceImpl extends AbstractService<StoreDto, Store, StoreRepo
         )));
         storeDto.setCuttingToolsDto(storeDto.getCuttingToolsDto().entrySet().stream().collect(Collectors.toMap(
                 entry -> cutterToolService.get(entry.getKey().getId()),
+                Map.Entry::getValue
+        )));
+        storeDto.setToolingsDto(storeDto.getToolingsDto().entrySet().stream().collect(Collectors.toMap(
+                entry -> toolingService.get(entry.getKey().getId()),
                 Map.Entry::getValue
         )));
         return mapper.toDto(repository.save(mapper.toEntity(storeDto)));

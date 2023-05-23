@@ -24,6 +24,10 @@ public class CustomStoreMapper {
                 entry -> (WorkpieceDto) setId(new WorkpieceDto(), entry.getKey().longValue()),
                 Map.Entry::getValue
         )));
+        storeDto.setToolingsDto(storePostDto.getToolingsDto().entrySet().stream().collect(Collectors.toMap(
+                entry -> (ToolingDto) setId(new ToolingDto(), entry.getKey().longValue()),
+                Map.Entry::getValue
+        )));
         return storeDto;
     }
 

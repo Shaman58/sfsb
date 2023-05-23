@@ -5,6 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.erp.sfsb.dto.ProductionAreaDto;
+import ru.erp.sfsb.dto.ProductionAreaPostDto;
+import ru.erp.sfsb.mapper.CustomAreaMapper;
 import ru.erp.sfsb.service.ProductionAreaService;
 
 import java.net.URI;
@@ -16,6 +18,7 @@ import java.util.List;
 public class ProductionAreaController {
 
     private final ProductionAreaService productionAreaService;
+    private final CustomAreaMapper customAreaMapper;
 
     @GetMapping()
     public ResponseEntity<List<ProductionAreaDto>> getAll() {
@@ -28,8 +31,8 @@ public class ProductionAreaController {
     }
 
     @PostMapping()
-    public ResponseEntity<ProductionAreaDto> save(@RequestBody ProductionAreaDto productionAreaDto) {
+    public ResponseEntity<ProductionAreaDto> save(@RequestBody ProductionAreaPostDto productionAreaPostDto) {
         var uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/area").toUriString());
-        return ResponseEntity.created(uri).body(productionAreaService.save(productionAreaDto));
+        return ResponseEntity.created(uri).body(productionAreaService.save(customAreaMapper.convert(productionAreaPostDto)));
     }
 }

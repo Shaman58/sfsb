@@ -11,8 +11,10 @@ import java.util.Map;
 @AllArgsConstructor
 public class StorePostDto {
 
+    private Long id;
     private String storeName;
     private Map<Integer, Integer> workpiecesDto;
     private Map<Integer, Integer> cuttingToolsDto;
     private Map<Integer, Integer> measuringToolsDto;
+    private Map<Integer, Integer> toolingsDto;
 }
