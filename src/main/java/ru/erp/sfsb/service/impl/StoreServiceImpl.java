@@ -23,8 +23,9 @@ public class StoreServiceImpl extends AbstractService<StoreDto, Store, StoreRepo
     private final CutterToolService cutterToolService;
     private final WorkpieceService workpieceService;
     private final ToolingService toolingService;
+    private final SpecialToolService specialToolService;
 
-    public StoreServiceImpl(StoreMapper mapper, StoreRepository repository, MeasureToolService measureToolService, CutterToolService cutterToolService, WorkpieceService workpieceService, ToolingService toolingService) {
+    public StoreServiceImpl(StoreMapper mapper, StoreRepository repository, MeasureToolService measureToolService, CutterToolService cutterToolService, WorkpieceService workpieceService, ToolingService toolingService, SpecialToolService specialToolService) {
         super(mapper, repository, "Store");
         this.mapper = mapper;
         this.repository = repository;
@@ -32,26 +33,31 @@ public class StoreServiceImpl extends AbstractService<StoreDto, Store, StoreRepo
         this.cutterToolService = cutterToolService;
         this.workpieceService = workpieceService;
         this.toolingService = toolingService;
+        this.specialToolService = specialToolService;
     }
 
     @Override
     @Transactional
     public StoreDto save(StoreDto storeDto) {
         log.info("Saving Store into DB");
-        storeDto.setMeasuringToolsDto(storeDto.getMeasuringToolsDto().entrySet().stream().collect(Collectors.toMap(
+        storeDto.setMeasureToolDtoIntegerMap(storeDto.getMeasureToolDtoIntegerMap().entrySet().stream().collect(Collectors.toMap(
                 entry -> measureToolService.get(entry.getKey().getId()),
                 Map.Entry::getValue
         )));
-        storeDto.setWorkpiecesDto(storeDto.getWorkpiecesDto().entrySet().stream().collect(Collectors.toMap(
+        storeDto.setWorkpieceDtoIntegerMap(storeDto.getWorkpieceDtoIntegerMap().entrySet().stream().collect(Collectors.toMap(
                 entry -> workpieceService.get(entry.getKey().getId()),
                 Map.Entry::getValue
         )));
-        storeDto.setCuttingToolsDto(storeDto.getCuttingToolsDto().entrySet().stream().collect(Collectors.toMap(
+        storeDto.setCutterToolDtoIntegerMap(storeDto.getCutterToolDtoIntegerMap().entrySet().stream().collect(Collectors.toMap(
                 entry -> cutterToolService.get(entry.getKey().getId()),
                 Map.Entry::getValue
         )));
-        storeDto.setToolingsDto(storeDto.getToolingsDto().entrySet().stream().collect(Collectors.toMap(
+        storeDto.setToolingDtoIntegerMap(storeDto.getToolingDtoIntegerMap().entrySet().stream().collect(Collectors.toMap(
                 entry -> toolingService.get(entry.getKey().getId()),
+                Map.Entry::getValue
+        )));
+        storeDto.setSpecialToolDtoIntegerMap(storeDto.getSpecialToolDtoIntegerMap().entrySet().stream().collect(Collectors.toMap(
+                entry -> specialToolService.get(entry.getKey().getId()),
                 Map.Entry::getValue
         )));
         return mapper.toDto(repository.save(mapper.toEntity(storeDto)));

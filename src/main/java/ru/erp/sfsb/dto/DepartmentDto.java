@@ -11,9 +11,8 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductionAreaDto extends AbstractDto {
+public class DepartmentDto extends AbstractDto {
 
-    private String areaName;
-    private List<ProductionUnitDto> productionUnitDtoList;
-    private StoreDto storeDto;
+    private String departmentName;
+    private List<EmployeeDto> employeeDtoList;
 }

@@ -25,7 +25,7 @@ public class ProductionAreaMapper extends AbstractMapper<ProductionArea, Product
     @PostConstruct
     private void setupMapper() {
         mapper.createTypeMap(ProductionArea.class, ProductionAreaDto.class)
-                .addMappings(m -> m.skip(ProductionAreaDto::setProductionUnitsDto))
+                .addMappings(m -> m.skip(ProductionAreaDto::setProductionUnitDtoList))
                 .addMappings(m -> m.skip(ProductionAreaDto::setStoreDto))
                 .setPostConverter(toDtoConverter());
         mapper.createTypeMap(ProductionAreaDto.class, ProductionArea.class)
@@ -36,14 +36,14 @@ public class ProductionAreaMapper extends AbstractMapper<ProductionArea, Product
 
     @Override
     protected void mapSpecificFields(ProductionArea source, ProductionAreaDto destination) {
-        destination.setProductionUnitsDto(source.getProductionUnits().stream().map(e ->
+        destination.setProductionUnitDtoList(source.getProductionUnits().stream().map(e ->
                 mapper.map(e, ProductionUnitDto.class)).collect(toList()));
         destination.setStoreDto(mapper.map(source.getStore(), StoreDto.class));
     }
 
     @Override
     protected void mapSpecificFields(ProductionAreaDto source, ProductionArea destination) {
-        destination.setProductionUnits(source.getProductionUnitsDto().stream().map(e ->
+        destination.setProductionUnits(source.getProductionUnitDtoList().stream().map(e ->
                 mapper.map(e, ProductionUnit.class)).collect(toList()));
         destination.setStore(mapper.map(source.getStoreDto(), Store.class));
     }

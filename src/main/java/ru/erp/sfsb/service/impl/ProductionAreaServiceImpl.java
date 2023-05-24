@@ -36,7 +36,7 @@ public class ProductionAreaServiceImpl extends AbstractService<ProductionAreaDto
     public ProductionAreaDto save(ProductionAreaDto productionAreaDto) {
         log.info("Saving Production area into DB");
         productionAreaDto.setStoreDto(storeService.get(productionAreaDto.getStoreDto().getId()));
-        productionAreaDto.setProductionUnitsDto(productionAreaDto.getProductionUnitsDto().stream().map(e ->
+        productionAreaDto.setProductionUnitDtoList(productionAreaDto.getProductionUnitDtoList().stream().map(e ->
                 productionUnitService.get(e.getId())).collect(toList()));
         return mapper.toDto(repository.save(mapper.toEntity(productionAreaDto)));
     }

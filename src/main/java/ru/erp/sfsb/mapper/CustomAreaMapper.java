@@ -12,11 +12,11 @@ public class CustomAreaMapper {
     public ProductionAreaDto convert(ProductionAreaPostDto postDto) {
         var productionAreaDto = new ProductionAreaDto();
         var storeDto = new StoreDto();
-        storeDto.setId(postDto.getStorePostDto().getId());
+        storeDto.setId(postDto.getStoreDto().getId());
         productionAreaDto.setAreaName(postDto.getAreaName());
         productionAreaDto.setStoreDto(storeDto);
-        productionAreaDto.setProductionUnitsDto(
-                postDto.getProductionUnitsIds().stream().map(u -> setId(new ProductionUnitDto(), u)).toList());
+        productionAreaDto.setProductionUnitDtoList(
+                postDto.getProductionUnitsId().stream().map(u -> setId(new ProductionUnitDto(), u)).toList());
         return productionAreaDto;
     }
 

@@ -1,8 +1,6 @@
 package ru.erp.sfsb.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,6 +19,6 @@ import static jakarta.persistence.CascadeType.ALL;
 public class Department extends AbstractEntity {
 
     private String departmentName;
-    @OneToMany(cascade = ALL)
+    @Transient
     private List<Employee> employees;
 }

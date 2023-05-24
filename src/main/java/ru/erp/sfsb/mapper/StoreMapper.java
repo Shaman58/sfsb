@@ -21,10 +21,10 @@ public class StoreMapper extends AbstractMapper<Store, StoreDto> {
     @PostConstruct
     private void setupMapper() {
         mapper.createTypeMap(Store.class, StoreDto.class)
-                .addMappings(m -> m.skip(StoreDto::setWorkpiecesDto))
-                .addMappings(m -> m.skip(StoreDto::setCuttingToolsDto))
-                .addMappings(m -> m.skip(StoreDto::setMeasuringToolsDto))
-                .addMappings(m -> m.skip(StoreDto::setToolingsDto))
+                .addMappings(m -> m.skip(StoreDto::setWorkpieceDtoIntegerMap))
+                .addMappings(m -> m.skip(StoreDto::setCutterToolDtoIntegerMap))
+                .addMappings(m -> m.skip(StoreDto::setMeasureToolDtoIntegerMap))
+                .addMappings(m -> m.skip(StoreDto::setToolingDtoIntegerMap))
                 .setPostConverter(toDtoConverter());
         mapper.createTypeMap(StoreDto.class, Store.class)
                 .addMappings(m -> m.skip(Store::setWorkpieces))
@@ -36,40 +36,48 @@ public class StoreMapper extends AbstractMapper<Store, StoreDto> {
 
     @Override
     protected void mapSpecificFields(Store source, StoreDto destination) {
-        destination.setCuttingToolsDto(source.getCuttingTools().entrySet().stream().collect(Collectors.toMap(
+        destination.setCutterToolDtoIntegerMap(source.getCuttingTools().entrySet().stream().collect(Collectors.toMap(
                 entry -> mapper.map(entry.getKey(), CutterToolDto.class),
                 Map.Entry::getValue
         )));
-        destination.setWorkpiecesDto(source.getWorkpieces().entrySet().stream().collect(Collectors.toMap(
+        destination.setWorkpieceDtoIntegerMap(source.getWorkpieces().entrySet().stream().collect(Collectors.toMap(
                 entry -> mapper.map(entry.getKey(), WorkpieceDto.class),
                 Map.Entry::getValue
         )));
-        destination.setMeasuringToolsDto(source.getMeasuringTools().entrySet().stream().collect(Collectors.toMap(
+        destination.setMeasureToolDtoIntegerMap(source.getMeasuringTools().entrySet().stream().collect(Collectors.toMap(
                 entry -> mapper.map(entry.getKey(), MeasureToolDto.class),
                 Map.Entry::getValue
         )));
-        destination.setToolingsDto(source.getToolings().entrySet().stream().collect(Collectors.toMap(
+        destination.setToolingDtoIntegerMap(source.getToolings().entrySet().stream().collect(Collectors.toMap(
                 entry -> mapper.map(entry.getKey(), ToolingDto.class),
+                Map.Entry::getValue
+        )));
+        destination.setSpecialToolDtoIntegerMap(source.getSpecialTools().entrySet().stream().collect(Collectors.toMap(
+                entry -> mapper.map(entry.getKey(), SpecialToolDto.class),
                 Map.Entry::getValue
         )));
     }
 
     @Override
     protected void mapSpecificFields(StoreDto source, Store destination) {
-        destination.setCuttingTools(source.getCuttingToolsDto().entrySet().stream().collect(Collectors.toMap(
+        destination.setCuttingTools(source.getCutterToolDtoIntegerMap().entrySet().stream().collect(Collectors.toMap(
                 entry -> mapper.map(entry.getKey(), CutterTool.class),
                 Map.Entry::getValue
         )));
-        destination.setWorkpieces(source.getWorkpiecesDto().entrySet().stream().collect(Collectors.toMap(
+        destination.setWorkpieces(source.getWorkpieceDtoIntegerMap().entrySet().stream().collect(Collectors.toMap(
                 entry -> mapper.map(entry.getKey(), Workpiece.class),
                 Map.Entry::getValue
         )));
-        destination.setMeasuringTools(source.getMeasuringToolsDto().entrySet().stream().collect(Collectors.toMap(
+        destination.setMeasuringTools(source.getMeasureToolDtoIntegerMap().entrySet().stream().collect(Collectors.toMap(
                 entry -> mapper.map(entry.getKey(), MeasureTool.class),
                 Map.Entry::getValue
         )));
-        destination.setToolings(source.getToolingsDto().entrySet().stream().collect(Collectors.toMap(
+        destination.setToolings(source.getToolingDtoIntegerMap().entrySet().stream().collect(Collectors.toMap(
                 entry -> mapper.map(entry.getKey(), Tooling.class),
+                Map.Entry::getValue
+        )));
+        destination.setSpecialTools(source.getSpecialToolDtoIntegerMap().entrySet().stream().collect(Collectors.toMap(
+                entry -> mapper.map(entry.getKey(), SpecialTool.class),
                 Map.Entry::getValue
         )));
     }

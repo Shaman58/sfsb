@@ -22,6 +22,8 @@ import java.util.List;
 @Table(name = "setups")
 public class Setup extends AbstractEntity {
 
+    private Integer setupNumber;
+    private String setupName;
     @JdbcTypeCode(SqlTypes.NUMERIC)
     private Duration setupTime;
     @JdbcTypeCode(SqlTypes.NUMERIC)
@@ -36,6 +38,8 @@ public class Setup extends AbstractEntity {
     private List<AdditionalTool> additionalTools;
     @ManyToMany
     private List<SpecialTool> specialTools;
+    @ManyToMany
+    private List<Tooling> toolings;
     @ManyToOne
     private ProductionUnit productionUnit;
 }

@@ -5,15 +5,14 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductionAreaDto extends AbstractDto {
+public class EmployeeDto extends AbstractDto {
 
-    private String areaName;
-    private List<ProductionUnitDto> productionUnitDtoList;
-    private StoreDto storeDto;
+    private String firstName;
+    private String lastName;
+    private String position;
+    private DepartmentDto departmentDto;
 }

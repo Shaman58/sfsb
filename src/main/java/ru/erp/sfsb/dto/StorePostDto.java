@@ -13,8 +13,9 @@ public class StorePostDto {
 
     private Long id;
     private String storeName;
-    private Map<Integer, Integer> workpiecesDto;
-    private Map<Integer, Integer> cuttingToolsDto;
-    private Map<Integer, Integer> measuringToolsDto;
-    private Map<Integer, Integer> toolingsDto;
+    private Map<Integer, Integer> workpieces;
+    private Map<Integer, Integer> cuttingTools;
+    private Map<Integer, Integer> measuringTools;
+    private Map<Integer, Integer> toolings;
+    private Map<Integer, Integer> specialTools;
 }

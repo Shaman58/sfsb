@@ -13,6 +13,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  main:
+    allow-circular-references: true
 springAsyncConfig:
   corePoolSize: 4
   maxPoolSize: 10

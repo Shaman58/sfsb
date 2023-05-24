@@ -12,6 +12,6 @@ import java.util.List;
 public class ProductionAreaPostDto {
 
     private String areaName;
-    private List<Long> productionUnitsIds;
-    private StorePostDto storePostDto;
+    private List<Long> productionUnitsId;
+    private StorePostDto storeDto;
 }

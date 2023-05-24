@@ -46,4 +46,11 @@ public class Store extends AbstractEntity {
     @MapKeyColumn(name = "tooling_id")
     @Column(name = "amount")
     private Map<Tooling, Integer> toolings;
+    @ElementCollection
+    @JsonManagedReference
+    @JoinTable(name = "store_special_mapping",
+            joinColumns = {@JoinColumn(name = "store_id", referencedColumnName = "id")})
+    @MapKeyColumn(name = "special_id")
+    @Column(name = "amount")
+    private Map<SpecialTool, Integer> specialTools;
 }

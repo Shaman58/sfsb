@@ -5,15 +5,15 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.time.Duration;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductionAreaDto extends AbstractDto {
+public class SpecialToolDto extends AbstractDto {
 
-    private String areaName;
-    private List<ProductionUnitDto> productionUnitDtoList;
-    private StoreDto storeDto;
+    private String toolName;
+    private WorkpieceDto workpieceDto;
+    private Duration processTime;
 }

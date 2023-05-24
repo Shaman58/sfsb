@@ -14,8 +14,9 @@ import java.util.Map;
 public class StoreDto extends AbstractDto {
 
     private String storeName;
-    private Map<WorkpieceDto, Integer> workpiecesDto;
-    private Map<CutterToolDto, Integer> cuttingToolsDto;
-    private Map<MeasureToolDto, Integer> measuringToolsDto;
-    private Map<ToolingDto, Integer> toolingsDto;
+    private Map<WorkpieceDto, Integer> workpieceDtoIntegerMap;
+    private Map<CutterToolDto, Integer> cutterToolDtoIntegerMap;
+    private Map<MeasureToolDto, Integer> measureToolDtoIntegerMap;
+    private Map<ToolingDto, Integer> toolingDtoIntegerMap;
+    private Map<SpecialToolDto, Integer> specialToolDtoIntegerMap;
 }
