@@ -11,6 +11,7 @@ public class CustomStoreMapper {
 
     public StoreDto convert(StorePostDto storePostDto) {
         var storeDto = new StoreDto();
+        storeDto.setId(storePostDto.getId());
         storeDto.setStoreName(storePostDto.getStoreName());
         storeDto.setMeasureToolDtoIntegerMap(storePostDto.getMeasuringTools().entrySet().stream().collect(Collectors.toMap(
                 entry -> (MeasureToolDto) setId(new MeasureToolDto(), entry.getKey().longValue()),

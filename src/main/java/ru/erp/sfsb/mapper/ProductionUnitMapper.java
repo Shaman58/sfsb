@@ -5,7 +5,9 @@ import org.javamoney.moneta.Money;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.erp.sfsb.dto.ProductionAreaDto;
 import ru.erp.sfsb.dto.ProductionUnitDto;
+import ru.erp.sfsb.model.ProductionArea;
 import ru.erp.sfsb.model.ProductionUnit;
 
 import java.math.BigDecimal;
@@ -36,10 +38,12 @@ public class ProductionUnitMapper extends AbstractMapper<ProductionUnit, Product
     protected void mapSpecificFields(ProductionUnit source, ProductionUnitDto destination) {
         destination.setPriceCurrency(source.getPrice().getCurrency().getCurrencyCode());
         destination.setPriceAmount(source.getPrice().getNumber().numberValue(BigDecimal.class));
+        destination.setProductionAreaDto(mapper.map(source.getProductionArea(), ProductionAreaDto.class));
     }
 
     @Override
     protected void mapSpecificFields(ProductionUnitDto source, ProductionUnit destination) {
         destination.setPrice(Money.of(source.getPriceAmount(), source.getPriceCurrency()));
+        destination.setProductionArea(mapper.map(source.getProductionAreaDto(), ProductionArea.class));
     }
 }

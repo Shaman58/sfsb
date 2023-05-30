@@ -19,7 +19,7 @@ import static jakarta.persistence.CascadeType.MERGE;
 public class ProductionArea extends AbstractEntity {
 
     private String areaName;
-    @OneToMany(cascade = MERGE)
+    @Transient
     private List<ProductionUnit> productionUnits;
     @OneToOne(cascade = MERGE)
     @JoinColumn

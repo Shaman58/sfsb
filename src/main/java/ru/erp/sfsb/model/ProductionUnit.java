@@ -1,10 +1,7 @@
 package ru.erp.sfsb.model;
 
 import io.hypersistence.utils.hibernate.type.money.MonetaryAmountType;
-import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,4 +30,6 @@ public class ProductionUnit extends AbstractEntity {
     @CompositeType(MonetaryAmountType.class)
     @SuppressWarnings("JpaAttributeTypeInspection")
     private MonetaryAmount price;
+    @ManyToOne
+    private ProductionArea productionArea;
 }

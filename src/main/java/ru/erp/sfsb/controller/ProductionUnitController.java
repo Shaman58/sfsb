@@ -5,6 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.erp.sfsb.dto.ProductionUnitDto;
+import ru.erp.sfsb.dto.ProductionUnitPostDto;
+import ru.erp.sfsb.mapper.CustomUnitMapper;
 import ru.erp.sfsb.service.ProductionUnitService;
 
 import java.net.URI;
@@ -16,6 +18,7 @@ import java.util.List;
 public class ProductionUnitController {
 
     private final ProductionUnitService productionUnitService;
+    private final CustomUnitMapper customUnitMapper;
 
     @GetMapping()
     public ResponseEntity<List<ProductionUnitDto>> getAll() {
@@ -28,8 +31,8 @@ public class ProductionUnitController {
     }
 
     @PostMapping()
-    public ResponseEntity<ProductionUnitDto> save(@RequestBody ProductionUnitDto productionUnitDto) {
+    public ResponseEntity<ProductionUnitDto> save(@RequestBody ProductionUnitPostDto productionUnitPostDto) {
         var uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/unit").toUriString());
-        return ResponseEntity.created(uri).body(productionUnitService.save(productionUnitDto));
+        return ResponseEntity.created(uri).body(productionUnitService.save(customUnitMapper.convert(productionUnitPostDto)));
     }
 }

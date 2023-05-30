@@ -1,9 +1,11 @@
 package ru.erp.sfsb.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import ru.erp.sfsb.deserializer.SetupDeserializer;
 
 import java.time.Duration;
 import java.util.List;
@@ -12,6 +14,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonDeserialize(using = SetupDeserializer.class)
 public class SetupDto extends AbstractDto {
 
     private Integer setupNumber;

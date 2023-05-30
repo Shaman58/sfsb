@@ -11,7 +11,7 @@ import ru.erp.sfsb.service.ProductionAreaService;
 import ru.erp.sfsb.service.ProductionUnitService;
 import ru.erp.sfsb.service.StoreService;
 
-import static java.util.stream.Collectors.toList;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -33,11 +33,22 @@ public class ProductionAreaServiceImpl extends AbstractService<ProductionAreaDto
 
     @Override
     @Transactional
+    public List<ProductionAreaDto> getAll() {
+        log.info("Looking all Areas in DB");
+        var productionAreas = repository.findAll().stream().map(mapper::toDto).toList();
+        productionAreas.forEach(e -> e.setProductionUnitDtoList(productionUnitService.getAllByAreaId(e.getId())));
+        return productionAreas;
+    }
+
+    @Override
+    @Transactional
     public ProductionAreaDto save(ProductionAreaDto productionAreaDto) {
         log.info("Saving Production area into DB");
         productionAreaDto.setStoreDto(storeService.get(productionAreaDto.getStoreDto().getId()));
-        productionAreaDto.setProductionUnitDtoList(productionAreaDto.getProductionUnitDtoList().stream().map(e ->
-                productionUnitService.get(e.getId())).collect(toList()));
-        return mapper.toDto(repository.save(mapper.toEntity(productionAreaDto)));
+//        productionAreaDto.setProductionUnitDtoList(productionAreaDto.getProductionUnitDtoList().stream().map(e ->
+//                productionUnitService.get(e.getId())).collect(toList()));
+        var areaDto = mapper.toDto(repository.save(mapper.toEntity(productionAreaDto)));
+        areaDto.setProductionUnitDtoList(productionUnitService.getAllByAreaId(areaDto.getId()));
+        return areaDto;
     }
 }

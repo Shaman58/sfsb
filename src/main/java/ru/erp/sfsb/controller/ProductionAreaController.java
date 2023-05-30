@@ -32,7 +32,9 @@ public class ProductionAreaController {
 
     @PostMapping()
     public ResponseEntity<ProductionAreaDto> save(@RequestBody ProductionAreaPostDto productionAreaPostDto) {
+        System.out.println(productionAreaPostDto.toString());
         var uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/area").toUriString());
+        System.out.println(customAreaMapper.convert(productionAreaPostDto).toString());
         return ResponseEntity.created(uri).body(productionAreaService.save(customAreaMapper.convert(productionAreaPostDto)));
     }
 }

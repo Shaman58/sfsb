@@ -4,13 +4,9 @@ import jakarta.annotation.PostConstruct;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 import ru.erp.sfsb.dto.ProductionAreaDto;
-import ru.erp.sfsb.dto.ProductionUnitDto;
 import ru.erp.sfsb.dto.StoreDto;
 import ru.erp.sfsb.model.ProductionArea;
-import ru.erp.sfsb.model.ProductionUnit;
 import ru.erp.sfsb.model.Store;
-
-import static java.util.stream.Collectors.toList;
 
 @Component
 public class ProductionAreaMapper extends AbstractMapper<ProductionArea, ProductionAreaDto> {
@@ -36,15 +32,11 @@ public class ProductionAreaMapper extends AbstractMapper<ProductionArea, Product
 
     @Override
     protected void mapSpecificFields(ProductionArea source, ProductionAreaDto destination) {
-        destination.setProductionUnitDtoList(source.getProductionUnits().stream().map(e ->
-                mapper.map(e, ProductionUnitDto.class)).collect(toList()));
         destination.setStoreDto(mapper.map(source.getStore(), StoreDto.class));
     }
 
     @Override
     protected void mapSpecificFields(ProductionAreaDto source, ProductionArea destination) {
-        destination.setProductionUnits(source.getProductionUnitDtoList().stream().map(e ->
-                mapper.map(e, ProductionUnit.class)).collect(toList()));
         destination.setStore(mapper.map(source.getStoreDto(), Store.class));
     }
 }
