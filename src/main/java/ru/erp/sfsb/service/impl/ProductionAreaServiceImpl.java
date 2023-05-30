@@ -9,7 +9,6 @@ import ru.erp.sfsb.model.ProductionArea;
 import ru.erp.sfsb.repository.ProductionAreaRepository;
 import ru.erp.sfsb.service.ProductionAreaService;
 import ru.erp.sfsb.service.ProductionUnitService;
-import ru.erp.sfsb.service.StoreService;
 
 import java.util.List;
 
@@ -20,14 +19,12 @@ public class ProductionAreaServiceImpl extends AbstractService<ProductionAreaDto
 
     private final ProductionAreaMapper mapper;
     private final ProductionAreaRepository repository;
-    private final StoreService storeService;
     private final ProductionUnitService productionUnitService;
 
-    public ProductionAreaServiceImpl(ProductionAreaMapper mapper, ProductionAreaRepository repository, StoreService storeService, ProductionUnitService productionUnitService) {
+    public ProductionAreaServiceImpl(ProductionAreaMapper mapper, ProductionAreaRepository repository, ProductionUnitService productionUnitService) {
         super(mapper, repository, "Production area");
         this.mapper = mapper;
         this.repository = repository;
-        this.storeService = storeService;
         this.productionUnitService = productionUnitService;
     }
 
@@ -44,9 +41,6 @@ public class ProductionAreaServiceImpl extends AbstractService<ProductionAreaDto
     @Transactional
     public ProductionAreaDto save(ProductionAreaDto productionAreaDto) {
         log.info("Saving Production area into DB");
-        productionAreaDto.setStoreDto(storeService.get(productionAreaDto.getStoreDto().getId()));
-//        productionAreaDto.setProductionUnitDtoList(productionAreaDto.getProductionUnitDtoList().stream().map(e ->
-//                productionUnitService.get(e.getId())).collect(toList()));
         var areaDto = mapper.toDto(repository.save(mapper.toEntity(productionAreaDto)));
         areaDto.setProductionUnitDtoList(productionUnitService.getAllByAreaId(areaDto.getId()));
         return areaDto;

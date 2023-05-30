@@ -4,7 +4,6 @@ import jakarta.annotation.PostConstruct;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 import ru.erp.sfsb.dto.ProductionAreaDto;
-import ru.erp.sfsb.dto.StoreDto;
 import ru.erp.sfsb.model.ProductionArea;
 import ru.erp.sfsb.model.Store;
 
@@ -22,7 +21,7 @@ public class ProductionAreaMapper extends AbstractMapper<ProductionArea, Product
     private void setupMapper() {
         mapper.createTypeMap(ProductionArea.class, ProductionAreaDto.class)
                 .addMappings(m -> m.skip(ProductionAreaDto::setProductionUnitDtoList))
-                .addMappings(m -> m.skip(ProductionAreaDto::setStoreDto))
+                .addMappings(m -> m.skip(ProductionAreaDto::setStoreId))
                 .setPostConverter(toDtoConverter());
         mapper.createTypeMap(ProductionAreaDto.class, ProductionArea.class)
                 .addMappings(m -> m.skip(ProductionArea::setProductionUnits))
@@ -32,11 +31,13 @@ public class ProductionAreaMapper extends AbstractMapper<ProductionArea, Product
 
     @Override
     protected void mapSpecificFields(ProductionArea source, ProductionAreaDto destination) {
-        destination.setStoreDto(mapper.map(source.getStore(), StoreDto.class));
+        destination.setStoreId(source.getStore().getId());
     }
 
     @Override
     protected void mapSpecificFields(ProductionAreaDto source, ProductionArea destination) {
-        destination.setStore(mapper.map(source.getStoreDto(), Store.class));
+        var store = new Store();
+        store.setId(source.getStoreId());
+        destination.setStore(store);
     }
 }

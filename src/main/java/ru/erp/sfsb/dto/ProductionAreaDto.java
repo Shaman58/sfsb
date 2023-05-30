@@ -15,5 +15,5 @@ public class ProductionAreaDto extends AbstractDto {
 
     private String areaName;
     private List<ProductionUnitDto> productionUnitDtoList;
-    private StoreDto storeDto;
+    private Long storeId;
 }

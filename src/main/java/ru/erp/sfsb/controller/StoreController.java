@@ -5,9 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.erp.sfsb.dto.StoreDto;
-import ru.erp.sfsb.dto.StorePostDto;
-//import ru.erp.sfsb.mapper.CustomStoreMapper;
-import ru.erp.sfsb.mapper.CustomStoreMapper;
 import ru.erp.sfsb.service.StoreService;
 
 import java.net.URI;
@@ -19,7 +16,6 @@ import java.util.List;
 public class StoreController {
 
     private final StoreService storeService;
-    private final CustomStoreMapper mapper;
 
     @GetMapping()
     public ResponseEntity<List<StoreDto>> getAll() {
@@ -32,8 +28,8 @@ public class StoreController {
     }
 
     @PostMapping()
-    public ResponseEntity<StoreDto> save(@RequestBody StorePostDto storePostDto) {
+    public ResponseEntity<StoreDto> save(@RequestBody StoreDto storeDto) {
         var uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/store").toUriString());
-        return ResponseEntity.created(uri).body(storeService.save(mapper.convert(storePostDto)));
+        return ResponseEntity.created(uri).body(storeService.save(storeDto));
     }
 }
