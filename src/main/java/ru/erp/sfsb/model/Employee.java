@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import static jakarta.persistence.CascadeType.MERGE;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -20,7 +22,7 @@ public class Employee extends AbstractEntity {
     private String firstName;
     private String lastName;
     private String position;
-    @ManyToOne
+    @ManyToOne(cascade = MERGE)
     @JoinColumn
     private Department department;
 }

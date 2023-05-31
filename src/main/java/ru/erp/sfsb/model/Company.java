@@ -1,9 +1,6 @@
 package ru.erp.sfsb.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,8 +8,7 @@ import lombok.Setter;
 
 import java.util.List;
 
-import static jakarta.persistence.CascadeType.ALL;
-import static jakarta.persistence.CascadeType.PERSIST;
+import static jakarta.persistence.CascadeType.MERGE;
 
 @Getter
 @Setter
@@ -32,13 +28,14 @@ public class Company extends AbstractEntity {
     private String bik;
     private String correspondentAccount;
     private String phoneNumber;
-    @OneToMany(cascade = ALL)
+    @OneToMany(cascade = MERGE)
     private List<Department> departments;
-    @OneToOne(cascade = PERSIST)
+    @OneToOne(cascade = MERGE)
+    @JoinColumn
     private Employee director;
     private String email;
-    @OneToMany(cascade = ALL)
+    @OneToMany(cascade = MERGE)
     private List<Order> orders;
-    @OneToMany(cascade = ALL)
+    @OneToMany(cascade = MERGE)
     private List<ProductionArea> productionAreas;
 }

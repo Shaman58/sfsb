@@ -10,8 +10,6 @@ import lombok.Setter;
 
 import java.util.List;
 
-import static jakarta.persistence.CascadeType.PERSIST;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -20,7 +18,7 @@ import static jakarta.persistence.CascadeType.PERSIST;
 @Table(name = "orders")
 public class Order extends AbstractEntity {
 
-    @ManyToMany(cascade = PERSIST)
+    @ManyToMany
     private List<Item> items;
     private String description;
     private String businessProposal;
