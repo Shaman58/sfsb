@@ -14,6 +14,7 @@ public class StoreDtoSerializer extends JsonSerializer<StoreDto> {
     @Override
     public void serialize(StoreDto storeDto, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         jsonGenerator.writeStartObject();
+        jsonGenerator.writeNumberField("id", storeDto.getId());
         jsonGenerator.writeStringField("storeName", storeDto.getStoreName());
         getJsonParts(jsonGenerator, storeDto.getWorkpieces(), "workpiece");
         getJsonParts(jsonGenerator, storeDto.getCutterTools(), "cutterTool");
