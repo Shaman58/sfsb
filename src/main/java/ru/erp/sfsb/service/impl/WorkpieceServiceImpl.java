@@ -29,7 +29,7 @@ public class WorkpieceServiceImpl extends AbstractService<WorkpieceDto, Workpiec
     @Transactional
     public WorkpieceDto save(WorkpieceDto workpieceDto) {
         log.info("Saving Workpiece into DB");
-        workpieceDto.setMaterialDto(materialService.get(workpieceDto.getMaterialDto().getId()));
+        workpieceDto.setMaterial(materialService.get(workpieceDto.getMaterial().getId()));
         return mapper.toDto(repository.save(mapper.toEntity(workpieceDto)));
     }
 }

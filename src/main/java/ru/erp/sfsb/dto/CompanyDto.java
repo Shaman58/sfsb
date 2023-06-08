@@ -23,9 +23,9 @@ public class CompanyDto extends AbstractDto {
     private String bik;
     private String correspondentAccount;
     private String phoneNumber;
-    private List<DepartmentDto> departmentDtos;
-    private EmployeeDto directorDto;
+    private List<DepartmentDto> departments;
+    private EmployeeDto director;
     private String email;
-    private List<OrderDto> orderDtos;
-    private List<ProductionAreaDto> productionAreaDtos;
+    private List<OrderDto> orders;
+    private List<ProductionAreaDto> productionAreas;
 }

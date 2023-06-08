@@ -60,5 +60,4 @@ public abstract class AbstractService
         log.info("Deleting {} with id {} in DB", entityName, id);
         repository.deleteById(id);
     }
-
 }

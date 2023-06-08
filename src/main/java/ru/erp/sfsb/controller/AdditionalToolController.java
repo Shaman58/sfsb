@@ -22,6 +22,11 @@ public class AdditionalToolController {
         return ResponseEntity.ok().body(additionalToolService.getAll());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<AdditionalToolDto> get(@PathVariable Long id) {
+        return ResponseEntity.ok().body(additionalToolService.get(id));
+    }
+
     @PostMapping()
     public ResponseEntity<AdditionalToolDto> save(@RequestBody AdditionalToolDto additionalToolDto) {
         var uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/additional").toUriString());

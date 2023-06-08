@@ -26,7 +26,7 @@ public class SpecialToolServiceImpl extends AbstractService<SpecialToolDto, Spec
     @Transactional
     public SpecialToolDto save(SpecialToolDto specialToolDto) {
         log.info("Saving Special tool into DB");
-        specialToolDto.setWorkpieceDto(workpieceService.get(specialToolDto.getWorkpieceDto().getId()));
+        specialToolDto.setWorkpiece(workpieceService.get(specialToolDto.getWorkpiece().getId()));
         return mapper.toDto(repository.save(mapper.toEntity(specialToolDto)));
     }
 }

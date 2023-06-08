@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/area")
+@RequestMapping(value = "/api/area")
 public class ProductionAreaController {
 
     private final ProductionAreaService productionAreaService;

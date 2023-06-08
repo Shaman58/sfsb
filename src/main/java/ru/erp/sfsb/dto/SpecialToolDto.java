@@ -14,6 +14,6 @@ import java.time.Duration;
 public class SpecialToolDto extends AbstractDto {
 
     private String toolName;
-    private WorkpieceDto workpieceDto;
+    private WorkpieceDto workpiece;
     private Duration processTime;
 }

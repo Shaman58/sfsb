@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class WorkpieceDto extends AbstractDto {
 
-    private MaterialDto materialDto;
+    private MaterialDto material;
     private String geometry;
     private Integer geom1;
     private Integer geom2;

@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
+import javax.money.MonetaryAmount;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -15,6 +15,5 @@ public class CutterToolDto extends AbstractDto {
 
     private String toolName;
     private String description;
-    private BigDecimal priceAmount;
-    private String priceCurrency;
+    private MonetaryAmount price;
 }

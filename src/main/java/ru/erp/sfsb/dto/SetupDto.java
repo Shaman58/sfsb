@@ -19,10 +19,10 @@ public class SetupDto extends AbstractDto {
     private Duration setupTime;
     private Duration processTime;
     private Duration interoperativeTime;
-    private List<CutterToolDto> cutterToolDtoList;
-    private List<MeasureToolDto> measureToolDtoList;
-    private List<AdditionalToolDto> additionalToolDtoList;
-    private List<SpecialToolDto> specialToolDtoList;
-    private List<ToolingDto> toolingDtoList;
-    private ProductionUnitDto productionUnitDto;
+    private List<CutterToolDto> cutterTools;
+    private List<MeasureToolDto> measureTools;
+    private List<AdditionalToolDto> additionalTools;
+    private List<SpecialToolDto> specialTools;
+    private List<ToolingDto> toolings;
+    private ProductionUnitDto productionUnit;
 }

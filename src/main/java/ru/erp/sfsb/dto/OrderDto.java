@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class OrderDto extends AbstractDto {
 
-    private List<ItemDto> itemDtos;
+    private List<ItemDto> items;
     private String description;
     private String businessProposal;
     private String recipient;

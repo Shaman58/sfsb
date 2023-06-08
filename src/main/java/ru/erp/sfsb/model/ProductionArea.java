@@ -1,6 +1,9 @@
 package ru.erp.sfsb.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,6 +25,5 @@ public class ProductionArea extends AbstractEntity {
     @Transient
     private List<ProductionUnit> productionUnits;
     @OneToOne(cascade = MERGE)
-    @JoinColumn
     private Store store;
 }

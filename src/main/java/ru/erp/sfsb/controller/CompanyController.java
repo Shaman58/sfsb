@@ -8,7 +8,6 @@ import ru.erp.sfsb.dto.CompanyDto;
 import ru.erp.sfsb.service.CompanyService;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,11 +15,6 @@ import java.util.List;
 public class CompanyController {
 
     private final CompanyService companyService;
-
-    @GetMapping()
-    public ResponseEntity<List<CompanyDto>> getAll() {
-        return ResponseEntity.ok().body(companyService.getAll());
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<CompanyDto> get(@PathVariable Long id) {

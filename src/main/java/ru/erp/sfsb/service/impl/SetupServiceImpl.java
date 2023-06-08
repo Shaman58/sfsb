@@ -37,22 +37,22 @@ public class SetupServiceImpl extends AbstractService<SetupDto, Setup, SetupRepo
     @Transactional
     public SetupDto save(SetupDto setupDto) {
         log.info("Saving Setup into DB");
-        setupDto.setCutterToolDtoList(setupDto.getCutterToolDtoList().stream().map(
+        setupDto.setCutterTools(setupDto.getCutterTools().stream().map(
                 e -> cutterToolService.get(e.getId())
         ).toList());
-        setupDto.setToolingDtoList(setupDto.getToolingDtoList().stream().map(
+        setupDto.setToolings(setupDto.getToolings().stream().map(
                 e -> toolingService.get(e.getId())
         ).toList());
-        setupDto.setMeasureToolDtoList(setupDto.getMeasureToolDtoList().stream().map(
+        setupDto.setMeasureTools(setupDto.getMeasureTools().stream().map(
                 e -> measureToolService.get(e.getId())
         ).toList());
-        setupDto.setSpecialToolDtoList(setupDto.getSpecialToolDtoList().stream().map(
+        setupDto.setSpecialTools(setupDto.getSpecialTools().stream().map(
                 e -> specialToolService.get(e.getId())
         ).toList());
-        setupDto.setAdditionalToolDtoList(setupDto.getAdditionalToolDtoList().stream().map(
+        setupDto.setAdditionalTools(setupDto.getAdditionalTools().stream().map(
                 e -> additionalToolService.get(e.getId())
         ).toList());
-        setupDto.setProductionUnitDto(productionUnitService.get(setupDto.getProductionUnitDto().getId()));
+        setupDto.setProductionUnit(productionUnitService.get(setupDto.getProductionUnit().getId()));
         return mapper.toDto(repository.save(mapper.toEntity(setupDto)));
     }
 }

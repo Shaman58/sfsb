@@ -40,23 +40,23 @@ public class StoreServiceImpl extends AbstractService<StoreDto, Store, StoreRepo
     @Transactional
     public StoreDto save(StoreDto storeDto) {
         log.info("Saving Store into DB");
-        storeDto.setMeasureToolDtoIntegerMap(storeDto.getMeasureToolDtoIntegerMap().entrySet().stream().collect(Collectors.toMap(
+        storeDto.setMeasureTools(storeDto.getMeasureTools().entrySet().stream().collect(Collectors.toMap(
                 entry -> measureToolService.get(entry.getKey().getId()),
                 Map.Entry::getValue
         )));
-        storeDto.setWorkpieceDtoIntegerMap(storeDto.getWorkpieceDtoIntegerMap().entrySet().stream().collect(Collectors.toMap(
+        storeDto.setWorkpieces(storeDto.getWorkpieces().entrySet().stream().collect(Collectors.toMap(
                 entry -> workpieceService.get(entry.getKey().getId()),
                 Map.Entry::getValue
         )));
-        storeDto.setCutterToolDtoIntegerMap(storeDto.getCutterToolDtoIntegerMap().entrySet().stream().collect(Collectors.toMap(
+        storeDto.setCutterTools(storeDto.getCutterTools().entrySet().stream().collect(Collectors.toMap(
                 entry -> cutterToolService.get(entry.getKey().getId()),
                 Map.Entry::getValue
         )));
-        storeDto.setToolingDtoIntegerMap(storeDto.getToolingDtoIntegerMap().entrySet().stream().collect(Collectors.toMap(
+        storeDto.setToolings(storeDto.getToolings().entrySet().stream().collect(Collectors.toMap(
                 entry -> toolingService.get(entry.getKey().getId()),
                 Map.Entry::getValue
         )));
-        storeDto.setSpecialToolDtoIntegerMap(storeDto.getSpecialToolDtoIntegerMap().entrySet().stream().collect(Collectors.toMap(
+        storeDto.setSpecialTools(storeDto.getSpecialTools().entrySet().stream().collect(Collectors.toMap(
                 entry -> specialToolService.get(entry.getKey().getId()),
                 Map.Entry::getValue
         )));

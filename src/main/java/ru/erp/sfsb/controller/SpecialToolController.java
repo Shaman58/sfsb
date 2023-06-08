@@ -22,6 +22,11 @@ public class SpecialToolController {
         return ResponseEntity.ok().body(specialToolService.getAll());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<SpecialToolDto> get(@PathVariable Long id) {
+        return ResponseEntity.ok().body(specialToolService.get(id));
+    }
+
     @PostMapping()
     public ResponseEntity<SpecialToolDto> save(@RequestBody SpecialToolDto specialToolDto) {
         var uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/special").toUriString());

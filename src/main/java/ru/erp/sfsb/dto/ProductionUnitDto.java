@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
+import javax.money.MonetaryAmount;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -14,7 +14,6 @@ import java.math.BigDecimal;
 public class ProductionUnitDto extends AbstractDto {
 
     private String unitName;
-    private BigDecimal priceAmount;
-    private String priceCurrency;
-    private ProductionAreaDto productionAreaDto;
+    private MonetaryAmount price;
+    private ProductionAreaDto productionArea;
 }

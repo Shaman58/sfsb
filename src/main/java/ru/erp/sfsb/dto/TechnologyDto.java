@@ -15,10 +15,10 @@ public class TechnologyDto extends AbstractDto {
 
     private String drawingNumber;
     private String drawingName;
-    private EmployeeDto employeeDto;
+    private EmployeeDto employee;
     private List<SetupDto> setups;
     private Integer quantityOfDefectiveParts;
     private Integer quantityOfSetUpParts;
     private Integer quantityOfPartsFromWorkpiece;
-    private WorkpieceDto workpieceDto;
+    private WorkpieceDto workpiece;
 }

@@ -1,9 +1,6 @@
 package ru.erp.sfsb.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.Duration;
 
@@ -14,6 +11,6 @@ import java.time.Duration;
 public class AdditionalToolDto extends AbstractDto {
 
     private String toolName;
-    private WorkpieceDto workpieceDto;
+    private WorkpieceDto workpiece;
     private Duration processTime;
 }

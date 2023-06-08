@@ -25,7 +25,8 @@ public class AdditionalToolServiceImpl extends AbstractService<AdditionalToolDto
     @Transactional
     public AdditionalToolDto save(AdditionalToolDto additionalToolDto) {
         log.info("Saving Additional tool into DB");
-        additionalToolDto.setWorkpieceDto(workpieceService.get(additionalToolDto.getWorkpieceDto().getId()));
+        additionalToolDto.setWorkpiece(
+                workpieceService.get(additionalToolDto.getWorkpiece() == null ? null : additionalToolDto.getWorkpiece().getId()));
         return mapper.toDto(repository.save(mapper.toEntity(additionalToolDto)));
     }
 }

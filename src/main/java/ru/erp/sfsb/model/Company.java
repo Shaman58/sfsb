@@ -30,7 +30,7 @@ public class Company extends AbstractEntity {
     private String phoneNumber;
     @OneToMany(cascade = MERGE)
     private List<Department> departments;
-    @OneToOne(cascade = MERGE)
+    @OneToOne
     @JoinColumn
     private Employee director;
     private String email;

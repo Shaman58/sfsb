@@ -22,6 +22,11 @@ public class WorkpieceController {
         return ResponseEntity.ok().body(workpieceService.getAll());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<WorkpieceDto> get(@PathVariable Long id) {
+        return ResponseEntity.ok().body(workpieceService.get(id));
+    }
+
     @PostMapping()
     public ResponseEntity<WorkpieceDto> save(@RequestBody WorkpieceDto workpieceDto) {
         var uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/workpiece").toUriString());

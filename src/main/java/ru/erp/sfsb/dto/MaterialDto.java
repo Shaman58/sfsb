@@ -1,11 +1,8 @@
 package ru.erp.sfsb.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import java.math.BigDecimal;
+import javax.money.MonetaryAmount;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -15,6 +12,5 @@ public class MaterialDto extends AbstractDto {
 
     private String materialName;
     private Integer density;
-    private BigDecimal priceAmount;
-    private String priceCurrency;
+    private MonetaryAmount price;
 }

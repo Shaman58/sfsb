@@ -4,7 +4,6 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import ru.erp.sfsb.dto.DepartmentDto;
 import ru.erp.sfsb.dto.EmployeeDto;
 import ru.erp.sfsb.mapper.EmployeeMapper;
 import ru.erp.sfsb.model.Employee;
@@ -42,9 +41,9 @@ public class EmployeeServiceImpl extends AbstractService<EmployeeDto, Employee, 
     @Transactional
     public EmployeeDto save(EmployeeDto employeeDto) {
         log.info("Saving Employee into DB");
-        if (employeeDto.getDepartmentDto() != null) {
-            employeeDto.setDepartmentDto(departmentService.get(employeeDto.getDepartmentDto().getId()));
-        } else employeeDto.setDepartmentDto(new DepartmentDto());
+        if (employeeDto.getDepartment() != null) {
+            employeeDto.setDepartment(departmentService.get(employeeDto.getDepartment().getId()));
+        }
         return mapper.toDto(repository.save(mapper.toEntity(employeeDto)));
     }
 }

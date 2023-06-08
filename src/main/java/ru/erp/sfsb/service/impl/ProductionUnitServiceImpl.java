@@ -42,7 +42,9 @@ public class ProductionUnitServiceImpl extends AbstractService<ProductionUnitDto
     @Transactional
     public ProductionUnitDto save(ProductionUnitDto productionUnitDto) {
         log.info("Saving Unit into DB");
-        productionUnitDto.setProductionAreaDto(areaService.get(productionUnitDto.getProductionAreaDto().getId()));
+        if (productionUnitDto.getProductionArea() != null) {
+            productionUnitDto.setProductionArea(areaService.get(productionUnitDto.getProductionArea().getId()));
+        }
         return mapper.toDto(repository.save(mapper.toEntity(productionUnitDto)));
     }
 }

@@ -13,7 +13,7 @@ import java.time.Duration;
 @AllArgsConstructor
 public class ItemDto extends AbstractDto {
 
-    private TechnologyDto technologyDto;
+    private TechnologyDto technology;
     private boolean isCustomerMaterial;
     private Integer quantity;
     private Duration estimatedDuration;

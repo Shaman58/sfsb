@@ -14,5 +14,5 @@ public class EmployeeDto extends AbstractDto {
     private String firstName;
     private String lastName;
     private String position;
-    private DepartmentDto departmentDto;
+    private DepartmentDto department;
 }

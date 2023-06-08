@@ -1,5 +1,6 @@
 package ru.erp.sfsb.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ public class StoreController {
     private final StoreService storeService;
 
     @GetMapping()
-    public ResponseEntity<List<StoreDto>> getAll() {
+    public ResponseEntity<List<StoreDto>> getAll() throws JsonProcessingException {
         return ResponseEntity.ok().body(storeService.getAll());
     }
 

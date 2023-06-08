@@ -14,5 +14,5 @@ import java.util.List;
 public class DepartmentDto extends AbstractDto {
 
     private String departmentName;
-    private List<EmployeeDto> employeeDtoList;
+    private List<EmployeeDto> employees;
 }

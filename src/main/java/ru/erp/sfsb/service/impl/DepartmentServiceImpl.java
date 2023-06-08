@@ -37,8 +37,8 @@ public class DepartmentServiceImpl extends AbstractService<DepartmentDto, Depart
     public List<DepartmentDto> getAll() {
         log.info("Looking all Departments in DB");
         var departmentsDto = repository.findAll().stream().map(mapper::toDto).toList();
-        departmentsDto.forEach(d -> d.setEmployeeDtoList(employeeService.getDepartmentEmployees(d.getId())));
-        departmentsDto.forEach(d -> d.getEmployeeDtoList().forEach(e -> e.setDepartmentDto(null)));
+        departmentsDto.forEach(d -> d.setEmployees(employeeService.getDepartmentEmployees(d.getId())));
+        departmentsDto.forEach(d -> d.getEmployees().forEach(e -> e.setDepartment(null)));
         return departmentsDto;
     }
 
@@ -46,10 +46,10 @@ public class DepartmentServiceImpl extends AbstractService<DepartmentDto, Depart
     @Transactional
     public DepartmentDto save(DepartmentDto departmentDto) {
         log.info("Saving Department into DB");
-        if (departmentDto.getEmployeeDtoList() != null) {
-            departmentDto.setEmployeeDtoList(departmentDto.getEmployeeDtoList().stream().map(e -> employeeService.get(e.getId())).collect(toList()));
+        if (departmentDto.getEmployees() != null) {
+            departmentDto.setEmployees(departmentDto.getEmployees().stream().map(e -> employeeService.get(e.getId())).collect(toList()));
         } else {
-            departmentDto.setEmployeeDtoList(new ArrayList<>());
+            departmentDto.setEmployees(new ArrayList<>());
         }
         return mapper.toDto(repository.save(mapper.toEntity(departmentDto)));
     }
