@@ -3,6 +3,7 @@ package ru.erp.sfsb.config;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
+import org.zalando.jackson.datatype.money.MoneyModule;
 
 import static org.modelmapper.config.Configuration.AccessLevel.PRIVATE;
 import static org.modelmapper.convention.MatchingStrategies.STRICT;
@@ -19,5 +20,10 @@ public class MapperConfig {
                 .setSkipNullEnabled(true)
                 .setFieldAccessLevel(PRIVATE);
         return modelMapper;
+    }
+
+    @Bean
+    public MoneyModule objectMapper() {
+        return new MoneyModule().withDefaultFormatting();
     }
 }

@@ -1,11 +1,13 @@
 package ru.erp.sfsb.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import ru.erp.sfsb.deserializer.StoreDeserializer;
+import ru.erp.sfsb.deserializer.StoreDtoSerializer;
 
 import java.util.Map;
 
@@ -14,6 +16,7 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonDeserialize(using = StoreDeserializer.class)
+@JsonSerialize(using = StoreDtoSerializer.class)
 public class StoreDto extends AbstractDto {
 
     private String storeName;
