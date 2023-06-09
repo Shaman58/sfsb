@@ -64,6 +64,8 @@ drop table if exists units cascade;
 
 drop table if exists workpieces cascade;
 
+drop table if exists customers cascade;
+
 create table additionals
 (
     id           bigserial not null,
@@ -102,6 +104,25 @@ create table companies
     payment_account       varchar(255),
     phone_number          varchar(255),
     director_id           bigint,
+    primary key (id)
+);
+
+create table customers
+(
+    id                    bigserial not null,
+    created               timestamp(6),
+    updated               timestamp(6),
+    address               varchar(255),
+    bank                  varchar(255),
+    bik                   varchar(255),
+    company_name          varchar(255),
+    correspondent_account varchar(255),
+    email                 varchar(255),
+    inn                   varchar(255),
+    kpp                   varchar(255),
+    okpo                  varchar(255),
+    payment_account       varchar(255),
+    phone_number          varchar(255),
     primary key (id)
 );
 
@@ -210,7 +231,7 @@ create table orders
     application_number integer,
     business_proposal  varchar(255),
     description        varchar(255),
-    recipient          varchar(255),
+    customer_id        bigint,
     primary key (id)
 );
 
@@ -395,7 +416,7 @@ alter table if exists technologies_setups
     add constraint UK_technologies_setups unique (setups_id);
 
 alter table if exists areas
-    add constraint UK_area_setup unique (store_id);
+    add constraint UK_area_store unique (store_id);
 
 alter table if exists additionals
     add constraint FK_workpiece_id
@@ -406,6 +427,11 @@ alter table if exists areas
     add constraint FK_store_id
         foreign key (store_id)
             references stores;
+
+alter table if exists orders
+    add constraint FK_customer_id
+        foreign key (customer_id)
+            references customers;
 
 alter table if exists companies
     add constraint FK_director_id

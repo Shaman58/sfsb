@@ -16,6 +16,6 @@ public class OrderDto extends AbstractDto {
     private List<ItemDto> items;
     private String description;
     private String businessProposal;
-    private String recipient;
+    private CustomerDto customer;
     private Integer applicationNumber;
 }
