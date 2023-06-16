@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import javax.money.MonetaryAmount;
 import java.time.Duration;
 
 @Data
@@ -19,4 +20,5 @@ public class ItemDto extends AbstractDto {
     private Duration estimatedDuration;
     private Duration actualDuration;
     private boolean isAccepted;
+    private MonetaryAmount price;
 }

@@ -26,4 +26,8 @@ public class Order extends AbstractEntity {
     @ManyToOne
     private Customer customer;
     private Integer applicationNumber;
+    @ManyToOne
+    private Employee employee;
+    @ManyToOne
+    private Contact contact;
 }

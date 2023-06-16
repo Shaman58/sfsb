@@ -4,11 +4,11 @@ drop table if exists areas cascade;
 
 drop table if exists companies cascade;
 
-drop table if exists companies_departments cascade;
+drop table if exists contacts cascade;
+
+drop table if exists customers cascade;
 
 drop table if exists companies_orders cascade;
-
-drop table if exists companies_production_areas cascade;
 
 drop table if exists cutters cascade;
 
@@ -64,7 +64,39 @@ drop table if exists units cascade;
 
 drop table if exists workpieces cascade;
 
-drop table if exists customers cascade;
+create table materials
+(
+    id             bigserial not null,
+    created        timestamp(6),
+    updated        timestamp(6),
+    density        integer,
+    material_name  varchar(255),
+    price_amount   numeric(38, 2),
+    price_currency varchar(255),
+    primary key (id)
+);
+
+create table stores
+(
+    id         bigserial not null,
+    created    timestamp(6),
+    updated    timestamp(6),
+    store_name varchar(255),
+    primary key (id)
+);
+
+create table workpieces
+(
+    id          bigserial not null,
+    created     timestamp(6),
+    updated     timestamp(6),
+    geom1       integer,
+    geom2       integer,
+    geom3       integer,
+    geometry    varchar(255),
+    material_id bigint,
+    primary key (id)
+);
 
 create table additionals
 (
@@ -74,16 +106,6 @@ create table additionals
     process_time numeric(21, 0),
     tool_name    varchar(255),
     workpiece_id bigint,
-    primary key (id)
-);
-
-create table areas
-(
-    id        bigserial not null,
-    created   timestamp(6),
-    updated   timestamp(6),
-    area_name varchar(255),
-    store_id  bigint,
     primary key (id)
 );
 
@@ -107,6 +129,29 @@ create table companies
     primary key (id)
 );
 
+create table employees
+(
+    id            bigserial not null,
+    created       timestamp(6),
+    updated       timestamp(6),
+    first_name    varchar(255),
+    last_name     varchar(255),
+    position      varchar(255),
+    department_id bigint,
+    primary key (id)
+);
+
+create table areas
+(
+    id         bigserial not null,
+    created    timestamp(6),
+    updated    timestamp(6),
+    area_name  varchar(255),
+    store_id   bigint,
+    company_id bigint,
+    primary key (id)
+);
+
 create table customers
 (
     id                    bigserial not null,
@@ -126,22 +171,10 @@ create table customers
     primary key (id)
 );
 
-create table companies_departments
-(
-    company_id     bigint not null,
-    departments_id bigint not null
-);
-
 create table companies_orders
 (
     company_id bigint not null,
     orders_id  bigint not null
-);
-
-create table companies_production_areas
-(
-    company_id          bigint not null,
-    production_areas_id bigint not null
 );
 
 create table cutters
@@ -162,6 +195,7 @@ create table departments
     created         timestamp(6),
     updated         timestamp(6),
     department_name varchar(255),
+    company_id      bigint,
     primary key (id)
 );
 
@@ -173,15 +207,15 @@ create table dictionary
     primary key (id)
 );
 
-create table employees
+create table contacts
 (
-    id            bigserial not null,
-    created       timestamp(6),
-    updated       timestamp(6),
-    first_name    varchar(255),
-    last_name     varchar(255),
-    position      varchar(255),
-    department_id bigint,
+    id          bigserial not null,
+    created     timestamp(6),
+    updated     timestamp(6),
+    first_name  varchar(255),
+    last_name   varchar(255),
+    position    varchar(255),
+    customer_id bigint,
     primary key (id)
 );
 
@@ -196,18 +230,8 @@ create table items
     is_customer_material boolean   not null,
     quantity             integer,
     technology_id        bigint,
-    primary key (id)
-);
-
-create table materials
-(
-    id             bigserial not null,
-    created        timestamp(6),
-    updated        timestamp(6),
-    density        integer,
-    material_name  varchar(255),
-    price_amount   numeric(38, 2),
-    price_currency varchar(255),
+    price_amount         numeric(38, 2),
+    price_currency       varchar(255),
     primary key (id)
 );
 
@@ -229,9 +253,11 @@ create table orders
     created            timestamp(6),
     updated            timestamp(6),
     application_number integer,
-    business_proposal  varchar(255),
+    business_proposal  varchar(2047),
     description        varchar(255),
     customer_id        bigint,
+    employee_id        bigint,
+    contact_id         bigint,
     primary key (id)
 );
 
@@ -336,15 +362,6 @@ create table store_workpiece_mapping
     primary key (store_id, workpieces_key)
 );
 
-create table stores
-(
-    id         bigserial not null,
-    created    timestamp(6),
-    updated    timestamp(6),
-    store_name varchar(255),
-    primary key (id)
-);
-
 create table technologies
 (
     id                               bigserial not null,
@@ -390,63 +407,36 @@ create table units
     primary key (id)
 );
 
-create table workpieces
-(
-    id          bigserial not null,
-    created     timestamp(6),
-    updated     timestamp(6),
-    geom1       integer,
-    geom2       integer,
-    geom3       integer,
-    geometry    varchar(255),
-    material_id bigint,
-    primary key (id)
-);
+alter table if exists units
+    add constraint FK_production_area_id
+        foreign key (production_area_id)
+            references areas;
 
-alter table if exists companies_departments
-    add constraint UK_companies_departments unique (departments_id);
-
-alter table if exists companies_orders
-    add constraint UK_companies_orders unique (orders_id);
-
-alter table if exists companies_production_areas
-    add constraint UK_companies_production_areas unique (production_areas_id);
-
-alter table if exists technologies_setups
-    add constraint UK_technologies_setups unique (setups_id);
-
-alter table if exists areas
-    add constraint UK_area_store unique (store_id);
-
-alter table if exists additionals
-    add constraint FK_workpiece_id
-        foreign key (workpiece_id)
-            references workpieces;
-
-alter table if exists areas
-    add constraint FK_store_id
-        foreign key (store_id)
-            references stores;
-
-alter table if exists orders
-    add constraint FK_customer_id
-        foreign key (customer_id)
-            references customers;
+alter table if exists employees
+    add constraint FK_department_id
+        foreign key (department_id)
+            references departments;
 
 alter table if exists companies
     add constraint FK_director_id
         foreign key (director_id)
             references employees;
 
-alter table if exists companies_departments
-    add constraint FK_departments_id
-        foreign key (departments_id)
-            references departments;
+alter table if exists technologies_setups
+    add constraint UK_technologies_setups unique (setups_id);
 
-alter table if exists companies_departments
-    add constraint FK_company_id
-        foreign key (company_id)
-            references companies;
+alter table if exists technologies_setups
+    add constraint FK_setups_id
+        foreign key (setups_id)
+            references setups;
+
+alter table if exists technologies_setups
+    add constraint FK_technology_id
+        foreign key (technology_id)
+            references technologies;
+
+alter table if exists companies_orders
+    add constraint UK_companies_orders unique (orders_id);
 
 alter table if exists companies_orders
     add constraint FK_orders_id
@@ -458,25 +448,31 @@ alter table if exists companies_orders
         foreign key (company_id)
             references companies;
 
-alter table if exists companies_production_areas
-    add constraint FK_production_areas_id
-        foreign key (production_areas_id)
-            references areas;
-
-alter table if exists companies_production_areas
-    add constraint FK_company_id
-        foreign key (company_id)
-            references companies;
-
-alter table if exists employees
-    add constraint FK_department_id
-        foreign key (department_id)
-            references departments;
-
 alter table if exists items
     add constraint FK_technology_id
         foreign key (technology_id)
             references technologies;
+
+alter table if exists workpieces
+    add constraint FK_material_id
+        foreign key (material_id)
+            references materials;
+
+alter table if exists areas
+    add constraint UK_area_store unique (store_id);
+
+alter table if exists areas
+    add constraint UK_companies_production_areas unique (company_id);
+
+alter table if exists areas
+    add constraint FK_store_id
+        foreign key (store_id)
+            references stores;
+
+alter table if exists areas
+    add constraint FK_company_id
+        foreign key (company_id)
+            references companies;
 
 alter table if exists orders_items
     add constraint FK_items_id
@@ -488,27 +484,37 @@ alter table if exists orders_items
         foreign key (order_id)
             references orders;
 
+alter table if exists departments
+    add constraint FK_company_id
+        foreign key (company_id)
+            references companies;
+
+alter table if exists orders
+    add constraint FK_customer_id
+        foreign key (customer_id)
+            references customers;
+
+alter table if exists orders
+    add constraint FK_order_employee_id
+        foreign key (employee_id)
+            references employees;
+
+alter table if exists orders
+    add constraint FK_contact_id
+        foreign key (contact_id)
+            references contacts;
+
 alter table if exists setups
     add constraint FK_production_unit_id
         foreign key (production_unit_id)
             references units;
 
-alter table if exists setups_additional_tools
-    add constraint FK_additional_tools_id
-        foreign key (additional_tools_id)
-            references additionals;
+alter table if exists setups_toolings
+    add constraint FK_toolings_id
+        foreign key (toolings_id)
+            references toolings;
 
-alter table if exists setups_additional_tools
-    add constraint FK_setup_id
-        foreign key (setup_id)
-            references setups;
-
-alter table if exists setups_cutter_tools
-    add constraint FK_cutter_tools_id
-        foreign key (cutter_tools_id)
-            references cutters;
-
-alter table if exists setups_cutter_tools
+alter table if exists setups_toolings
     add constraint FK_setup_id
         foreign key (setup_id)
             references setups;
@@ -533,12 +539,37 @@ alter table if exists setups_special_tools
         foreign key (setup_id)
             references setups;
 
-alter table if exists setups_toolings
-    add constraint FK_toolings_id
-        foreign key (toolings_id)
-            references toolings;
+alter table if exists technologies
+    add constraint FK_employee_id
+        foreign key (employee_id)
+            references employees;
 
-alter table if exists setups_toolings
+alter table if exists technologies
+    add constraint FK_workpiece_id
+        foreign key (workpiece_id)
+            references workpieces;
+
+alter table if exists setups_additional_tools
+    add constraint FK_additional_tools_id
+        foreign key (additional_tools_id)
+            references additionals;
+
+alter table if exists setups_additional_tools
+    add constraint FK_setup_id
+        foreign key (setup_id)
+            references setups;
+
+alter table if exists additionals
+    add constraint FK_workpiece_id
+        foreign key (workpiece_id)
+            references workpieces;
+
+alter table if exists setups_cutter_tools
+    add constraint FK_cutter_tools_id
+        foreign key (cutter_tools_id)
+            references cutters;
+
+alter table if exists setups_cutter_tools
     add constraint FK_setup_id
         foreign key (setup_id)
             references setups;
@@ -548,35 +579,10 @@ alter table if exists specials
         foreign key (workpiece_id)
             references workpieces;
 
-alter table if exists store_cutter_mapping
-    add constraint FK_cutter_tools_key
-        foreign key (cutter_tools_key)
-            references cutters;
-
-alter table if exists store_cutter_mapping
-    add constraint FK_store_id
-        foreign key (store_id)
-            references stores;
-
-alter table if exists store_measurer_mapping
-    add constraint FK_measure_tools_key
-        foreign key (measure_tools_key)
-            references measurers;
-
-alter table if exists store_measurer_mapping
-    add constraint FK_store_id
-        foreign key (store_id)
-            references stores;
-
-alter table if exists store_special_mapping
-    add constraint FK_special_tools_key
-        foreign key (special_tools_key)
-            references specials;
-
-alter table if exists store_special_mapping
-    add constraint FK_store_id
-        foreign key (store_id)
-            references stores;
+alter table if exists contacts
+    add constraint FK_contact_customer_id
+        foreign key (customer_id)
+            references customers;
 
 alter table if exists store_tooling_mapping
     add constraint FK_toolings_key
@@ -584,6 +590,16 @@ alter table if exists store_tooling_mapping
             references toolings;
 
 alter table if exists store_tooling_mapping
+    add constraint FK_store_id
+        foreign key (store_id)
+            references stores;
+
+alter table if exists store_cutter_mapping
+    add constraint FK_cutter_tools_key
+        foreign key (cutter_tools_key)
+            references cutters;
+
+alter table if exists store_cutter_mapping
     add constraint FK_store_id
         foreign key (store_id)
             references stores;
@@ -598,32 +614,22 @@ alter table if exists store_workpiece_mapping
         foreign key (store_id)
             references stores;
 
-alter table if exists technologies
-    add constraint FK_employee_id
-        foreign key (employee_id)
-            references employees;
+alter table if exists store_special_mapping
+    add constraint FK_special_tools_key
+        foreign key (special_tools_key)
+            references specials;
 
-alter table if exists technologies
-    add constraint FK_workpiece_id
-        foreign key (workpiece_id)
-            references workpieces;
+alter table if exists store_special_mapping
+    add constraint FK_store_id
+        foreign key (store_id)
+            references stores;
 
-alter table if exists technologies_setups
-    add constraint FK_setups_id
-        foreign key (setups_id)
-            references setups;
+alter table if exists store_measurer_mapping
+    add constraint FK_measure_tools_key
+        foreign key (measure_tools_key)
+            references measurers;
 
-alter table if exists technologies_setups
-    add constraint FK_technology_id
-        foreign key (technology_id)
-            references technologies;
-
-alter table if exists units
-    add constraint FK_production_area_id
-        foreign key (production_area_id)
-            references areas;
-
-alter table if exists workpieces
-    add constraint FK_material_id
-        foreign key (material_id)
-            references materials;
+alter table if exists store_measurer_mapping
+    add constraint FK_store_id
+        foreign key (store_id)
+            references stores;

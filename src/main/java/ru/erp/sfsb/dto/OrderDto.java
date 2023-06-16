@@ -18,4 +18,6 @@ public class OrderDto extends AbstractDto {
     private String businessProposal;
     private CustomerDto customer;
     private Integer applicationNumber;
+    private EmployeeDto employee;
+    private ContactDto contact;
 }

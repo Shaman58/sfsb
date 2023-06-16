@@ -10,6 +10,7 @@ import ru.erp.sfsb.service.CustomerService;
 @Service
 public class CustomerServiceImpl extends AbstractService<CustomerDto, Customer, CustomerRepository, CustomerMapper>
         implements CustomerService {
+
     public CustomerServiceImpl(CustomerMapper mapper, CustomerRepository repository) {
         super(mapper, repository, "Customer");
     }

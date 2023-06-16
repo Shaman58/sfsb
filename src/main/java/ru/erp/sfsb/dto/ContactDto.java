@@ -9,8 +9,9 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class DepartmentDto extends AbstractDto {
+public class ContactDto extends AbstractDto {
 
-    private String departmentName;
-    private CompanyDto company;
+    private String firstName;
+    private String lastName;
+    private String position;
 }

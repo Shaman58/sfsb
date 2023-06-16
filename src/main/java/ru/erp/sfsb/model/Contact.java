@@ -14,13 +14,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "employees")
-public class Employee extends AbstractEntity {
+@Table(name = "contacts")
+public class Contact extends AbstractEntity {
 
     private String firstName;
     private String lastName;
     private String position;
     @ManyToOne
-    @JoinColumn(name = "department_id")
-    private Department department;
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
 }

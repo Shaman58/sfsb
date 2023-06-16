@@ -28,14 +28,14 @@ public class Company extends AbstractEntity {
     private String bik;
     private String correspondentAccount;
     private String phoneNumber;
-    @OneToMany(cascade = MERGE)
+    private String email;
+    @OneToMany(mappedBy = "company", cascade = MERGE)
     private List<Department> departments;
     @OneToOne
     @JoinColumn
     private Employee director;
-    private String email;
     @OneToMany(cascade = MERGE)
     private List<Order> orders;
-    @OneToMany(cascade = MERGE)
+    @OneToMany(mappedBy = "company", cascade = MERGE)
     private List<ProductionArea> productionAreas;
 }

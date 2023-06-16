@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
@@ -22,4 +24,5 @@ public class CustomerDto extends AbstractDto {
     private String correspondentAccount;
     private String phoneNumber;
     private String email;
+    private List<ContactDto> contacts;
 }
