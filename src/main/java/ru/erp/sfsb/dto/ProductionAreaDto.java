@@ -14,6 +14,6 @@ import java.util.List;
 public class ProductionAreaDto extends AbstractDto {
 
     private String areaName;
-    private List<ProductionUnitDto> productionUnits;
-    private StoreDto store;
+    private List<StoreDto> stores;
+    private CompanyDto company;
 }

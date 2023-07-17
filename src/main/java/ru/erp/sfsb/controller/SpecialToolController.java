@@ -1,35 +1,60 @@
 package ru.erp.sfsb.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.erp.sfsb.dto.SpecialToolDto;
 import ru.erp.sfsb.service.SpecialToolService;
 
-import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/special")
 @RequiredArgsConstructor
+@Validated
+@RequestMapping("/api/special")
 public class SpecialToolController {
 
     private final SpecialToolService specialToolService;
 
-    @GetMapping()
-    public ResponseEntity<List<SpecialToolDto>> getAll() {
-        return ResponseEntity.ok().body(specialToolService.getAll());
-    }
-
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
-    public ResponseEntity<SpecialToolDto> get(@PathVariable Long id) {
-        return ResponseEntity.ok().body(specialToolService.get(id));
+    public SpecialToolDto get(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
+        return specialToolService.get(id);
     }
 
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping()
+    public List<SpecialToolDto> getAll(
+            @RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
+            @RequestParam(value = "limit", defaultValue = "20") @Min(1) @Max(100) Integer limit) {
+        return specialToolService.getAll(PageRequest.of(offset, limit));
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping()
-    public ResponseEntity<SpecialToolDto> save(@RequestBody SpecialToolDto specialToolDto) {
-        var uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/special").toUriString());
-        return ResponseEntity.created(uri).body(specialToolService.save(specialToolDto));
+    public SpecialToolDto save(@RequestBody @Valid SpecialToolDto specialToolDto) {
+        return specialToolService.save(specialToolDto);
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
+    @PutMapping("/{id}")
+    public SpecialToolDto update(@RequestBody @Valid SpecialToolDto specialToolDto,
+                                 @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
+        specialToolDto.setId(id);
+        return specialToolService.update(specialToolDto);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
+        specialToolService.delete(id);
     }
 }

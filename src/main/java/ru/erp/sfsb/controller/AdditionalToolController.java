@@ -1,35 +1,60 @@
 package ru.erp.sfsb.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.erp.sfsb.dto.AdditionalToolDto;
 import ru.erp.sfsb.service.AdditionalToolService;
 
-import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/additional")
 @RequiredArgsConstructor
+@Validated
+@RequestMapping("/api/additional")
 public class AdditionalToolController {
 
     private final AdditionalToolService additionalToolService;
 
-    @GetMapping()
-    public ResponseEntity<List<AdditionalToolDto>> getAll() {
-        return ResponseEntity.ok().body(additionalToolService.getAll());
-    }
-
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
-    public ResponseEntity<AdditionalToolDto> get(@PathVariable Long id) {
-        return ResponseEntity.ok().body(additionalToolService.get(id));
+    public AdditionalToolDto get(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
+        return additionalToolService.get(id);
     }
 
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping()
+    public List<AdditionalToolDto> getAll(
+            @RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
+            @RequestParam(value = "limit", defaultValue = "20") @Min(1) @Max(100) Integer limit) {
+        return additionalToolService.getAll(PageRequest.of(offset, limit));
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping()
-    public ResponseEntity<AdditionalToolDto> save(@RequestBody AdditionalToolDto additionalToolDto) {
-        var uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/additional").toUriString());
-        return ResponseEntity.created(uri).body(additionalToolService.save(additionalToolDto));
+    public AdditionalToolDto save(@RequestBody @Valid AdditionalToolDto additionalToolDto) {
+        return additionalToolService.save(additionalToolDto);
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
+    @PutMapping("/{id}")
+    public AdditionalToolDto update(@RequestBody @Valid AdditionalToolDto additionalToolDto,
+                                    @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
+        additionalToolDto.setId(id);
+        return additionalToolService.update(additionalToolDto);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
+        additionalToolService.delete(id);
     }
 }

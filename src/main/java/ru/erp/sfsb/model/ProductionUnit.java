@@ -19,6 +19,7 @@ import javax.money.MonetaryAmount;
 public class ProductionUnit extends AbstractEntity {
 
     private String unitName;
+    private Integer unitNumber;
     @AttributeOverride(
             name = "amount",
             column = @Column(name = "price_amount")
@@ -31,5 +32,17 @@ public class ProductionUnit extends AbstractEntity {
     @SuppressWarnings("JpaAttributeTypeInspection")
     private MonetaryAmount price;
     @ManyToOne
+    @JoinColumn(name = "production_area_id")
     private ProductionArea productionArea;
+    @AttributeOverride(
+            name = "amount",
+            column = @Column(name = "payment_amount")
+    )
+    @AttributeOverride(
+            name = "currency",
+            column = @Column(name = "payment_currency")
+    )
+    @CompositeType(MonetaryAmountType.class)
+    @SuppressWarnings("JpaAttributeTypeInspection")
+    private MonetaryAmount paymentPerHour;
 }

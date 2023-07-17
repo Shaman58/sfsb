@@ -1,5 +1,7 @@
 package ru.erp.sfsb.controller;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,9 +19,9 @@ public class ProductionAreaController {
 
     private final ProductionAreaService productionAreaService;
 
-    @GetMapping()
-    public ResponseEntity<List<ProductionAreaDto>> getAll() {
-        return ResponseEntity.ok().body(productionAreaService.getAll());
+    @GetMapping("/company/{id}")
+    public ResponseEntity<List<ProductionAreaDto>> getAllByCompany(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
+        return ResponseEntity.ok().body(productionAreaService.getAllByCompanyId(id));
     }
 
     @GetMapping("/{id}")

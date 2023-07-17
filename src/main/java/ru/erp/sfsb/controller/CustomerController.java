@@ -1,35 +1,60 @@
 package ru.erp.sfsb.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.erp.sfsb.dto.CustomerDto;
 import ru.erp.sfsb.service.CustomerService;
 
-import java.net.URI;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Validated
 @RequestMapping("/api/customer")
 public class CustomerController {
 
     private final CustomerService customerService;
 
-    @GetMapping()
-    public ResponseEntity<List<CustomerDto>> getAll() {
-        return ResponseEntity.ok().body(customerService.getAll());
-    }
-
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
-    public ResponseEntity<CustomerDto> get(@PathVariable Long id) {
-        return ResponseEntity.ok().body(customerService.get(id));
+    public CustomerDto get(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
+        return customerService.get(id);
     }
 
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping()
+    public List<CustomerDto> getAll(
+            @RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
+            @RequestParam(value = "limit", defaultValue = "20") @Min(1) @Max(100) Integer limit) {
+        return customerService.getAll(PageRequest.of(offset, limit));
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping()
-    public ResponseEntity<CustomerDto> save(@RequestBody CustomerDto customerDto) {
-        var uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/customer").toUriString());
-        return ResponseEntity.created(uri).body(customerService.save(customerDto));
+    public CustomerDto save(@RequestBody CustomerDto customerDto) {
+        return customerService.save(customerDto);
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
+    @PutMapping("/{id}")
+    public CustomerDto update(@RequestBody @Valid CustomerDto customerDto,
+                              @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
+        customerDto.setId(id);
+        return customerService.update(customerDto);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
+        customerService.delete(id);
     }
 }

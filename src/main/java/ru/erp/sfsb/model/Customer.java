@@ -24,7 +24,7 @@ public class Customer extends AbstractEntity {
     private String address;
     private String inn;
     private String kpp;
-    private String okpo;
+    private String ogrn;
     private String paymentAccount;
     private String bank;
     private String bik;

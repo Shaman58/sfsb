@@ -66,35 +66,36 @@ drop table if exists workpieces cascade;
 
 create table materials
 (
-    id             bigserial not null,
-    created        timestamp(6),
-    updated        timestamp(6),
-    density        integer,
-    material_name  varchar(255),
-    price_amount   numeric(38, 2),
-    price_currency varchar(255),
+    id            bigserial not null,
+    created       timestamp(6),
+    updated       timestamp(6),
+    density       integer,
+    material_name varchar(255),
     primary key (id)
 );
 
 create table stores
 (
-    id         bigserial not null,
-    created    timestamp(6),
-    updated    timestamp(6),
-    store_name varchar(255),
+    id                 bigserial not null,
+    created            timestamp(6),
+    updated            timestamp(6),
+    store_name         varchar(255),
+    production_area_id bigint,
     primary key (id)
 );
 
 create table workpieces
 (
-    id          bigserial not null,
-    created     timestamp(6),
-    updated     timestamp(6),
-    geom1       integer,
-    geom2       integer,
-    geom3       integer,
-    geometry    varchar(255),
-    material_id bigint,
+    id             bigserial not null,
+    created        timestamp(6),
+    updated        timestamp(6),
+    geom1          integer,
+    geom2          integer,
+    geom3          integer,
+    geometry       varchar(255),
+    material_id    bigint,
+    price_amount   numeric(38, 2),
+    price_currency varchar(255),
     primary key (id)
 );
 
@@ -122,7 +123,7 @@ create table companies
     email                 varchar(255),
     inn                   varchar(255),
     kpp                   varchar(255),
-    okpo                  varchar(255),
+    ogrn                  varchar(255),
     payment_account       varchar(255),
     phone_number          varchar(255),
     director_id           bigint,
@@ -136,6 +137,8 @@ create table employees
     updated       timestamp(6),
     first_name    varchar(255),
     last_name     varchar(255),
+    phone_number  varchar(255),
+    email         varchar(255),
     position      varchar(255),
     department_id bigint,
     primary key (id)
@@ -147,7 +150,6 @@ create table areas
     created    timestamp(6),
     updated    timestamp(6),
     area_name  varchar(255),
-    store_id   bigint,
     company_id bigint,
     primary key (id)
 );
@@ -165,7 +167,7 @@ create table customers
     email                 varchar(255),
     inn                   varchar(255),
     kpp                   varchar(255),
-    okpo                  varchar(255),
+    ogrn                  varchar(255),
     payment_account       varchar(255),
     phone_number          varchar(255),
     primary key (id)
@@ -209,13 +211,15 @@ create table dictionary
 
 create table contacts
 (
-    id          bigserial not null,
-    created     timestamp(6),
-    updated     timestamp(6),
-    first_name  varchar(255),
-    last_name   varchar(255),
-    position    varchar(255),
-    customer_id bigint,
+    id           bigserial not null,
+    created      timestamp(6),
+    updated      timestamp(6),
+    first_name   varchar(255),
+    last_name    varchar(255),
+    phone_number varchar(255),
+    email        varchar(255),
+    position     varchar(255),
+    customer_id  bigint,
     primary key (id)
 );
 
@@ -402,7 +406,10 @@ create table units
     updated            timestamp(6),
     price_amount       numeric(38, 2),
     price_currency     varchar(255),
+    payment_amount     numeric(38, 2),
+    payment_currency   varchar(255),
     unit_name          varchar(255),
+    unit_number        integer,
     production_area_id bigint,
     primary key (id)
 );
@@ -458,16 +465,10 @@ alter table if exists workpieces
         foreign key (material_id)
             references materials;
 
-alter table if exists areas
-    add constraint UK_area_store unique (store_id);
-
-alter table if exists areas
-    add constraint UK_companies_production_areas unique (company_id);
-
-alter table if exists areas
-    add constraint FK_store_id
-        foreign key (store_id)
-            references stores;
+alter table if exists stores
+    add constraint FK_production_area_id
+        foreign key (production_area_id)
+            references areas;
 
 alter table if exists areas
     add constraint FK_company_id

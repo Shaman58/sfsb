@@ -2,13 +2,13 @@ package ru.erp.sfsb.config;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.zalando.jackson.datatype.money.MoneyModule;
 
 import static org.modelmapper.config.Configuration.AccessLevel.PRIVATE;
 import static org.modelmapper.convention.MatchingStrategies.STRICT;
 
-@Service
+@Component
 public class MapperConfig {
 
     @Bean

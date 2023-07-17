@@ -8,61 +8,53 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.erp.sfsb.dto.EmployeeDto;
-import ru.erp.sfsb.service.EmployeeService;
+import ru.erp.sfsb.dto.ContactDto;
+import ru.erp.sfsb.service.ContactService;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @Validated
-@RequestMapping("/api/employee")
-public class EmployeeController {
+@RequestMapping("/api/contact")
+public class ContactController {
 
-    private final EmployeeService employeeService;
+    private final ContactService contactService;
 
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
-    public EmployeeDto get(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
-        return employeeService.get(id);
+    public ContactDto get(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
+        return contactService.get(id);
     }
 
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping()
-    public List<EmployeeDto> getAll(
+    public List<ContactDto> getAll(
             @RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
             @RequestParam(value = "limit", defaultValue = "20") @Min(1) @Max(100) Integer limit) {
-        return employeeService.getAll(PageRequest.of(offset, limit));
-    }
-
-    @ResponseBody
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/department/{id}")
-    public List<EmployeeDto> getAllByDepartmentId(
-            @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
-        return employeeService.getDepartmentEmployees(id);
+        return contactService.getAll(PageRequest.of(offset, limit));
     }
 
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping()
-    public EmployeeDto save(@RequestBody @Valid EmployeeDto employeeDto) {
-        return employeeService.save(employeeDto);
+    public ContactDto save(@RequestBody @Valid ContactDto contactDto) {
+        return contactService.save(contactDto);
     }
 
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     @PutMapping("/{id}")
-    public EmployeeDto update(@RequestBody @Valid EmployeeDto employeeDto,
-                              @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
-        employeeDto.setId(id);
-        return employeeService.update(employeeDto);
+    public ContactDto update(@RequestBody @Valid ContactDto contactDto,
+                             @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
+        contactDto.setId(id);
+        return contactService.update(contactDto);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
-        employeeService.delete(id);
+        contactService.delete(id);
     }
 }

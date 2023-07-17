@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.util.List;
 
+import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.CascadeType.MERGE;
 
 @Getter
@@ -19,13 +20,11 @@ import static jakarta.persistence.CascadeType.MERGE;
 public class ProductionArea extends AbstractEntity {
 
     private String areaName;
-    @Transient
+    @OneToMany(mappedBy = "productionArea", cascade = MERGE)
     private List<ProductionUnit> productionUnits;
-    @OneToOne(cascade = MERGE)
-    private Store store;
-
     @ManyToOne
     @JoinColumn(name = "company_id")
     private Company company;
-
+    @OneToMany(mappedBy = "productionArea", cascade = ALL)
+    private List<Store> stores;
 }

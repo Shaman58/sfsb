@@ -1,5 +1,8 @@
 package ru.erp.sfsb.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -11,7 +14,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ContactDto extends AbstractDto {
 
+    @NotBlank(message = "Имя не может быть пустым")
     private String firstName;
+    @NotBlank(message = "Фамилия не может быть пустой")
     private String lastName;
     private String position;
+    @Pattern(regexp = "^\\+7\\s\\(\\d{4}\\)\\s\\d{2}-\\d{2}-\\d{2}$")
+    private String phoneNumber;
+    @Pattern(regexp = "^\\w+([.-]?\\w+)*@\\w+([.-]?\\w+)*(\\.\\w{2,3})+$")
+    private String email;
+    @JsonIgnore
+    private CustomerDto customer;
 }

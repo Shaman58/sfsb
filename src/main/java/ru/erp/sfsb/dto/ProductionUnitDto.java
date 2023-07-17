@@ -1,5 +1,7 @@
 package ru.erp.sfsb.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,7 +15,11 @@ import javax.money.MonetaryAmount;
 @AllArgsConstructor
 public class ProductionUnitDto extends AbstractDto {
 
+    @NotBlank
     private String unitName;
-    private MonetaryAmount price;
+    private Integer unitNumber;
+    @JsonIgnore
     private ProductionAreaDto productionArea;
+    private MonetaryAmount price;
+    private MonetaryAmount paymentPerHour;
 }

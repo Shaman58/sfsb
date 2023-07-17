@@ -20,6 +20,8 @@ public class Contact extends AbstractEntity {
     private String firstName;
     private String lastName;
     private String position;
+    private String phoneNumber;
+    private String email;
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;

@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.util.List;
 
+import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.CascadeType.MERGE;
 
 @Getter
@@ -22,7 +23,7 @@ public class Company extends AbstractEntity {
     private String address;
     private String inn;
     private String kpp;
-    private String okpo;
+    private String ogrn;
     private String paymentAccount;
     private String bank;
     private String bik;
@@ -36,6 +37,6 @@ public class Company extends AbstractEntity {
     private Employee director;
     @OneToMany(cascade = MERGE)
     private List<Order> orders;
-    @OneToMany(mappedBy = "company", cascade = MERGE)
+    @OneToMany(mappedBy = "company", cascade = ALL)
     private List<ProductionArea> productionAreas;
 }

@@ -1,9 +1,6 @@
 package ru.erp.sfsb.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,5 +38,6 @@ public class Setup extends AbstractEntity {
     @ManyToMany
     private List<Tooling> toolings;
     @ManyToOne
+    @JoinColumn(name = "production_unit_id")
     private ProductionUnit productionUnit;
 }

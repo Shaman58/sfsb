@@ -1,5 +1,6 @@
 package ru.erp.sfsb.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import ru.erp.sfsb.deserializer.StoreDeserializer;
 import ru.erp.sfsb.deserializer.StoreDtoSerializer;
+import ru.erp.sfsb.model.ProductionArea;
 
 import java.util.Map;
 
@@ -25,4 +27,6 @@ public class StoreDto extends AbstractDto {
     private Map<MeasureToolDto, Integer> measureTools;
     private Map<ToolingDto, Integer> toolings;
     private Map<SpecialToolDto, Integer> specialTools;
+    @JsonIgnore
+    private ProductionAreaDto productionArea;
 }

@@ -1,35 +1,60 @@
 package ru.erp.sfsb.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.erp.sfsb.dto.MeasureToolDto;
 import ru.erp.sfsb.service.MeasureToolService;
 
-import java.net.URI;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Validated
 @RequestMapping("/api/measure")
 public class MeasureToolController {
 
     private final MeasureToolService measureToolService;
 
-    @GetMapping()
-    public ResponseEntity<List<MeasureToolDto>> getAll() {
-        return ResponseEntity.ok().body(measureToolService.getAll());
-    }
-
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
-    public ResponseEntity<MeasureToolDto> get(@PathVariable Long id) {
-        return ResponseEntity.ok().body(measureToolService.get(id));
+    public MeasureToolDto get(@PathVariable Long id) {
+        return measureToolService.get(id);
     }
 
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping()
+    public List<MeasureToolDto> getAll(
+            @RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
+            @RequestParam(value = "limit", defaultValue = "20") @Min(1) @Max(100) Integer limit) {
+        return measureToolService.getAll(PageRequest.of(offset, limit));
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping()
-    public ResponseEntity<MeasureToolDto> save(@RequestBody MeasureToolDto measureToolDto) {
-        var uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/measure").toUriString());
-        return ResponseEntity.created(uri).body(measureToolService.save(measureToolDto));
+    public MeasureToolDto save(@RequestBody @Valid MeasureToolDto measureToolDto) {
+        return measureToolService.save(measureToolDto);
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
+    @PutMapping("/{id}")
+    public MeasureToolDto update(@RequestBody @Valid MeasureToolDto measureToolDto,
+                                 @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
+        measureToolDto.setId(id);
+        return measureToolService.update(measureToolDto);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
+        measureToolService.delete(id);
     }
 }

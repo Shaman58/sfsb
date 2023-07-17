@@ -9,6 +9,8 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRow;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -31,9 +33,31 @@ public class WordDocumentUtil {
         addItemsTable(itemList);
     }
 
+    public void generateToolOrder(String tools, String header, String body, String footer) {
+        fillText(header, "[header]");
+        fillText(body, "[body]");
+        fillText(tools, "[items]");
+        fillText(footer, "[footer]");
+        fillText(LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")), "[date]");
+    }
+
+    private void fillText(String text, String tag) {
+        var run = getTargetRun(tag);
+        run.setText(run.getText(0).replace(tag, ""), 0);
+        var lines = text.split("\n");
+        for (int i = 0; i < lines.length; i++) {
+            run.setText(lines[i]);
+            if (i != lines.length - 1) {
+                run.addBreak();
+            }
+        }
+    }
+
     private void addItemsTable(List<Map<String, String>> itemList) {
         XWPFTable table = this.document.getTables().get(1);
-        var targetRowIndex = getTargetRowIndex(table, itemList.get(0).entrySet().stream().findFirst().get().getKey());
+        var targetRowIndex = getTargetRowIndex(table, itemList.get(0).entrySet().stream().findFirst()
+                .orElseThrow(() -> new DocumentFormatException("Item list is empty"))
+                .getKey());
         for (Map<String, String> item : itemList) {
             var row = new XWPFTableRow((CTRow) table.getRows().get(targetRowIndex).getCtRow().copy(), table);
             feelRow(row, item);
@@ -53,6 +77,17 @@ public class WordDocumentUtil {
             for (XWPFTableCell cell : table.getRow(i).getTableCells()) {
                 if (cell.getText().toLowerCase().contains(text)) {
                     return i;
+                }
+            }
+        }
+        throw new DocumentFormatException(String.format("%s is not found", text));
+    }
+
+    private XWPFRun getTargetRun(String text) {
+        for (XWPFParagraph paragraph : this.document.getParagraphs()) {
+            for (XWPFRun run : paragraph.getRuns()) {
+                if (run.getText(0).toLowerCase().contains(text)) {
+                    return run;
                 }
             }
         }

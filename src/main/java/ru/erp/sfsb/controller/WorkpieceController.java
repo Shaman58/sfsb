@@ -1,35 +1,60 @@
 package ru.erp.sfsb.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.erp.sfsb.dto.WorkpieceDto;
 import ru.erp.sfsb.service.WorkpieceService;
 
-import java.net.URI;
 import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
+@Validated
 @RequestMapping("/api/workpiece")
 public class WorkpieceController {
 
     private final WorkpieceService workpieceService;
 
-    @GetMapping()
-    public ResponseEntity<List<WorkpieceDto>> getAll() {
-        return ResponseEntity.ok().body(workpieceService.getAll());
-    }
-
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
-    public ResponseEntity<WorkpieceDto> get(@PathVariable Long id) {
-        return ResponseEntity.ok().body(workpieceService.get(id));
+    public WorkpieceDto get(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
+        return workpieceService.get(id);
     }
 
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping()
+    public List<WorkpieceDto> getAll(
+            @RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
+            @RequestParam(value = "limit", defaultValue = "20") @Min(1) @Max(100) Integer limit) {
+        return workpieceService.getAll(PageRequest.of(offset, limit));
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping()
-    public ResponseEntity<WorkpieceDto> save(@RequestBody WorkpieceDto workpieceDto) {
-        var uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/workpiece").toUriString());
-        return ResponseEntity.created(uri).body(workpieceService.save(workpieceDto));
+    public WorkpieceDto save(@RequestBody @Valid WorkpieceDto workpieceDto) {
+        return workpieceService.save(workpieceDto);
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
+    @PutMapping("/{id}")
+    public WorkpieceDto update(@RequestBody @Valid WorkpieceDto workpieceDto,
+                               @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
+        workpieceDto.setId(id);
+        return workpieceService.update(workpieceDto);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
+        workpieceService.delete(id);
     }
 }

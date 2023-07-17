@@ -2,7 +2,6 @@ package ru.erp.sfsb.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import ru.erp.sfsb.dto.ProductionUnitDto;
 import ru.erp.sfsb.mapper.ProductionUnitMapper;
@@ -22,13 +21,13 @@ public class ProductionUnitServiceImpl extends AbstractService<ProductionUnitDto
 
     private final ProductionUnitRepository repository;
     private final ProductionUnitMapper mapper;
-    private final ProductionAreaService areaService;
+    private final ProductionAreaService productionAreaService;
 
-    public ProductionUnitServiceImpl(ProductionUnitMapper mapper, ProductionUnitRepository repository, @Lazy ProductionAreaService areaService) {
+    public ProductionUnitServiceImpl(ProductionUnitMapper mapper, ProductionUnitRepository repository, ProductionAreaService productionAreaService) {
         super(mapper, repository, "Production unit");
         this.repository = repository;
         this.mapper = mapper;
-        this.areaService = areaService;
+        this.productionAreaService = productionAreaService;
     }
 
     @Override
@@ -40,11 +39,18 @@ public class ProductionUnitServiceImpl extends AbstractService<ProductionUnitDto
 
     @Override
     @Transactional
-    public ProductionUnitDto save(ProductionUnitDto productionUnitDto) {
+    public ProductionUnitDto saveInArea(ProductionUnitDto productionUnitDto, Long areaId) {
         log.info("Saving Unit into DB");
-        if (productionUnitDto.getProductionArea() != null) {
-            productionUnitDto.setProductionArea(areaService.get(productionUnitDto.getProductionArea().getId()));
-        }
+        productionUnitDto.setProductionArea(productionAreaService.get(areaId));
+        return mapper.toDto(repository.save(mapper.toEntity(productionUnitDto)));
+    }
+
+    @Override
+    @Transactional
+    public ProductionUnitDto updateInArea(ProductionUnitDto productionUnitDto, Long areaId) {
+        log.info("Saving Unit into DB");
+        get(productionUnitDto.getId());
+        productionUnitDto.setProductionArea(productionAreaService.get(areaId));
         return mapper.toDto(repository.save(mapper.toEntity(productionUnitDto)));
     }
 }

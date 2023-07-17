@@ -1,29 +1,48 @@
 package ru.erp.sfsb.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.erp.sfsb.dto.CompanyDto;
 import ru.erp.sfsb.service.CompanyService;
 
-import java.net.URI;
-
 @RestController
 @RequiredArgsConstructor
+@Validated
 @RequestMapping("/api/company")
 public class CompanyController {
 
     private final CompanyService companyService;
 
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
-    public ResponseEntity<CompanyDto> get(@PathVariable Long id) {
-        return ResponseEntity.ok().body(companyService.get(id));
+    public CompanyDto get(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
+        return companyService.get(id);
     }
 
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping()
-    public ResponseEntity<CompanyDto> save(@RequestBody CompanyDto companyDto) {
-        var uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/company").toUriString());
-        return ResponseEntity.created(uri).body(companyService.save(companyDto));
+    public CompanyDto save(@RequestBody @Valid CompanyDto companyDto) {
+        return companyService.save(companyDto);
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
+    @PutMapping("/{id}")
+    public CompanyDto update(@RequestBody @Valid CompanyDto companyDto,
+                             @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
+        companyDto.setId(id);
+        return companyService.update(companyDto);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
+        companyService.delete(id);
     }
 }
