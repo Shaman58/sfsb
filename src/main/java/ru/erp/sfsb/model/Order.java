@@ -1,15 +1,14 @@
 package ru.erp.sfsb.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+
+import static jakarta.persistence.CascadeType.MERGE;
 
 @Getter
 @Setter
@@ -19,7 +18,7 @@ import java.util.List;
 @Table(name = "orders")
 public class Order extends AbstractEntity {
 
-    @ManyToMany
+    @OneToMany(mappedBy = "order", cascade = MERGE)
     private List<Item> items;
     private String description;
     private String businessProposal;

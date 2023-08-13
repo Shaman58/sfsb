@@ -25,4 +25,5 @@ public class SetupDto extends AbstractDto {
     private List<SpecialToolDto> specialTools;
     private List<ToolingDto> toolings;
     private ProductionUnitDto productionUnit;
+    private TechnologyDto technology;
 }

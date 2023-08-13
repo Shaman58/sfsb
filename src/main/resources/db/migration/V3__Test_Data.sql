@@ -7,7 +7,17 @@ values ('442960, Пензенская область, г. Заречный, ул
 insert into customers(address, bank, bik, company_name, correspondent_account, email, inn, kpp, ogrn, payment_account,
                       phone_number)
 values ('442960, Пензенская область, г. Заречный, ул. Транспортная, д.100', 'АО «ВТБ»', '042769107',
-        'Общество с ограниченной ответственностью «Ритм»', '30101810200000000976', 'ritm@mail.ru',
+        'ООО «Ритм»', '30101810200000000976', 'ritm@mail.ru',
+        '5838015170', '583801001', '1215800007123', '40702810729170005285', '+7 (8412) 75-99-99');
+insert into customers(address, bank, bik, company_name, correspondent_account, email, inn, kpp, ogrn, payment_account,
+                      phone_number)
+values ('442960, Пензенская область, г. Заречный, ул. Транспортная, д.100', 'АО «ВТБ»', '042769107',
+        'ООО «ХУИТМ»', '30101810200000000976', 'ritm@mail.ru',
+        '5838015170', '583801001', '1215800007123', '40702810729170005285', '+7 (8412) 75-99-99');
+insert into customers(address, bank, bik, company_name, correspondent_account, email, inn, kpp, ogrn, payment_account,
+                      phone_number)
+values ('442960, Пензенская область, г. Заречный, ул. Транспортная, д.100', 'АО «ВТБ»', '042769107',
+        'ИП «Рогачов»', '30101810200000000976', 'ritm@mail.ru',
         '5838015170', '583801001', '1215800007123', '40702810729170005285', '+7 (8412) 75-99-99');
 insert into departments(department_name, company_id)
 values ('Отдел продаж', 1);
@@ -33,8 +43,18 @@ insert into departments(department_name, company_id)
 values ('Планово-экономический отдел', 1);
 insert into employees(first_name, last_name, position, department_id)
 values ('Иван', 'Иванов', 'Менеджер', 1);
-insert into contacts(first_name, last_name, position, customer_id)
-values ('Иван', 'Иванов', 'Диреалист', 1);
+insert into contacts(first_name, last_name, position, email, phone_number, customer_id)
+values ('Иван', 'Иванов', 'Диреалист', 'email@email.com', '+7 (1234) 56-78-99', 1);
+insert into contacts(first_name, last_name, position, email, phone_number, customer_id)
+values ('Вася', 'Васильев', 'Похуист', 'email@email.com', '+7 (1234) 56-78-99', 1);
+insert into contacts(first_name, last_name, position, email, phone_number, customer_id)
+values ('Константин', 'Фамилия', 'Онанист', 'email@email.com', '+7 (1234) 56-78-99', 1);
+insert into contacts(first_name, last_name, position, email, phone_number, customer_id)
+values ('Иван', 'Иванов', 'Диреалист', 'email@email.com', '+7 (1234) 56-78-99', 1);
+insert into contacts(first_name, last_name, position, email, phone_number, customer_id)
+values ('Иван', 'Иванов', 'Диреалист', 'email@email.com', '+7 (1234) 56-78-99', 2);
+insert into contacts(first_name, last_name, position, email, phone_number, customer_id)
+values ('Иван', 'Иванов', 'Диреалист', 'email@email.com', '+7 (1234) 56-78-99', 2);
 insert into employees(first_name, last_name, position, department_id)
 values ('Николай', 'Меланин', 'Исполнительный директор', 1);
 insert into employees(first_name, last_name, position, department_id)
@@ -53,53 +73,35 @@ values (1, 'В ответ на ваше обращение от 15.03.2023г. о
 Благодарю Вас за обращение в нашу компанию и надеюсь на долгосрочное и взаимовыгодное сотрудничество.', 'description',
         1, 1, 1);
 insert into technologies (drawing_name, drawing_number, quantity_of_defective_parts,
-                          quantity_of_parts_from_workpiece, quantity_of_set_up_parts)
-values ('крышка', 'дкшг.100.200.001', 2, 5, 1);
+                          quantity_of_parts_from_workpiece, quantity_of_set_up_parts, employee_id)
+values ('крышка', 'дкшг.100.200.001', 2, 5, 1, 1);
 insert into technologies (drawing_name, drawing_number, quantity_of_defective_parts,
-                          quantity_of_parts_from_workpiece, quantity_of_set_up_parts)
-values ('корпус', 'дкшг.100.200.002', 3, 6, 2);
+                          quantity_of_parts_from_workpiece, quantity_of_set_up_parts, employee_id)
+values ('корпус', 'дкшг.100.200.002', 3, 6, 2, 2);
 insert into technologies (drawing_name, drawing_number, quantity_of_defective_parts,
-                          quantity_of_parts_from_workpiece, quantity_of_set_up_parts)
-values ('кронштейн', 'дкшг.100.200.003', 4, 7, 3);
+                          quantity_of_parts_from_workpiece, quantity_of_set_up_parts, employee_id)
+values ('кронштейн', 'дкшг.100.200.003', 4, 7, 3, 2);
 insert into items(actual_duration, estimated_duration, is_accepted, is_customer_material, quantity, technology_id,
-                  price_amount, price_currency)
-values (1000, 2000, true, true, 10, 1, 100, 'RUB');
+                  price_amount, price_currency, order_id)
+values (1000, 2000, true, true, 10, 1, 100, 'RUB', 1);
 insert into items(actual_duration, estimated_duration, is_accepted, is_customer_material, quantity, technology_id,
-                  price_amount, price_currency)
-values (2000, 3000, true, true, 10, 2, 200, 'RUB');
+                  price_amount, price_currency, order_id)
+values (2000, 3000, true, true, 10, 2, 200, 'RUB', 1);
 insert into items(actual_duration, estimated_duration, is_accepted, is_customer_material, quantity, technology_id,
-                  price_amount, price_currency)
-values (3000, 4000, true, true, 10, 3, 300, 'RUB');
-insert into orders_items(order_id, items_id)
-VALUES (1, 1);
-insert into orders_items(order_id, items_id)
-VALUES (1, 2);
-insert into orders_items(order_id, items_id)
-VALUES (1, 3);
-insert into setups(interoperative_time, process_time, setup_name, setup_number, setup_time)
-values (1000, 2000, 'Стандарт', '1', 1000);
-insert into setups(interoperative_time, process_time, setup_name, setup_number, setup_time)
-values (2000, 3000, 'Стандарт', '2', 2000);
-insert into setups(interoperative_time, process_time, setup_name, setup_number, setup_time)
-values (3000, 4000, 'Стандарт', '3', 3000);
-insert into setups(interoperative_time, process_time, setup_name, setup_number, setup_time)
-values (1001, 2001, 'Стандарт', '1', 1001);
-insert into setups(interoperative_time, process_time, setup_name, setup_number, setup_time)
-values (2002, 3002, 'Стандарт', '2', 2002);
-insert into setups(interoperative_time, process_time, setup_name, setup_number, setup_time)
-values (3003, 4003, 'Стандарт', '3', 3003);
-insert into technologies_setups(technology_id, setups_id)
-values (1, 1);
-insert into technologies_setups(technology_id, setups_id)
-values (1, 2);
-insert into technologies_setups(technology_id, setups_id)
-values (1, 3);
-insert into technologies_setups(technology_id, setups_id)
-values (2, 4);
-insert into technologies_setups(technology_id, setups_id)
-values (2, 5);
-insert into technologies_setups(technology_id, setups_id)
-values (2, 6);
+                  price_amount, price_currency, order_id)
+values (3000, 4000, true, true, 10, 3, 300, 'RUB', 1);
+insert into setups(interoperative_time, process_time, setup_name, setup_number, setup_time, technology_id)
+values (1000, 2000, 'Стандарт', '1', 1000, 1);
+insert into setups(interoperative_time, process_time, setup_name, setup_number, setup_time, technology_id)
+values (2000, 3000, 'Стандарт', '2', 2000, 1);
+insert into setups(interoperative_time, process_time, setup_name, setup_number, setup_time, technology_id)
+values (3000, 4000, 'Стандарт', '3', 3000, 1);
+insert into setups(interoperative_time, process_time, setup_name, setup_number, setup_time, technology_id)
+values (1001, 2001, 'Стандарт', '1', 1001, 2);
+insert into setups(interoperative_time, process_time, setup_name, setup_number, setup_time, technology_id)
+values (2002, 3002, 'Стандарт', '2', 2002, 2);
+insert into setups(interoperative_time, process_time, setup_name, setup_number, setup_time, technology_id)
+values (3003, 4003, 'Стандарт', '3', 3003, 2);
 insert into cutters(description, price_amount, price_currency, tool_name)
 values ('метчик M3 р6м5', 123, 'RUB', 'fanar m3 qtgy5r');
 insert into cutters(description, price_amount, price_currency, tool_name)

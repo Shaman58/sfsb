@@ -10,6 +10,10 @@ import ru.erp.sfsb.repository.ItemRepository;
 import ru.erp.sfsb.service.ItemService;
 import ru.erp.sfsb.service.TechnologyService;
 
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
+
 @Service
 @Slf4j
 public class ItemServiceImpl extends AbstractService<ItemDto, Item, ItemRepository, ItemMapper>
@@ -30,7 +34,22 @@ public class ItemServiceImpl extends AbstractService<ItemDto, Item, ItemReposito
     @Transactional
     public ItemDto save(ItemDto itemDto) {
         log.info("Saving Item into DB");
-        itemDto.setTechnology(technologyService.get(itemDto.getTechnology().getId()));
+        itemDto.setTechnology(technologyService.save(itemDto.getTechnology()));
         return mapper.toDto(repository.save(mapper.toEntity(itemDto)));
+    }
+
+    @Override
+    @Transactional
+    public ItemDto update(ItemDto itemDto) {
+        log.info("Saving Item into DB");
+        itemDto.setTechnology(technologyService.save(itemDto.getTechnology()));
+        return mapper.toDto(repository.save(mapper.toEntity(itemDto)));
+    }
+
+    @Override
+    @Transactional
+    public List<ItemDto> getOrderItems(Long id) {
+        log.info("Get Order {} Items from DB", id);
+        return repository.getItemsByOrderId(id).stream().map(mapper::toDto).collect(toList());
     }
 }

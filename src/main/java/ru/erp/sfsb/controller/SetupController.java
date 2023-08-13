@@ -1,35 +1,64 @@
 package ru.erp.sfsb.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.erp.sfsb.dto.SetupDto;
 import ru.erp.sfsb.service.SetupService;
 
-import java.net.URI;
 import java.util.List;
 
 @RestController
+@Validated
 @RequiredArgsConstructor
 @RequestMapping("/api/setup")
 public class SetupController {
 
     private final SetupService setupService;
 
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping()
-    public ResponseEntity<List<SetupDto>> getAll() {
-        return ResponseEntity.ok().body(setupService.getAll());
+    public List<SetupDto> getAll() {
+        return setupService.getAll();
     }
 
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
-    public ResponseEntity<SetupDto> get(@PathVariable Long id) {
-        return ResponseEntity.ok().body(setupService.get(id));
+    public SetupDto get(@PathVariable Long id) {
+        return setupService.get(id);
     }
 
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/technology/{id}")
+    public List<SetupDto> getTechnologySetups(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
+        return setupService.getTechnologySetups(id);
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping()
-    public ResponseEntity<SetupDto> save(@RequestBody SetupDto setupDto) {
-        var uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/setup").toUriString());
-        return ResponseEntity.created(uri).body(setupService.save(setupDto));
+    public SetupDto save(@RequestBody @Valid SetupDto setupDto) {
+        return setupService.save(setupDto);
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
+    @PutMapping("/{id}")
+    public SetupDto update(@RequestBody @Valid SetupDto setupDto,
+                           @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
+        setupDto.setId(id);
+        return setupService.update(setupDto);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
+        setupService.delete(id);
     }
 }

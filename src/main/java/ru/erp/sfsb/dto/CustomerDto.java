@@ -1,5 +1,6 @@
 package ru.erp.sfsb.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -37,5 +38,6 @@ public class CustomerDto extends AbstractDto {
     private String phoneNumber;
     @Pattern(regexp = "^\\w+([.-]?\\w+)*@\\w+([.-]?\\w+)*(\\.\\w{2,3})+$")
     private String email;
+    @JsonIgnore
     private List<ContactDto> contacts;
 }

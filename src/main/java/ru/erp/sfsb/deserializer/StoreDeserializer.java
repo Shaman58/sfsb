@@ -7,37 +7,44 @@ import com.fasterxml.jackson.databind.JsonNode;
 import ru.erp.sfsb.dto.*;
 
 import java.io.IOException;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Spliterator;
-import java.util.Spliterators;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 public class StoreDeserializer extends JsonDeserializer<StoreDto> {
 
     @Override
     public StoreDto deserialize(JsonParser parser, DeserializationContext context) throws IOException {
-        var store = new StoreDto();
+        StoreDto store = new StoreDto();
         JsonNode node = parser.getCodec().readTree(parser);
+
         store.setId(node.path("id").asLong());
         store.setStoreName(node.path("storeName").asText());
-        store.setWorkpieces(nodeToMap(node.path("workpieces").elements(), WorkpieceDto::new));
-        store.setCutterTools(nodeToMap(node.path("cutterTools").elements(), CutterToolDto::new));
-        store.setMeasureTools(nodeToMap(node.path("measureTools").elements(), MeasureToolDto::new));
-        store.setToolings(nodeToMap(node.path("toolings").elements(), ToolingDto::new));
-        store.setSpecialTools(nodeToMap(node.path("specialTools").elements(), SpecialToolDto::new));
+        store.setWorkpieces(getDtoMap(node.path("workpieces"), WorkpieceDto.class, "workpiece"));
+        store.setCutterTools(getDtoMap(node.path("cutterTools"), CutterToolDto.class, "cutterTool"));
+        store.setMeasureTools(getDtoMap(node.path("measureTools"), MeasureToolDto.class, "measureTool"));
+        store.setToolings(getDtoMap(node.path("toolings"), ToolingDto.class, "tooling"));
+        store.setSpecialTools(getDtoMap(node.path("specialTools"), SpecialToolDto.class, "specialTool"));
+
         return store;
     }
 
-    private static <T extends AbstractDto> Map<T, Integer> nodeToMap(Iterator<JsonNode> elements, Supplier<T> dtoSupplier) {
-        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(elements, Spliterator.ORDERED), false)
-                .collect(Collectors.toMap(node -> setId(dtoSupplier.get(), node.path("id").asLong()), node -> node.path("amount").asInt()));
+    private <T extends AbstractDto> Map<T, Integer> getDtoMap(JsonNode node, Class<T> dtoClass, String fieldName) {
+        Map<T, Integer> dtoMap = new HashMap<>();
+        for (JsonNode element : node) {
+            T dto = createDtoInstance(dtoClass, element.path(fieldName));
+            int amount = element.path("amount").asInt();
+            dtoMap.put(dto, amount);
+        }
+        return dtoMap;
     }
 
-    private static <T extends AbstractDto> T setId(T dto, Long id) {
-        dto.setId(id);
-        return dto;
+    private <T extends AbstractDto> T createDtoInstance(Class<T> dtoClass, JsonNode node) {
+        try {
+            T dto = dtoClass.getDeclaredConstructor().newInstance();
+            dto.setId(node.path("id").asLong());
+            return dto;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to create DTO instance", e);
+        }
     }
 }

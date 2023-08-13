@@ -22,6 +22,8 @@ import java.time.Duration;
 public class Item extends AbstractEntity {
 
     @ManyToOne
+    private Order order;
+    @ManyToOne
     private Technology technology;
     private boolean isCustomerMaterial;
     private Integer quantity;

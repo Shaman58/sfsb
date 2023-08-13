@@ -52,18 +52,18 @@ public class StoreServiceImpl extends AbstractService<StoreDto, Store, StoreRepo
 
     @Override
     @Transactional
-    public StoreDto save(StoreDto storeDto) {
+    public StoreDto saveInArea(StoreDto storeDto, Long id) {
         log.info("Saving Store into DB");
         fillStore(storeDto);
+        storeDto.setProductionArea((areaService.get(id)));
         return mapper.toDto(repository.save(mapper.toEntity(storeDto)));
     }
 
     @Override
     @Transactional
-    public StoreDto saveInArea(StoreDto storeDto, Long id) {
-        log.info("Saving Store into DB");
-        fillStore(storeDto);
-        storeDto.setProductionArea((areaService.get(id)));
+    public StoreDto update(StoreDto storeDto) {
+        log.info("Updating Store in DB");
+        storeDto.setProductionArea(get(storeDto.getId()).getProductionArea());
         return mapper.toDto(repository.save(mapper.toEntity(storeDto)));
     }
 
@@ -75,6 +75,8 @@ public class StoreServiceImpl extends AbstractService<StoreDto, Store, StoreRepo
         repository.manualRemoveById(id);
     }
 
+
+    // метод необходим для обеспечения целостности данных Map в store
     private void fillStore(StoreDto storeDto) {
         storeDto.setMeasureTools(storeDto.getMeasureTools().entrySet().stream().collect(Collectors.toMap(
                 entry -> measureToolService.get(entry.getKey().getId()),

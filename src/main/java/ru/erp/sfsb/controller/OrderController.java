@@ -1,9 +1,14 @@
 package ru.erp.sfsb.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import ru.erp.sfsb.dto.ContactDto;
 import ru.erp.sfsb.dto.OrderDto;
 import ru.erp.sfsb.service.OrderService;
 
@@ -17,19 +22,38 @@ public class OrderController {
 
     private final OrderService orderService;
 
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping()
-    public ResponseEntity<List<OrderDto>> getAll() {
-        return ResponseEntity.ok().body(orderService.getAll());
+    public List<OrderDto> getAll() {
+        return orderService.getAll();
     }
 
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
-    public ResponseEntity<OrderDto> get(@PathVariable Long id) {
-        return ResponseEntity.ok().body(orderService.get(id));
+    public OrderDto get(@PathVariable Long id) {
+        return orderService.get(id);
     }
 
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping()
-    public ResponseEntity<OrderDto> save(@RequestBody OrderDto orderDto) {
-        var uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/order").toUriString());
-        return ResponseEntity.created(uri).body(orderService.save(orderDto));
+    public OrderDto save(@RequestBody @Valid OrderDto orderDto) {
+        return orderService.save(orderDto);
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
+    @PutMapping("/{id}")
+    public OrderDto update(@RequestBody @Valid OrderDto orderDto,
+                           @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
+        orderDto.setId(id);
+        return orderService.update(orderDto);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
+        orderService.delete(id);
     }
 }

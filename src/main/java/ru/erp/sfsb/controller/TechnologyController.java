@@ -1,35 +1,52 @@
 package ru.erp.sfsb.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.erp.sfsb.dto.TechnologyDto;
 import ru.erp.sfsb.service.TechnologyService;
 
-import java.net.URI;
 import java.util.List;
 
 @RestController
+@Validated
 @RequiredArgsConstructor
 @RequestMapping("/api/technology")
 public class TechnologyController {
 
     private final TechnologyService technologyService;
 
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping()
-    public ResponseEntity<List<TechnologyDto>> getAll() {
-        return ResponseEntity.ok().body(technologyService.getAll());
+    public List<TechnologyDto> getAll() {
+        return technologyService.getAll();
     }
 
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/employee/{id}")
+    public List<TechnologyDto> getEmployeeTechnologies(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
+        return technologyService.getEmployeeTechnologies(id);
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
-    public ResponseEntity<TechnologyDto> get(@PathVariable Long id) {
-        return ResponseEntity.ok().body(technologyService.get(id));
+    public TechnologyDto get(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
+        return technologyService.get(id);
     }
 
-    @PostMapping()
-    public ResponseEntity<TechnologyDto> save(@RequestBody TechnologyDto technologyDto) {
-        var uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/technology").toUriString());
-        return ResponseEntity.created(uri).body(technologyService.save(technologyDto));
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
+    @PutMapping("/{id}")
+    public TechnologyDto update(@RequestBody @Valid TechnologyDto technologyDto,
+                                @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
+        technologyDto.setId(id);
+        return technologyService.update(technologyDto);
     }
 }

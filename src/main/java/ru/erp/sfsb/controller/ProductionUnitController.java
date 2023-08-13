@@ -29,6 +29,13 @@ public class ProductionUnitController {
 
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
+    @GetMapping()
+    public List<ProductionUnitDto> getAll() {
+        return productionUnitService.getAll();
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/area/{id}")
     public List<ProductionUnitDto> getAllByAreaId(
             @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {

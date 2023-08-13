@@ -23,6 +23,5 @@ public class ContactDto extends AbstractDto {
     private String phoneNumber;
     @Pattern(regexp = "^\\w+([.-]?\\w+)*@\\w+([.-]?\\w+)*(\\.\\w{2,3})+$")
     private String email;
-    @JsonIgnore
     private CustomerDto customer;
 }

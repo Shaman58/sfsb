@@ -40,4 +40,7 @@ public class Setup extends AbstractEntity {
     @ManyToOne
     @JoinColumn(name = "production_unit_id")
     private ProductionUnit productionUnit;
+    @ManyToOne
+    @JoinColumn(name = "technology_id")
+    private Technology technology;
 }

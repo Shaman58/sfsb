@@ -25,61 +25,17 @@ public class EmployeeServiceImpl extends AbstractService<EmployeeDto, Employee, 
         implements EmployeeService {
     private final EmployeeMapper mapper;
     private final EmployeeRepository repository;
-    private final DepartmentService departmentService;
 
-    public EmployeeServiceImpl(EmployeeMapper mapper, EmployeeRepository repository, @Lazy DepartmentService departmentService) {
+    public EmployeeServiceImpl(EmployeeMapper mapper, EmployeeRepository repository) {
         super(mapper, repository, "Employee");
         this.mapper = mapper;
         this.repository = repository;
-        this.departmentService = departmentService;
     }
 
     @Override
     @Transactional
     public List<EmployeeDto> getDepartmentEmployees(Long departmentId) {
         log.info("Looking all employees with department id = {} in DB", departmentId);
-        return repository.findEmployeesByDepartmentId(departmentId).stream().map(mapper::toDto).map(this::dropCompany).collect(toList());
-    }
-
-    @Override
-    @Transactional
-    public List<EmployeeDto> getAll(Pageable pageable) {
-        log.info("Looking all Employees in DB");
-        var entities = repository.findAll(pageable);
-        return entities.stream().map(mapper::toDto).map(this::dropCompany).collect(toList());
-    }
-
-    @Override
-    @Transactional
-    public EmployeeDto get(@PathVariable Long id) {
-        log.info("Looking Employee with id={} in DB", id);
-        return dropCompany(mapper.toDto((repository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException(format("There is no Employee with id=%d in database", id))))));
-    }
-
-    @Override
-    @Transactional
-    public EmployeeDto save(EmployeeDto employeeDto) {
-        log.info("Saving Employee into DB");
-//        if (employeeDto.getDepartment() != null) {
-//            employeeDto.setDepartment(departmentService.get(employeeDto.getDepartment().getId()));
-//        }
-        var savedEmployee = mapper.toDto(repository.save(mapper.toEntity(employeeDto)));
-        return dropCompany(savedEmployee);
-    }
-
-    @Override
-    @Transactional
-    public EmployeeDto update(EmployeeDto employeeDto) {
-        log.info("Saving Employee into DB");
-        get(employeeDto.getId());
-        return dropCompany(mapper.toDto(repository.save(mapper.toEntity(employeeDto))));
-    }
-
-    private EmployeeDto dropCompany(EmployeeDto employeeDto) {
-//        if (employeeDto.getDepartment() != null) {
-//            employeeDto.getDepartment().setCompany(null);
-//        }
-        return employeeDto;
+        return repository.findEmployeesByDepartmentId(departmentId).stream().map(mapper::toDto).collect(toList());
     }
 }

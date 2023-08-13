@@ -1,15 +1,14 @@
 package ru.erp.sfsb.controller;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.erp.sfsb.dto.ProductionAreaDto;
 import ru.erp.sfsb.service.ProductionAreaService;
 
-import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -19,19 +18,38 @@ public class ProductionAreaController {
 
     private final ProductionAreaService productionAreaService;
 
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/company/{id}")
-    public ResponseEntity<List<ProductionAreaDto>> getAllByCompany(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
-        return ResponseEntity.ok().body(productionAreaService.getAllByCompanyId(id));
+    public List<ProductionAreaDto> getAllByCompany(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
+        return productionAreaService.getAllByCompanyId(id);
     }
 
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
-    public ResponseEntity<ProductionAreaDto> get(@PathVariable Long id) {
-        return ResponseEntity.ok().body(productionAreaService.get(id));
+    public ProductionAreaDto get(@PathVariable Long id) {
+        return productionAreaService.get(id);
     }
 
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping()
-    public ResponseEntity<ProductionAreaDto> save(@RequestBody ProductionAreaDto productionAreaDto) {
-        var uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/area").toUriString());
-        return ResponseEntity.created(uri).body(productionAreaService.save(productionAreaDto));
+    public ProductionAreaDto save(@RequestBody @Valid ProductionAreaDto productionAreaDto) {
+        return productionAreaService.save(productionAreaDto);
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
+    @PutMapping("/{id}")
+    public ProductionAreaDto update(@RequestBody @Valid ProductionAreaDto productionAreaDto,
+                                    @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
+        productionAreaDto.setId(id);
+        return productionAreaService.update(productionAreaDto);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
+        productionAreaService.delete(id);
     }
 }

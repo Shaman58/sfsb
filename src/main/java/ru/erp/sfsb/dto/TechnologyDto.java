@@ -1,11 +1,10 @@
 package ru.erp.sfsb.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -13,10 +12,11 @@ import java.util.List;
 @AllArgsConstructor
 public class TechnologyDto extends AbstractDto {
 
+    @NotBlank(message = "Номер чертежа не может быть пустым")
     private String drawingNumber;
+    @NotBlank(message = "Название чертежа не может быть пустым")
     private String drawingName;
     private EmployeeDto employee;
-    private List<SetupDto> setups;
     private Integer quantityOfDefectiveParts;
     private Integer quantityOfSetUpParts;
     private Integer quantityOfPartsFromWorkpiece;

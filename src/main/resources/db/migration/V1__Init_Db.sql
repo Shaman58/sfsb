@@ -14,8 +14,6 @@ drop table if exists cutters cascade;
 
 drop table if exists departments cascade;
 
-drop table if exists dictionary cascade;
-
 drop table if exists employees cascade;
 
 drop table if exists items cascade;
@@ -25,8 +23,6 @@ drop table if exists materials cascade;
 drop table if exists measurers cascade;
 
 drop table if exists orders cascade;
-
-drop table if exists orders_items cascade;
 
 drop table if exists setups cascade;
 
@@ -55,8 +51,6 @@ drop table if exists store_workpiece_mapping cascade;
 drop table if exists stores cascade;
 
 drop table if exists technologies cascade;
-
-drop table if exists technologies_setups cascade;
 
 drop table if exists toolings cascade;
 
@@ -201,14 +195,6 @@ create table departments
     primary key (id)
 );
 
-create table dictionary
-(
-    id           bigserial not null,
-    db_name      varchar(255),
-    presentation varchar(255),
-    primary key (id)
-);
-
 create table contacts
 (
     id           bigserial not null,
@@ -234,6 +220,7 @@ create table items
     is_customer_material boolean   not null,
     quantity             integer,
     technology_id        bigint,
+    order_id             bigint,
     price_amount         numeric(38, 2),
     price_currency       varchar(255),
     primary key (id)
@@ -265,12 +252,6 @@ create table orders
     primary key (id)
 );
 
-create table orders_items
-(
-    order_id bigint not null,
-    items_id bigint not null
-);
-
 create table setups
 (
     id                  bigserial not null,
@@ -282,6 +263,7 @@ create table setups
     setup_number        integer,
     setup_time          numeric(21, 0),
     production_unit_id  bigint,
+    technology_id       bigint,
     primary key (id)
 );
 
@@ -381,12 +363,6 @@ create table technologies
     primary key (id)
 );
 
-create table technologies_setups
-(
-    technology_id bigint not null,
-    setups_id     bigint not null
-);
-
 create table toolings
 (
     id             bigserial not null,
@@ -429,15 +405,7 @@ alter table if exists companies
         foreign key (director_id)
             references employees;
 
-alter table if exists technologies_setups
-    add constraint UK_technologies_setups unique (setups_id);
-
-alter table if exists technologies_setups
-    add constraint FK_setups_id
-        foreign key (setups_id)
-            references setups;
-
-alter table if exists technologies_setups
+alter table if exists setups
     add constraint FK_technology_id
         foreign key (technology_id)
             references technologies;
@@ -460,6 +428,11 @@ alter table if exists items
         foreign key (technology_id)
             references technologies;
 
+alter table if exists items
+    add constraint FK_order_id
+        foreign key (order_id)
+            references orders;
+
 alter table if exists workpieces
     add constraint FK_material_id
         foreign key (material_id)
@@ -474,16 +447,6 @@ alter table if exists areas
     add constraint FK_company_id
         foreign key (company_id)
             references companies;
-
-alter table if exists orders_items
-    add constraint FK_items_id
-        foreign key (items_id)
-            references items;
-
-alter table if exists orders_items
-    add constraint FK_order_id
-        foreign key (order_id)
-            references orders;
 
 alter table if exists departments
     add constraint FK_company_id
