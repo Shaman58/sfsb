@@ -98,7 +98,6 @@ create table additionals
     id           bigserial not null,
     created      timestamp(6),
     updated      timestamp(6),
-    process_time numeric(21, 0),
     tool_name    varchar(255),
     workpiece_id bigint,
     primary key (id)
@@ -299,12 +298,13 @@ create table setups_toolings
 
 create table specials
 (
-    id           bigserial not null,
-    created      timestamp(6),
-    updated      timestamp(6),
-    process_time numeric(21, 0),
-    tool_name    varchar(255),
-    workpiece_id bigint,
+    id             bigserial not null,
+    created        timestamp(6),
+    updated        timestamp(6),
+    description    varchar(255),
+    price_amount   numeric(38, 2),
+    price_currency varchar(255),
+    tool_name      varchar(255),
     primary key (id)
 );
 
@@ -360,6 +360,7 @@ create table technologies
     quantity_of_set_up_parts         integer,
     employee_id                      bigint,
     workpiece_id                     bigint,
+    is_computed                      boolean,
     primary key (id)
 );
 
@@ -537,11 +538,6 @@ alter table if exists setups_cutter_tools
     add constraint FK_setup_id
         foreign key (setup_id)
             references setups;
-
-alter table if exists specials
-    add constraint FK_workpiece_id
-        foreign key (workpiece_id)
-            references workpieces;
 
 alter table if exists contacts
     add constraint FK_contact_customer_id

@@ -1,10 +1,13 @@
 package ru.erp.sfsb.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -21,4 +24,7 @@ public class TechnologyDto extends AbstractDto {
     private Integer quantityOfSetUpParts;
     private Integer quantityOfPartsFromWorkpiece;
     private WorkpieceDto workpiece;
+    private boolean isComputed;
+    @JsonIgnore
+    private List<SetupDto> setups;
 }

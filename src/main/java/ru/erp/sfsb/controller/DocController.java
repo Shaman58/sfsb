@@ -2,10 +2,8 @@ package ru.erp.sfsb.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 import ru.erp.sfsb.service.impl.DocService;
 
 @RestController
@@ -28,5 +26,12 @@ public class DocController {
                              @RequestParam Long orderId,
                              @RequestParam(required = false) String body) {
         docService.generateToolOrder(response, teId, feId, orderId, body);
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/calculate")
+    public void calculateItem(@RequestParam Long itemId) {
+        docService.calculateItem(itemId);
     }
 }

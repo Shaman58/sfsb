@@ -43,6 +43,13 @@ public class ExceptionControllerAdvice {
     }
 
     @ResponseBody
+    @ExceptionHandler(EntityNullException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ExceptionData handleException(EntityNullException e) {
+        return new ExceptionData(e.getMessage());
+    }
+
+    @ResponseBody
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public List<ExceptionData> onConstraintValidationException(ConstraintViolationException e) {

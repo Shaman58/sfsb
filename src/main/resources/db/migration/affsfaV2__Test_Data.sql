@@ -73,14 +73,14 @@ values (1, 'В ответ на ваше обращение от 15.03.2023г. о
 Благодарю Вас за обращение в нашу компанию и надеюсь на долгосрочное и взаимовыгодное сотрудничество.', 'description',
         1, 1, 1);
 insert into technologies (drawing_name, drawing_number, quantity_of_defective_parts,
-                          quantity_of_parts_from_workpiece, quantity_of_set_up_parts, employee_id)
-values ('крышка', 'дкшг.100.200.001', 2, 5, 1, 1);
+                          quantity_of_parts_from_workpiece, quantity_of_set_up_parts, employee_id, is_computed)
+values ('крышка', 'дкшг.100.200.001', 2, 5, 1, 1, false);
 insert into technologies (drawing_name, drawing_number, quantity_of_defective_parts,
-                          quantity_of_parts_from_workpiece, quantity_of_set_up_parts, employee_id)
-values ('корпус', 'дкшг.100.200.002', 3, 6, 2, 2);
+                          quantity_of_parts_from_workpiece, quantity_of_set_up_parts, employee_id, is_computed)
+values ('корпус', 'дкшг.100.200.002', 3, 6, 2, 2, false);
 insert into technologies (drawing_name, drawing_number, quantity_of_defective_parts,
-                          quantity_of_parts_from_workpiece, quantity_of_set_up_parts, employee_id)
-values ('кронштейн', 'дкшг.100.200.003', 4, 7, 3, 2);
+                          quantity_of_parts_from_workpiece, quantity_of_set_up_parts, employee_id, is_computed)
+values ('кронштейн', 'дкшг.100.200.003', 4, 7, 3, 2, false);
 insert into items(actual_duration, estimated_duration, is_accepted, is_customer_material, quantity, technology_id,
                   price_amount, price_currency, order_id)
 values (1000, 2000, true, true, 10, 1, 100, 'RUB', 1);
@@ -194,12 +194,12 @@ insert into workpieces(geom1, geom2, geom3, geometry, material_id, price_amount,
 values (100, 50, 20, 'BLANK', 2, 600, 'RUB');
 insert into workpieces(geom1, geom2, geom3, geometry, material_id, price_amount, price_currency)
 values (100, 60, 0, 'CYLINDER', 3, 200, 'RUB');
-insert into additionals(process_time, tool_name, workpiece_id)
-values (20000, 'Плита для изготовления ДКШГ.001.535.001 Корпус-хуерпус', 1);
-insert into additionals(process_time, tool_name, workpiece_id)
-values (30000, 'Плита для изготовления ДКШГ.001.535.003 Корпус-датчиков', 2);
-insert into additionals(process_time, tool_name, workpiece_id)
-values (40000, 'Губки для тисков для изготовления РНБЦ-0011 планка', 2);
+insert into additionals(tool_name, workpiece_id)
+values ('Плита для изготовления ДКШГ.001.535.001 Корпус-хуерпус', 1);
+insert into additionals(tool_name, workpiece_id)
+values ('Плита для изготовления ДКШГ.001.535.003 Корпус-датчиков', 2);
+insert into additionals(tool_name, workpiece_id)
+values ('Губки для тисков для изготовления РНБЦ-0011 планка', 2);
 insert into store_workpiece_mapping(store_id, amount, workpieces_key)
 VALUES (1, 50, 1);
 insert into store_workpiece_mapping(store_id, amount, workpieces_key)
@@ -222,12 +222,12 @@ insert into store_tooling_mapping(store_id, amount, toolings_key)
 VALUES (2, 2, 3);
 insert into store_tooling_mapping(store_id, amount, toolings_key)
 VALUES (2, 1, 1);
-insert into specials(process_time, tool_name, workpiece_id)
-VALUES (10000, 'Гриб 12h2d6l20', 1);
-insert into specials(process_time, tool_name, workpiece_id)
-VALUES (11000, 'Гриб 22h2d12l20', 1);
-insert into specials(process_time, tool_name, workpiece_id)
-VALUES (12000, 'Гриб 20h2d6l20', 1);
+insert into specials(description, price_amount, price_currency, tool_name)
+VALUES ('Гриб 12h2d6l20', 1000, 'RUB', 'Гриб 12h2d6l20');
+insert into specials(description, price_amount, price_currency, tool_name)
+VALUES ('Гриб 22h2d12l20', 2000, 'RUB', 'Гриб 22h2d12l20');
+insert into specials(description, price_amount, price_currency, tool_name)
+VALUES ('Гриб 20h2d6l20', 3000, 'RUB', 'Гриб 20h2d6l20');
 insert into store_special_mapping(store_id, amount, special_tools_key)
 values (1, 1, 1);
 insert into store_special_mapping(store_id, amount, special_tools_key)

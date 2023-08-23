@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import javax.money.MonetaryAmount;
 import java.time.Duration;
 
 @Data
@@ -17,7 +18,6 @@ public class SpecialToolDto extends AbstractDto {
 
     @NotBlank(message = "Название специнструмента не может быть пустым")
     private String toolName;
-    @NotNull(message = "Заготовка не может быть пустой")
-    private WorkpieceDto workpiece;
-    private Duration processTime;
+    private String description;
+    private MonetaryAmount price;
 }

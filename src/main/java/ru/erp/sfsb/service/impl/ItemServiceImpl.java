@@ -8,7 +8,6 @@ import ru.erp.sfsb.mapper.ItemMapper;
 import ru.erp.sfsb.model.Item;
 import ru.erp.sfsb.repository.ItemRepository;
 import ru.erp.sfsb.service.ItemService;
-import ru.erp.sfsb.service.TechnologyService;
 
 import java.util.List;
 
@@ -21,29 +20,11 @@ public class ItemServiceImpl extends AbstractService<ItemDto, Item, ItemReposito
 
     private final ItemMapper mapper;
     private final ItemRepository repository;
-    private final TechnologyService technologyService;
 
-    public ItemServiceImpl(ItemMapper mapper, ItemRepository repository, TechnologyService technologyService) {
+    public ItemServiceImpl(ItemMapper mapper, ItemRepository repository) {
         super(mapper, repository, "Item");
         this.mapper = mapper;
         this.repository = repository;
-        this.technologyService = technologyService;
-    }
-
-    @Override
-    @Transactional
-    public ItemDto save(ItemDto itemDto) {
-        log.info("Saving Item into DB");
-        itemDto.setTechnology(technologyService.save(itemDto.getTechnology()));
-        return mapper.toDto(repository.save(mapper.toEntity(itemDto)));
-    }
-
-    @Override
-    @Transactional
-    public ItemDto update(ItemDto itemDto) {
-        log.info("Saving Item into DB");
-        itemDto.setTechnology(technologyService.save(itemDto.getTechnology()));
-        return mapper.toDto(repository.save(mapper.toEntity(itemDto)));
     }
 
     @Override

@@ -11,6 +11,7 @@ import lombok.Setter;
 
 import java.util.List;
 
+import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.CascadeType.MERGE;
 
 @Getter
@@ -30,6 +31,7 @@ public class Technology extends AbstractEntity {
     private Integer quantityOfDefectiveParts;
     private Integer quantityOfSetUpParts;
     private Integer quantityOfPartsFromWorkpiece;
-    @ManyToOne
+    @ManyToOne(cascade = ALL)
     private Workpiece workpiece;
+    private boolean isComputed;
 }

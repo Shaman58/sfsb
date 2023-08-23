@@ -47,6 +47,7 @@ public class TechnologyController {
     public TechnologyDto update(@RequestBody @Valid TechnologyDto technologyDto,
                                 @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         technologyDto.setId(id);
+        technologyDto.setComputed(false);
         return technologyService.update(technologyDto);
     }
 }

@@ -13,6 +13,8 @@ import org.hibernate.type.SqlTypes;
 import javax.money.MonetaryAmount;
 import java.time.Duration;
 
+import static jakarta.persistence.CascadeType.ALL;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -23,7 +25,7 @@ public class Item extends AbstractEntity {
 
     @ManyToOne
     private Order order;
-    @ManyToOne
+    @ManyToOne(cascade = ALL)
     private Technology technology;
     private boolean isCustomerMaterial;
     private Integer quantity;

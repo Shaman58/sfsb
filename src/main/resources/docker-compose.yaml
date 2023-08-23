@@ -10,9 +10,20 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: sfsb
     ports:
-      - 5432:5432
+      - "5432:5432"
   adminer:
     image: adminer
     restart: always
     ports:
-      - 9002:8080
+      - "9002:8080"
+  sfsb:
+    image: shaman58/sfsb:0.0.1
+    restart: always
+    ports:
+      - "9001:9001"
+  sfsb-front:
+    image: shaman58/sfsb-front:0.0.1
+    restart: always
+    ports:
+      - "9003:3000"
+      - "80:80"

@@ -9,17 +9,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.springframework.stereotype.Service;
-import ru.erp.sfsb.dto.CompanyDto;
-import ru.erp.sfsb.dto.CutterToolDto;
-import ru.erp.sfsb.dto.EmployeeDto;
-import ru.erp.sfsb.dto.ItemDto;
-import ru.erp.sfsb.service.CutterToolService;
-import ru.erp.sfsb.service.EmployeeService;
-import ru.erp.sfsb.service.OrderService;
+import ru.erp.sfsb.dto.*;
+import ru.erp.sfsb.exception.EntityNullException;
+import ru.erp.sfsb.service.*;
 import ru.erp.sfsb.utils.WordDocumentUtil;
 
-import java.io.FileInputStream;
-import java.io.IOException;
+import javax.money.MonetaryAmount;
+import java.io.*;
+import java.time.Duration;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -33,32 +30,46 @@ public class DocService {
 
     private final OrderService orderService;
     private final CutterToolService cutterToolService;
+    private final ItemService itemService;
+    private final SetupService setupService;
     private final Petrovich petrovich;
     private final EmployeeService employeeService;
 
     public void generateKp(Long orderId, HttpServletResponse response) {
+        log.info("Generating kp with order id {}", orderId);
         try {
-            var inputStream = new FileInputStream("kp-template.docx");
-            WordDocumentUtil doc = new WordDocumentUtil(inputStream);
+            var inputStream = getClass().getResourceAsStream("/kp-template.docx");
+            log.info("inputStream");
+            var doc = new WordDocumentUtil(inputStream);
+            log.info("doc");
             var order = orderService.get(orderId);
             var company = order.getEmployee().getDepartment().getCompany();
+            log.info("company");
             var contact = order.getContact();
+            log.info("contact");
             var employee = String.format("%s %s %s",
                     order.getEmployee().getPosition(),
                     order.getEmployee().getFirstName(),
                     order.getEmployee().getLastName());
+            log.info("employee");
             var bodyData = Map.of(
                     "[proposal]", order.getBusinessProposal(),
                     "[manager]", employee
             );
+            log.info("bodyData");
             var headerData = getCompanyMap(company);
+            log.info("headerData1");
             headerData.put("[app-number]", String.valueOf(order.getApplicationNumber()));
+            log.info("headerData2");
             headerData.put("[target]", String.format("%s %s %s",
                     order.getCustomer().getCompanyName(),
                     contact.getFirstName(),
                     contact.getLastName()));
+            log.info("headerData3");
             doc.generateKp(headerData, getItemList(order.getItems()), bodyData);
+            log.info("doc.generateKp");
             response.setHeader("Content-Disposition", "attachment; filename=kp.docx");
+            log.info("setHeader");
             doc.save(response.getOutputStream());
         } catch (IOException | InvalidFormatException e) {
             throw new RuntimeException(e);
@@ -67,8 +78,8 @@ public class DocService {
 
     public void generateToolOrder(HttpServletResponse response, Long targetEmployeeId, Long fromEmployeeId, Long orderId, String body) {
         try {
-            var inputStream = new FileInputStream("tool-order-template.docx");
-            WordDocumentUtil doc = new WordDocumentUtil(inputStream);
+            var inputStream = new FileInputStream(Objects.requireNonNull(getClass().getClassLoader().getResource("tool-order-template.docx")).getFile());
+            var doc = new WordDocumentUtil(inputStream);
             var targetEmployee = employeeService.get(targetEmployeeId);
             var fromEmployee = employeeService.get(fromEmployeeId);
             var companyName = orderService.get(orderId).getEmployee().getDepartment().getCompany().getCompanyName();
@@ -85,6 +96,51 @@ public class DocService {
         }
     }
 
+    public void calculateItem(Long itemId) {
+        var item = itemService.get(itemId);
+        item.setPrice(calculateItemPrice(item));
+        item.setEstimatedDuration(calculateItemEstimatedDuration(item));
+        item.getTechnology().setComputed(true);
+        itemService.update(item);
+    }
+
+    private MonetaryAmount calculateItemPrice(ItemDto item) {
+        var technology = item.getTechnology();
+        return setupService.getTechnologySetups(technology.getId()).stream()
+                .map(setup -> calculateSetupPrice(setup, item.getQuantity()))
+                .reduce(MonetaryAmount::add)
+                .orElseThrow(() -> new EntityNullException(String.format("Price of Item with id=%s is missed", item.getId())));
+    }
+
+    private MonetaryAmount calculateSetupPrice(SetupDto setup, Integer itemQuantity) {
+        var totalTime = setup.getInteroperativeTime()
+                .plus(setup.getSetupTime().dividedBy(itemQuantity + setup.getTechnology().getQuantityOfSetUpParts()))
+                .plus(setup.getProcessTime()).toMinutes();
+        return setup
+                .getProductionUnit()
+                .getPaymentPerHour()
+                .divide(60).multiply(totalTime);
+    }
+
+    private Duration calculateItemEstimatedDuration(ItemDto item) {
+        return item.getTechnology().getSetups().stream()
+                .map(this::calculateSetupDuration)
+                .reduce(Duration::plus)
+                .orElseThrow(() -> new EntityNullException(String.format("Durations of Item with id=%s is missed", item.getId())))
+                .multipliedBy(item.getQuantity() + item.getTechnology().getQuantityOfSetUpParts())
+                .plus(
+                        item.getTechnology().getSetups().stream()
+                                .map(SetupDto::getSetupTime)
+                                .reduce(Duration::plus)
+                                .orElseThrow(() -> new EntityNullException(String.format("Durations of Item with id=%s is missed", item.getId())))
+                );
+    }
+
+    private Duration calculateSetupDuration(SetupDto setup) {
+        return setup.getInteroperativeTime()
+                .plus(setup.getProcessTime());
+    }
+
     private String getFooterFromEmployee(EmployeeDto employee) {
         return String.format("%s %s %s", employee.getPosition(), getInitials(employee.getFirstName()), employee.getLastName());
     }
@@ -98,10 +154,6 @@ public class DocService {
                 fromEmployee.getPosition().toLowerCase(),
                 petrovich.say(fromEmployee.getLastName(), NameType.LastName, petrovich.gender(fromEmployee.getLastName(), Gender.Male), Case.Genitive),
                 getInitials(fromEmployee.getFirstName()));
-    }
-
-    private List<String> getToolList(Set<CutterToolDto> tools) {
-        return tools.stream().map(tool -> String.format("%s %s - шт", tool.getToolName(), tool.getDescription())).collect(toList());
     }
 
     private String getToolString(Set<CutterToolDto> tools) {
