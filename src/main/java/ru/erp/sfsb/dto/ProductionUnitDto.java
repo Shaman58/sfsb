@@ -15,7 +15,7 @@ import javax.money.MonetaryAmount;
 @AllArgsConstructor
 public class ProductionUnitDto extends AbstractDto {
 
-    @NotBlank
+    @NotBlank(message = "Название не может быть пустым")
     private String unitName;
     private Integer unitNumber;
     @JsonIgnore

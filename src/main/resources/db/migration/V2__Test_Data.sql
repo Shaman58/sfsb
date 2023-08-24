@@ -3,68 +3,40 @@ insert into companies(address, bank, bik, company_name, correspondent_account, e
 values ('442960, Пензенская область, г. Заречный, ул. Транспортная, д.31, к.2', 'ФИЛИАЛ «НИЖЕГОРОДСКИЙ»
 АО «АЛЬФА-БАНК»', '042202824',
         'ООО «Импульс-Атом»', '30101810200000000824', 'epnz@yandex.ru',
-        '5838015170', '583801001', '1215800007123', '40702810729170005285', '+7 (8412) 75-50-55');
+        '5838015170', '583801001', '1215800007123', '40702810729170005285', '+78412755055');
 insert into customers(address, bank, bik, company_name, correspondent_account, email, inn, kpp, ogrn, payment_account,
                       phone_number)
 values ('442960, Пензенская область, г. Заречный, ул. Транспортная, д.100', 'АО «ВТБ»', '042769107',
         'ООО «Ритм»', '30101810200000000976', 'ritm@mail.ru',
-        '5838015170', '583801001', '1215800007123', '40702810729170005285', '+7 (8412) 75-99-99');
+        '5838015170', '583801001', '1215800007123', '40702810729170005285', '+78412759999');
 insert into customers(address, bank, bik, company_name, correspondent_account, email, inn, kpp, ogrn, payment_account,
                       phone_number)
 values ('442960, Пензенская область, г. Заречный, ул. Транспортная, д.100', 'АО «ВТБ»', '042769107',
         'ООО «ХУИТМ»', '30101810200000000976', 'ritm@mail.ru',
-        '5838015170', '583801001', '1215800007123', '40702810729170005285', '+7 (8412) 75-99-99');
+        '5838015170', '583801001', '1215800007123', '40702810729170005285', '+78412759999');
 insert into customers(address, bank, bik, company_name, correspondent_account, email, inn, kpp, ogrn, payment_account,
                       phone_number)
 values ('442960, Пензенская область, г. Заречный, ул. Транспортная, д.100', 'АО «ВТБ»', '042769107',
         'ИП «Рогачов»', '30101810200000000976', 'ritm@mail.ru',
-        '5838015170', '583801001', '1215800007123', '40702810729170005285', '+7 (8412) 75-99-99');
+        '5838015170', '583801001', '1215800007123', '40702810729170005285', '+78412759999');
 insert into departments(department_name, company_id)
-values ('Отдел продаж', 1);
-insert into departments(department_name, company_id)
-values ('Отдел маркетинга', 1);
+values ('Коммерческий отдел', 1);
 insert into departments(department_name, company_id)
 values ('Технологический отдел', 1);
-insert into departments(department_name, company_id)
-values ('Конструкторский отдел', 1);
-insert into departments(department_name, company_id)
-values ('Отдел техники безопасности', 1);
-insert into departments(department_name, company_id)
-values ('Отдел кадров', 1);
-insert into departments(department_name, company_id)
-values ('Отдел ИТ', 1);
-insert into departments(department_name, company_id)
-values ('Отдел делопроизводства', 1);
-insert into departments(department_name, company_id)
-values ('Отдел технического контроля', 1);
-insert into departments(department_name, company_id)
-values ('Бухгалтерия', 1);
-insert into departments(department_name, company_id)
-values ('Планово-экономический отдел', 1);
 insert into employees(first_name, last_name, position, department_id)
 values ('Иван', 'Иванов', 'Менеджер', 1);
-insert into contacts(first_name, last_name, position, email, phone_number, customer_id)
-values ('Иван', 'Иванов', 'Диреалист', 'email@email.com', '+7 (1234) 56-78-99', 1);
-insert into contacts(first_name, last_name, position, email, phone_number, customer_id)
-values ('Вася', 'Васильев', 'Похуист', 'email@email.com', '+7 (1234) 56-78-99', 1);
-insert into contacts(first_name, last_name, position, email, phone_number, customer_id)
-values ('Константин', 'Фамилия', 'Онанист', 'email@email.com', '+7 (1234) 56-78-99', 1);
-insert into contacts(first_name, last_name, position, email, phone_number, customer_id)
-values ('Иван', 'Иванов', 'Диреалист', 'email@email.com', '+7 (1234) 56-78-99', 1);
-insert into contacts(first_name, last_name, position, email, phone_number, customer_id)
-values ('Иван', 'Иванов', 'Диреалист', 'email@email.com', '+7 (1234) 56-78-99', 2);
-insert into contacts(first_name, last_name, position, email, phone_number, customer_id)
-values ('Иван', 'Иванов', 'Диреалист', 'email@email.com', '+7 (1234) 56-78-99', 2);
 insert into employees(first_name, last_name, position, department_id)
-values ('Николай', 'Меланин', 'Исполнительный директор', 1);
+values ('Николай', 'Меланин', 'Управдом', 1);
 insert into employees(first_name, last_name, position, department_id)
-values ('Василий', 'Васильев', 'Управдом', 2);
+values ('Егор', 'Егоров', 'Технолог', 2);
 insert into employees(first_name, last_name, position, department_id)
-values ('Егор', 'Егоров', 'Наладчик', 2);
-insert into employees(first_name, last_name, position, department_id)
-values ('Дмитрий', 'Душный', 'Мастер производства', 2);
-insert into employees(first_name, last_name, position, department_id)
-values ('Никита', 'Никиткин', 'Программист', 2);
+values ('Дмитрий', 'Душный', 'Технолог', 2);
+insert into contacts(first_name, last_name, position, email, phone_number, customer_id)
+values ('Иван', 'Иванов', 'Диреалист', 'email@email.com', '+71234567899', 1);
+insert into contacts(first_name, last_name, position, email, phone_number, customer_id)
+values ('Вася', 'Васильев', 'Похуист', 'email@email.com', '+71234567899', 1);
+insert into contacts(first_name, last_name, position, email, phone_number, customer_id)
+values ('Иван', 'Иванов', 'Диреалист', 'email@email.com', '+71234567899', 2);
 insert into orders(application_number, business_proposal, description, customer_id, employee_id, contact_id)
 values (1, 'В ответ на ваше обращение от 15.03.2023г. о предоставлении ценовой информации сообщаем, что ООО «Импульс-Атом» готово изготовить детали, в требуемом для Вас количестве по цене, которая включает стоимость материала, изготовление деталей механическим путем, согласно КД. Сроки изготовления рассчитываются на момент заключения договора по согласованию с планом производства и требованиями заказчика.
 Условия авансирования 70% для обеспечения закупки необходимого материала, проведения технологической подготовки, изготовления специальной оснастки и приспособлений.
@@ -136,12 +108,18 @@ insert into setups_cutter_tools(setup_id, cutter_tools_id)
 values (6, 2);
 insert into setups_cutter_tools(setup_id, cutter_tools_id)
 values (6, 4);
-insert into materials (density, material_name)
-VALUES (2670, 'Сплав АМг3');
-insert into materials (density, material_name)
-VALUES (7820, '40х');
-insert into materials (density, material_name)
-VALUES (2770, 'Сплав Д16');
+insert into materials (material_name, geometry, gost)
+VALUES ('Сплав Д16Т', 'CYLINDER', 'ГОСТ 21488-97');
+insert into materials (material_name, geometry, gost)
+VALUES ('Сплав Д16Т', 'TUBE', 'ГОСТ 18482-79');
+insert into materials (material_name, geometry, gost)
+VALUES ('Сплав Д16Т', 'BLANK', 'ГОСТ 17232-99');
+insert into materials (material_name, geometry, gost)
+VALUES ('Сталь 40х', 'CYLINDER', 'ГОСТ 1051-73');
+insert into materials (material_name, geometry, gost)
+VALUES ('Сталь 40х', 'CYLINDER', 'ГОСТ 10702-2016');
+insert into materials (material_name, geometry, gost)
+VALUES ('Сталь 40х', 'CYLINDER', 'ГОСТ 4543-2016');
 insert into areas(area_name, company_id)
 values ('Площадка на Литвинова 10', 1);
 insert into areas(area_name, company_id)
@@ -188,12 +166,12 @@ insert into store_measurer_mapping(store_id, amount, measure_tools_key)
 VALUES (2, 1, 2);
 insert into store_measurer_mapping(store_id, amount, measure_tools_key)
 VALUES (2, 1, 3);
-insert into workpieces(geom1, geom2, geom3, geometry, material_id, price_amount, price_currency)
-values (100, 50, 0, 'CYLINDER', 1, 500, 'RUB');
-insert into workpieces(geom1, geom2, geom3, geometry, material_id, price_amount, price_currency)
-values (100, 50, 20, 'BLANK', 2, 600, 'RUB');
-insert into workpieces(geom1, geom2, geom3, geometry, material_id, price_amount, price_currency)
-values (100, 60, 0, 'CYLINDER', 3, 200, 'RUB');
+insert into workpieces(geom1, geom2, geom3, material_id, price_amount, price_currency)
+values (100, 50, 0, 1, 500, 'RUB');
+insert into workpieces(geom1, geom2, geom3, material_id, price_amount, price_currency)
+values (100, 50, 20, 2, 600, 'RUB');
+insert into workpieces(geom1, geom2, geom3, material_id, price_amount, price_currency)
+values (100, 60, 0, 3, 200, 'RUB');
 insert into additionals(tool_name, workpiece_id)
 values ('Плита для изготовления ДКШГ.001.535.001 Корпус-хуерпус', 1);
 insert into additionals(tool_name, workpiece_id)

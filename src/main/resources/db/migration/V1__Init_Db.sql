@@ -63,7 +63,8 @@ create table materials
     id            bigserial not null,
     created       timestamp(6),
     updated       timestamp(6),
-    density       integer,
+    gost          varchar(255),
+    geometry      varchar(255),
     material_name varchar(255),
     primary key (id)
 );
@@ -86,7 +87,6 @@ create table workpieces
     geom1          integer,
     geom2          integer,
     geom3          integer,
-    geometry       varchar(255),
     material_id    bigint,
     price_amount   numeric(38, 2),
     price_currency varchar(255),

@@ -20,8 +20,6 @@ public class Workpiece extends AbstractEntity {
 
     @ManyToOne
     private Material material;
-    @Enumerated(EnumType.STRING)
-    private Geometry geometry;
     private Integer geom1;
     private Integer geom2;
     private Integer geom3;

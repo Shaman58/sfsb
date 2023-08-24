@@ -1,6 +1,8 @@
 package ru.erp.sfsb.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,5 +18,7 @@ import lombok.Setter;
 public class Material extends AbstractEntity {
 
     private String materialName;
-    private Integer density;
+    private String gost;
+    @Enumerated(EnumType.STRING)
+    private Geometry geometry;
 }
