@@ -12,7 +12,6 @@ import lombok.Setter;
 import java.util.List;
 
 import static jakarta.persistence.CascadeType.ALL;
-import static jakarta.persistence.CascadeType.MERGE;
 
 @Getter
 @Setter
@@ -26,7 +25,7 @@ public class Technology extends AbstractEntity {
     private String drawingName;
     @ManyToOne
     private Employee employee;
-    @OneToMany(mappedBy = "technology", cascade = MERGE)
+    @OneToMany(mappedBy = "technology", cascade = ALL)
     private List<Setup> setups;
     private Integer quantityOfDefectiveParts;
     private Integer quantityOfSetUpParts;
