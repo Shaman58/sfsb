@@ -11,11 +11,14 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.springframework.stereotype.Service;
 import ru.erp.sfsb.dto.*;
 import ru.erp.sfsb.exception.EntityNullException;
-import ru.erp.sfsb.service.*;
+import ru.erp.sfsb.service.EmployeeService;
+import ru.erp.sfsb.service.ItemService;
+import ru.erp.sfsb.service.OrderService;
 import ru.erp.sfsb.utils.WordDocumentUtil;
 
 import javax.money.MonetaryAmount;
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.time.Duration;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -29,9 +32,7 @@ import static java.util.stream.Collectors.toList;
 public class DocService {
 
     private final OrderService orderService;
-    private final CutterToolService cutterToolService;
     private final ItemService itemService;
-    private final SetupService setupService;
     private final Petrovich petrovich;
     private final EmployeeService employeeService;
 
@@ -76,25 +77,25 @@ public class DocService {
         }
     }
 
-    public void generateToolOrder(HttpServletResponse response, Long targetEmployeeId, Long fromEmployeeId, Long orderId, String body) {
-        try {
-            var inputStream = new FileInputStream(Objects.requireNonNull(getClass().getClassLoader().getResource("tool-order-template.docx")).getFile());
-            var doc = new WordDocumentUtil(inputStream);
-            var targetEmployee = employeeService.get(targetEmployeeId);
-            var fromEmployee = employeeService.get(fromEmployeeId);
-            var companyName = orderService.get(orderId).getEmployee().getDepartment().getCompany().getCompanyName();
-            var headerData = getHeaderFromEmployees(targetEmployee, fromEmployee, companyName);
-            if (Objects.equals(body, null)) {
-                body = "Прошу Вас, разрешить отделу снабжения приобрести следующие позиции:";
-            }
-            var footer = getFooterFromEmployee(fromEmployee);
-            doc.generateToolOrder(getToolString(cutterToolService.getAllToolsByOrderId(orderId)), headerData, body, footer);
-            response.setHeader("Content-Disposition", "attachment; filename=tool-order.docx");
-            doc.save(response.getOutputStream());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    public void generateToolOrder(HttpServletResponse response, Long targetEmployeeId, Long fromEmployeeId, Long orderId, String body) {
+//        try {
+//            var inputStream = new FileInputStream(Objects.requireNonNull(getClass().getClassLoader().getResource("tool-order-template.docx")).getFile());
+//            var doc = new WordDocumentUtil(inputStream);
+//            var targetEmployee = employeeService.get(targetEmployeeId);
+//            var fromEmployee = employeeService.get(fromEmployeeId);
+//            var companyName = orderService.get(orderId).getEmployee().getDepartment().getCompany().getCompanyName();
+//            var headerData = getHeaderFromEmployees(targetEmployee, fromEmployee, companyName);
+//            if (Objects.equals(body, null)) {
+//                body = "Прошу Вас, разрешить отделу снабжения приобрести следующие позиции:";
+//            }
+//            var footer = getFooterFromEmployee(fromEmployee);
+//            doc.generateToolOrder(getToolString(cutterToolService.getAllToolsByOrderId(orderId)), headerData, body, footer);
+//            response.setHeader("Content-Disposition", "attachment; filename=tool-order.docx");
+//            doc.save(response.getOutputStream());
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     public void calculateItem(Long itemId) {
         var item = itemService.get(itemId);
@@ -105,8 +106,9 @@ public class DocService {
     }
 
     private MonetaryAmount calculateItemPrice(ItemDto item) {
-        var technology = item.getTechnology();
-        return setupService.getTechnologySetups(technology.getId()).stream()
+        return item
+                .getTechnology()
+                .getSetups().stream()
                 .map(setup -> calculateSetupPrice(setup, item.getQuantity()))
                 .reduce(MonetaryAmount::add)
                 .orElseThrow(() -> new EntityNullException(String.format("Price of Item with id=%s is missed", item.getId())));
@@ -154,10 +156,6 @@ public class DocService {
                 fromEmployee.getPosition().toLowerCase(),
                 petrovich.say(fromEmployee.getLastName(), NameType.LastName, petrovich.gender(fromEmployee.getLastName(), Gender.Male), Case.Genitive),
                 getInitials(fromEmployee.getFirstName()));
-    }
-
-    private String getToolString(Set<CutterToolDto> tools) {
-        return tools.stream().map(tool -> String.format("%s %s - шт", tool.getToolName(), tool.getDescription())).collect(Collectors.joining("\n"));
     }
 
     private String getInitials(String name) {

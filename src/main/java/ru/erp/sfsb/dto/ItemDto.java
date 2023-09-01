@@ -1,5 +1,6 @@
 package ru.erp.sfsb.dto;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -16,6 +17,7 @@ import java.time.Duration;
 @AllArgsConstructor
 public class ItemDto extends AbstractDto {
 
+    @JsonBackReference
     private OrderDto order;
     @Valid
     private TechnologyDto technology;

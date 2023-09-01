@@ -25,12 +25,12 @@ public class Technology extends AbstractEntity {
     private String drawingName;
     @ManyToOne
     private Employee employee;
-    @OneToMany(mappedBy = "technology", cascade = ALL)
-    private List<Setup> setups;
     private Integer quantityOfDefectiveParts;
     private Integer quantityOfSetUpParts;
     private Integer quantityOfPartsFromWorkpiece;
     @ManyToOne(cascade = ALL)
     private Workpiece workpiece;
     private boolean isComputed;
+    @OneToMany(mappedBy = "technology", cascade = ALL)
+    private List<Setup> setups;
 }

@@ -9,6 +9,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import ru.erp.sfsb.model.Geometry;
 
+import javax.money.MonetaryAmount;
+
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
@@ -22,4 +24,6 @@ public class MaterialDto extends AbstractDto {
     @NotNull(message = "Геометрия материала не может быть пустым")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Geometry geometry;
+    private MonetaryAmount price;
+    private Integer density;
 }

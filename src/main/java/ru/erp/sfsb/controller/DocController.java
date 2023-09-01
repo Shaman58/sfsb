@@ -19,14 +19,14 @@ public class DocController {
         docService.generateKp(orderId, response);
     }
 
-    @GetMapping("/tool-order")
-    public void getToolOrder(HttpServletResponse response,
-                             @RequestParam Long teId,
-                             @RequestParam Long feId,
-                             @RequestParam Long orderId,
-                             @RequestParam(required = false) String body) {
-        docService.generateToolOrder(response, teId, feId, orderId, body);
-    }
+//    @GetMapping("/tool-order")
+//    public void getToolOrder(HttpServletResponse response,
+//                             @RequestParam Long teId,
+//                             @RequestParam Long feId,
+//                             @RequestParam Long orderId,
+//                             @RequestParam(required = false) String body) {
+//        docService.generateToolOrder(response, teId, feId, orderId, body);
+//    }
 
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)

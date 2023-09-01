@@ -11,6 +11,8 @@ import org.hibernate.type.SqlTypes;
 import java.time.Duration;
 import java.util.List;
 
+import static jakarta.persistence.CascadeType.ALL;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -20,22 +22,21 @@ import java.util.List;
 public class Setup extends AbstractEntity {
 
     private Integer setupNumber;
-    private String setupName;
+    @ManyToOne
+    private Operation operation;
     @JdbcTypeCode(SqlTypes.NUMERIC)
     private Duration setupTime;
     @JdbcTypeCode(SqlTypes.NUMERIC)
     private Duration processTime;
     @JdbcTypeCode(SqlTypes.NUMERIC)
     private Duration interoperativeTime;
-    @ManyToMany
-    private List<CutterTool> cutterTools;
-    @ManyToMany
+    @ManyToMany(cascade = ALL)
     private List<MeasureTool> measureTools;
-    @ManyToMany
+    @ManyToMany(cascade = ALL)
     private List<AdditionalTool> additionalTools;
-    @ManyToMany
+    @ManyToMany(cascade = ALL)
     private List<SpecialTool> specialTools;
-    @ManyToMany
+    @ManyToMany(cascade = ALL)
     private List<Tooling> toolings;
     @ManyToOne
     @JoinColumn(name = "production_unit_id")
@@ -43,4 +44,6 @@ public class Setup extends AbstractEntity {
     @ManyToOne
     @JoinColumn(name = "technology_id")
     private Technology technology;
+    private boolean isGroup;
+    private Integer perTime;
 }

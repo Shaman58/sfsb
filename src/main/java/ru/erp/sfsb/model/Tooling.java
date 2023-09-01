@@ -21,7 +21,7 @@ import javax.money.MonetaryAmount;
 @Table(name = "toolings")
 public class Tooling extends AbstractEntity {
 
-    private String toolingName;
+    private String toolName;
     private String description;
     @AttributeOverride(
             name = "amount",
@@ -34,4 +34,5 @@ public class Tooling extends AbstractEntity {
     @CompositeType(MonetaryAmountType.class)
     @SuppressWarnings("JpaAttributeTypeInspection")
     private MonetaryAmount price;
+    private Integer amount;
 }

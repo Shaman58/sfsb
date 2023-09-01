@@ -8,8 +8,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.money.MonetaryAmount;
-
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
@@ -27,5 +25,4 @@ public class WorkpieceDto extends AbstractDto {
     @Min(0)
     @Max(Integer.MAX_VALUE)
     private Integer geom3;
-    private MonetaryAmount price;
 }

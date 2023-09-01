@@ -1,6 +1,6 @@
 package ru.erp.sfsb.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 public class OrderDto extends AbstractDto {
 
-    @JsonIgnore
+    @JsonManagedReference
     private List<ItemDto> items;
     private String description;
     private String businessProposal;
@@ -26,4 +26,5 @@ public class OrderDto extends AbstractDto {
     @NotNull(message = "Менеджер не может быть пустым")
     private EmployeeDto employee;
     private ContactDto contact;
+    private CompanyDto company;
 }

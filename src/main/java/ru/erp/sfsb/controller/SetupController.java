@@ -35,13 +35,6 @@ public class SetupController {
     }
 
     @ResponseBody
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/technology/{id}")
-    public List<SetupDto> getTechnologySetups(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
-        return setupService.getTechnologySetups(id);
-    }
-
-    @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping()
     public SetupDto save(@RequestBody @Valid SetupDto setupDto) {

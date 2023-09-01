@@ -1,5 +1,6 @@
 package ru.erp.sfsb.dto;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -18,9 +19,10 @@ public class EmployeeDto extends AbstractDto {
     @NotBlank(message = "Фамилия не может быть пустой")
     private String lastName;
     private String position;
-    @Pattern(regexp = "^\\+?[78][-\\(]?\\d{3}\\)?-?\\d{3}-?\\d{2}-?\\d{2}$")
+    @Pattern(regexp = "^\\+?[78][-(]?\\d{3}\\)?-?\\d{3}-?\\d{2}-?\\d{2}$")
     private String phoneNumber;
     @Pattern(regexp = "^\\w+([.-]?\\w+)*@\\w+([.-]?\\w+)*(\\.\\w{2,3})+$")
     private String email;
+    @JsonBackReference
     private DepartmentDto department;
 }

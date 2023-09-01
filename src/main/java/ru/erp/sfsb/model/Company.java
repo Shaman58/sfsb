@@ -8,7 +8,6 @@ import lombok.Setter;
 
 import java.util.List;
 
-import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.CascadeType.MERGE;
 
 @Getter
@@ -30,13 +29,13 @@ public class Company extends AbstractEntity {
     private String correspondentAccount;
     private String phoneNumber;
     private String email;
-    @OneToMany(mappedBy = "company", cascade = MERGE)
-    private List<Department> departments;
     @OneToOne
     @JoinColumn
     private Employee director;
-    @OneToMany(cascade = MERGE)
+    @OneToMany(mappedBy = "company", cascade = MERGE)
     private List<Order> orders;
-    @OneToMany(mappedBy = "company", cascade = ALL)
-    private List<ProductionArea> productionAreas;
+    @OneToMany(mappedBy = "company", cascade = MERGE)
+    private List<Department> departments;
+    @OneToMany(mappedBy = "company", cascade = MERGE)
+    private List<ProductionUnit> units;
 }

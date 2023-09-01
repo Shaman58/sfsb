@@ -4,7 +4,6 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.web.bind.annotation.PathVariable;
 import ru.erp.sfsb.dto.AbstractDto;
 import ru.erp.sfsb.exception.EntityNotFoundException;
 import ru.erp.sfsb.mapper.Mapper;
@@ -50,7 +49,7 @@ public abstract class AbstractService
 
     @Override
     @Transactional
-    public D get(@PathVariable Long id) {
+    public D get(Long id) {
         log.info("Looking {} with id={} in DB", entityName, id);
         return mapper.toDto((repository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(format("There is no %s with id=%d in database", entityName, id)))));
@@ -75,7 +74,9 @@ public abstract class AbstractService
     @Transactional
     public void delete(Long id) {
         log.info("Deleting {} with id {} in DB", entityName, id);
-        get(id);
+        if (!repository.existsById(id)) {
+            throw new EntityNotFoundException(String.format("Entity with id %d not found", id));
+        }
         repository.deleteById(id);
     }
 }

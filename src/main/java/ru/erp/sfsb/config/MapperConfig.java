@@ -7,9 +7,6 @@ import org.springframework.stereotype.Component;
 import org.zalando.jackson.datatype.money.MoneyModule;
 import ru.erp.sfsb.deserializer.DurationDeserializer;
 import ru.erp.sfsb.deserializer.DurationSerializer;
-import ru.erp.sfsb.deserializer.StoreDeserializer;
-import ru.erp.sfsb.deserializer.StoreDtoSerializer;
-import ru.erp.sfsb.dto.StoreDto;
 
 import java.time.Duration;
 
@@ -41,14 +38,6 @@ public class MapperConfig {
         SimpleModule module = new SimpleModule();
         module.addSerializer(Duration.class, new DurationSerializer());
         module.addDeserializer(Duration.class, new DurationDeserializer());
-        return module;
-    }
-
-    @Bean
-    public SimpleModule storeModule() {
-        SimpleModule module = new SimpleModule();
-        module.addSerializer(StoreDto.class, new StoreDtoSerializer());
-        module.addDeserializer(StoreDto.class, new StoreDeserializer());
         return module;
     }
 }

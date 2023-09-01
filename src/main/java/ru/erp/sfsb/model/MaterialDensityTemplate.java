@@ -1,7 +1,7 @@
 package ru.erp.sfsb.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,12 +13,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "workpieces")
-public class Workpiece extends AbstractEntity {
+@Table(name = "material_density_templates")
+public class MaterialDensityTemplate extends AbstractEntity {
 
-    @ManyToOne
-    private Material material;
-    private Integer geom1;
-    private Integer geom2;
-    private Integer geom3;
+    @Column(unique = true)
+    private String materialTypeName;
+    private Integer density;
 }

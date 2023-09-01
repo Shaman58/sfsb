@@ -34,4 +34,5 @@ public class SpecialTool extends AbstractEntity {
     @CompositeType(MonetaryAmountType.class)
     @SuppressWarnings("JpaAttributeTypeInspection")
     private MonetaryAmount price;
+    private Integer amount;
 }

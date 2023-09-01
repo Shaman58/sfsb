@@ -1,6 +1,6 @@
 package ru.erp.sfsb.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,6 +25,6 @@ public class TechnologyDto extends AbstractDto {
     private Integer quantityOfPartsFromWorkpiece;
     private WorkpieceDto workpiece;
     private boolean isComputed;
-    @JsonIgnore
+    @JsonManagedReference
     private List<SetupDto> setups;
 }

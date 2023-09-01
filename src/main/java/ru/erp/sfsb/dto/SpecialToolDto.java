@@ -20,4 +20,5 @@ public class SpecialToolDto extends AbstractDto {
     private String toolName;
     private String description;
     private MonetaryAmount price;
+    private Integer amount;
 }

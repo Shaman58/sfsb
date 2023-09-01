@@ -15,7 +15,8 @@ import javax.money.MonetaryAmount;
 public class ToolingDto extends AbstractDto {
 
     @NotBlank(message = "Название оснастки не может быть пустым")
-    private String toolingName;
+    private String toolName;
     private String description;
     private MonetaryAmount price;
+    private Integer amount;
 }

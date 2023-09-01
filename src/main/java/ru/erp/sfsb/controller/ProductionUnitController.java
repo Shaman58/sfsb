@@ -35,30 +35,19 @@ public class ProductionUnitController {
     }
 
     @ResponseBody
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/area/{id}")
-    public List<ProductionUnitDto> getAllByAreaId(
-            @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
-        return productionUnitService.getAllByAreaId(id);
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping()
+    public ProductionUnitDto save(@RequestBody @Valid ProductionUnitDto productionUnitDto) {
+        return productionUnitService.save(productionUnitDto);
     }
 
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/area/{areaId}")
-    public ProductionUnitDto save(
-            @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long areaId,
-            @RequestBody @Valid ProductionUnitDto productionUnitDto) {
-        return productionUnitService.saveInArea(productionUnitDto, areaId);
-    }
-
-    @ResponseBody
-    @ResponseStatus(HttpStatus.CREATED)
-    @PutMapping("/{id}/area/{areaId}")
+    @PutMapping("/{id}")
     public ProductionUnitDto update(@RequestBody @Valid ProductionUnitDto productionUnitDto,
-                                    @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id,
-                                    @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long areaId) {
+                                    @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         productionUnitDto.setId(id);
-        return productionUnitService.saveInArea(productionUnitDto, areaId);
+        return productionUnitService.save(productionUnitDto);
     }
 
     @DeleteMapping("/{id}")
