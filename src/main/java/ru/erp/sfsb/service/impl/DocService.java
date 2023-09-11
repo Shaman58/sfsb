@@ -9,19 +9,21 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.springframework.stereotype.Service;
-import ru.erp.sfsb.dto.*;
+import ru.erp.sfsb.dto.CompanyDto;
+import ru.erp.sfsb.dto.EmployeeDto;
+import ru.erp.sfsb.dto.ItemDto;
+import ru.erp.sfsb.dto.SetupDto;
 import ru.erp.sfsb.exception.EntityNullException;
 import ru.erp.sfsb.service.EmployeeService;
 import ru.erp.sfsb.service.ItemService;
 import ru.erp.sfsb.service.OrderService;
 import ru.erp.sfsb.utils.WordDocumentUtil;
 
-import javax.money.MonetaryAmount;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.Duration;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
@@ -97,32 +99,32 @@ public class DocService {
 //        }
 //    }
 
-    public void calculateItem(Long itemId) {
-        var item = itemService.get(itemId);
-        item.setPrice(calculateItemPrice(item));
-        item.setEstimatedDuration(calculateItemEstimatedDuration(item));
-        item.getTechnology().setComputed(true);
-        itemService.update(item);
-    }
+//    public void calculateItem(Long itemId) {
+//        var item = itemService.get(itemId);
+//        item.setPrice(calculateItemPrice(item));
+//        item.setEstimatedDuration(calculateItemEstimatedDuration(item));
+//        item.getTechnology().setComputed(true);
+//        itemService.update(item);
+//    }
 
-    private MonetaryAmount calculateItemPrice(ItemDto item) {
-        return item
-                .getTechnology()
-                .getSetups().stream()
-                .map(setup -> calculateSetupPrice(setup, item.getQuantity()))
-                .reduce(MonetaryAmount::add)
-                .orElseThrow(() -> new EntityNullException(String.format("Price of Item with id=%s is missed", item.getId())));
-    }
-
-    private MonetaryAmount calculateSetupPrice(SetupDto setup, Integer itemQuantity) {
-        var totalTime = setup.getInteroperativeTime()
-                .plus(setup.getSetupTime().dividedBy(itemQuantity + setup.getTechnology().getQuantityOfSetUpParts()))
-                .plus(setup.getProcessTime()).toMinutes();
-        return setup
-                .getProductionUnit()
-                .getPaymentPerHour()
-                .divide(60).multiply(totalTime);
-    }
+//    private MonetaryAmount calculateItemPrice(ItemDto item) {
+//        return item
+//                .getTechnology()
+//                .getSetups().stream()
+//                .map(setup -> calculateSetupPrice(setup, item.getQuantity()))
+//                .reduce(MonetaryAmount::add)
+//                .orElseThrow(() -> new EntityNullException(String.format("Price of Item with id=%s is missed", item.getId())));
+//    }
+//
+//    private MonetaryAmount calculateSetupPrice(SetupDto setup, Integer itemQuantity) {
+//        var totalTime = setup.getInteroperativeTime()
+//                .plus(setup.getSetupTime().dividedBy(itemQuantity + setup.getTechnology().getQuantityOfSetUpParts()))
+//                .plus(setup.getProcessTime()).toMinutes();
+//        return setup
+//                .getProductionUnit()
+//                .getPaymentPerHour()
+//                .divide(60).multiply(totalTime);
+//    }
 
     private Duration calculateItemEstimatedDuration(ItemDto item) {
         return item.getTechnology().getSetups().stream()

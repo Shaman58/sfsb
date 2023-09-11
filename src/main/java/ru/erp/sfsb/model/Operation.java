@@ -19,8 +19,6 @@ import javax.money.MonetaryAmount;
 public class Operation extends AbstractEntity {
 
     private String operationName;
-    @Enumerated(EnumType.STRING)
-    private OperationTypeCalc operationType;
     @AttributeOverride(
             name = "amount",
             column = @Column(name = "payment_amount")
@@ -32,4 +30,6 @@ public class Operation extends AbstractEntity {
     @CompositeType(MonetaryAmountType.class)
     @SuppressWarnings("JpaAttributeTypeInspection")
     private MonetaryAmount paymentPerHour;
+    @Enumerated(EnumType.STRING)
+    private OperationTimeManagement operationTimeManagement;
 }

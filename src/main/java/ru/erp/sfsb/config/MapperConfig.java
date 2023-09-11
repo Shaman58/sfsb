@@ -7,6 +7,10 @@ import org.springframework.stereotype.Component;
 import org.zalando.jackson.datatype.money.MoneyModule;
 import ru.erp.sfsb.deserializer.DurationDeserializer;
 import ru.erp.sfsb.deserializer.DurationSerializer;
+import ru.erp.sfsb.dto.CutterToolDto;
+import ru.erp.sfsb.dto.SpecialToolDto;
+import ru.erp.sfsb.model.CutterTool;
+import ru.erp.sfsb.model.SpecialTool;
 
 import java.time.Duration;
 

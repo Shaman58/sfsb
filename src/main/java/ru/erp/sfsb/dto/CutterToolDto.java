@@ -8,13 +8,13 @@ import lombok.NoArgsConstructor;
 
 import javax.money.MonetaryAmount;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class ToolingDto extends AbstractDto {
+public class CutterToolDto extends AbstractDto {
 
-    @NotBlank(message = "Название оснастки не может быть пустым")
+    @NotBlank(message = "Название инструмента не может быть пустым")
     private String toolName;
     private String description;
     private MonetaryAmount price;

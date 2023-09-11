@@ -28,10 +28,10 @@ public class DocController {
 //        docService.generateToolOrder(response, teId, feId, orderId, body);
 //    }
 
-    @ResponseBody
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/calculate")
-    public void calculateItem(@RequestParam Long itemId) {
-        docService.calculateItem(itemId);
-    }
+//    @ResponseBody
+//    @ResponseStatus(HttpStatus.OK)
+//    @GetMapping("/calculate")
+//    public void calculateItem(@RequestParam Long itemId) {
+//        docService.calculateItem(itemId);
+//    }
 }

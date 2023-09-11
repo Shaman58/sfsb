@@ -44,52 +44,6 @@ values (1, 'В ответ на ваше обращение от 15.03.2023г. о
 Так же просим рассмотреть возможность предоставления давальческого сырья и электронные модели деталей.
 Благодарю Вас за обращение в нашу компанию и надеюсь на долгосрочное и взаимовыгодное сотрудничество.', 'description',
         1, 1, 1);
-insert into operations (payment_amount, payment_currency, operation_name, operation_type)
-values (1000, 'RUB', 'Фрезерная', 'FROM_PROCESS_UNIT');
-insert into operations (payment_amount, payment_currency, operation_name, operation_type)
-values (900, 'RUB', 'Токарная', 'FROM_PROCESS_UNIT');
-insert into operations (payment_amount, payment_currency, operation_name, operation_type)
-values (800, 'RUB', 'Слесарная', 'FROM_OPERATION');
-insert into operations (payment_amount, payment_currency, operation_name, operation_type)
-values (1200, 'RUB', 'Термичка', 'FROM_OPERATION_WITH_CALC');
-insert into operations (payment_amount, payment_currency, operation_name, operation_type)
-values (0, 'RUB', 'Кооперация', 'NONE');
-insert into technologies (drawing_name, drawing_number, quantity_of_defective_parts,
-                          quantity_of_parts_from_workpiece, quantity_of_set_up_parts, employee_id, is_computed)
-values ('крышка', 'дкшг.100.200.001', 2, 5, 1, 1, false);
-insert into technologies (drawing_name, drawing_number, quantity_of_defective_parts,
-                          quantity_of_parts_from_workpiece, quantity_of_set_up_parts, employee_id, is_computed)
-values ('корпус', 'дкшг.100.200.002', 3, 6, 2, 2, false);
-insert into technologies (drawing_name, drawing_number, quantity_of_defective_parts,
-                          quantity_of_parts_from_workpiece, quantity_of_set_up_parts, employee_id, is_computed)
-values ('кронштейн', 'дкшг.100.200.003', 4, 7, 3, 2, false);
-insert into items(actual_duration, estimated_duration, is_accepted, is_customer_material, quantity, technology_id,
-                  price_amount, price_currency, order_id)
-values (1000, 2000, true, true, 10, 1, 100, 'RUB', 1);
-insert into items(actual_duration, estimated_duration, is_accepted, is_customer_material, quantity, technology_id,
-                  price_amount, price_currency, order_id)
-values (2000, 3000, true, true, 10, 2, 200, 'RUB', 1);
-insert into items(actual_duration, estimated_duration, is_accepted, is_customer_material, quantity, technology_id,
-                  price_amount, price_currency, order_id)
-values (3000, 4000, true, true, 10, 3, 300, 'RUB', 1);
-insert into setups(interoperative_time, process_time, operation_id, setup_number, setup_time, technology_id, per_time,
-                   is_group)
-values (1000, 2000, 1, '1', 1000, 1, 2, true);
-insert into setups(interoperative_time, process_time, operation_id, setup_number, setup_time, technology_id, per_time,
-                   is_group)
-values (2000, 3000, 2, '2', 2000, 1, 4, true);
-insert into setups(interoperative_time, process_time, operation_id, setup_number, setup_time, technology_id, per_time,
-                   is_group)
-values (3000, 4000, 2, '3', 3000, 1, null, false);
-insert into setups(interoperative_time, process_time, operation_id, setup_number, setup_time, technology_id, per_time,
-                   is_group)
-values (1001, 2001, 4, '1', 1001, 2, null, false);
-insert into setups(interoperative_time, process_time, operation_id, setup_number, setup_time, technology_id, per_time,
-                   is_group)
-values (2002, 3002, 1, '2', 2002, 2, 5, true);
-insert into setups(interoperative_time, process_time, operation_id, setup_number, setup_time, technology_id, per_time,
-                   is_group)
-values (3003, 4003, 2, '3', 3003, 2, 5, true);
 insert into materials (material_name, geometry, gost, density, price_amount, price_currency)
 VALUES ('Сплав Д16Т', 'CYLINDER', 'ГОСТ 21488-97', 2700, 800, 'RUB');
 insert into materials (material_name, geometry, gost, density, price_amount, price_currency)
@@ -102,48 +56,59 @@ insert into materials (material_name, geometry, gost, density, price_amount, pri
 VALUES ('Сталь 40х', 'CYLINDER', 'ГОСТ 10702-2016', 7800, 280, 'RUB');
 insert into materials (material_name, geometry, gost, density, price_amount, price_currency)
 VALUES ('Сталь 40х', 'CYLINDER', 'ГОСТ 4543-2016', 7800, 320, 'RUB');
-insert into measurers(description, price_amount, price_currency, tool_name, amount)
-values ('Штангель MAHR 250', 50000, 'RUB', 'MAHR 250 digasinm', 2);
-insert into measurers(description, price_amount, price_currency, tool_name, amount)
-values ('Штангель Insize 250', 15000, 'RUB', 'Insise 250', 1);
-insert into measurers(description, price_amount, price_currency, tool_name, amount)
-values ('Микрометр MAHR 250', 22300, 'RUB', 'MAHR 25 mcrdig', 1);
-insert into workpieces(geom1, geom2, geom3, material_id)
-values (100, 50, 0, 1);
-insert into workpieces(geom1, geom2, geom3, material_id)
-values (100, 50, 20, 2);
-insert into workpieces(geom1, geom2, geom3, material_id)
-values (100, 60, 0, 3);
-insert into additionals(tool_name, workpiece_id)
-values ('Плита для изготовления ДКШГ.001.535.001 Корпус-хуерпус', 1);
-insert into additionals(tool_name, workpiece_id)
-values ('Плита для изготовления ДКШГ.001.535.003 Корпус-датчиков', 2);
-insert into additionals(tool_name, workpiece_id)
-values ('Губки для тисков для изготовления РНБЦ-0011 планка', 2);
-insert into toolings(description, price_amount, price_currency, tool_name, amount)
-values ('Тиски BISON 250x40', 40000, 'RUB', 'Тиски 250', 1);
-insert into toolings(description, price_amount, price_currency, tool_name, amount)
-values ('Прижим 25-100', 1000, 'RUB', 'Прижим', 1);
-insert into toolings(description, price_amount, price_currency, tool_name, amount)
-values ('Набор паралеллек INSIZE', 50000, 'RUB', 'Набор паралеллек INSIZE', 1);
-insert into specials(description, price_amount, price_currency, tool_name, amount)
-VALUES ('Гриб 12h2d6l20', 1000, 'RUB', 'Гриб 12h2d6l20', 1);
-insert into specials(description, price_amount, price_currency, tool_name, amount)
-VALUES ('Гриб 22h2d12l20', 2000, 'RUB', 'Гриб 22h2d12l20', 1);
-insert into specials(description, price_amount, price_currency, tool_name, amount)
-VALUES ('Гриб 20h2d6l20', 3000, 'RUB', 'Гриб 20h2d6l20', 1);
-insert into units(payment_amount, payment_currency, unit_name, unit_number,
-                  company_id)
-values (1000, 'RUB', 'DMU 50', 1, 1);
-insert into units(payment_amount, payment_currency, unit_name, unit_number,
-                  company_id)
-values (1000, 'RUB', 'Тверь 800', 2, 1);
-insert into units(payment_amount, payment_currency, unit_name, unit_number,
-                  company_id)
-values (1100, 'RUB', 'DMU 70', 3, 1);
-insert into units(payment_amount, payment_currency, unit_name, unit_number,
-                  company_id)
-values (800, 'RUB', 'Тверь 600', 3, 1);
+INSERT INTO workpieces (geom1, geom2, geom3, material_id)
+VALUES (234, 123, 23, 3);
+INSERT INTO workpieces (geom1, geom2, geom3, material_id)
+VALUES (234, 234, 40, 3);
+INSERT INTO workpieces (geom1, geom2, geom3, material_id)
+VALUES (120, 55, null, 1);
+insert into technologies (drawing_name, drawing_number, quantity_of_defective_parts,
+                          quantity_of_parts_from_workpiece, quantity_of_set_up_parts, employee_id, is_computed)
+values ('крышка', 'дкшг.100.200.001', 2, 5, 1, 1, false);
+insert into technologies (drawing_name, drawing_number, quantity_of_defective_parts,
+                          quantity_of_parts_from_workpiece, quantity_of_set_up_parts, employee_id, is_computed)
+values ('корпус', 'дкшг.100.200.002', 3, 6, 2, 2, false);
+insert into technologies (drawing_name, drawing_number, quantity_of_defective_parts,
+                          quantity_of_parts_from_workpiece, quantity_of_set_up_parts, employee_id, is_computed,
+                          workpiece_id)
+values ('кронштейн', 'дкшг.100.200.003', 4, 7, 3, 2, false, 1);
+INSERT INTO public.items (actual_duration, estimated_duration, is_accepted, is_customer_material, quantity,
+                          technology_id, order_id, price_amount, price_currency)
+VALUES (1000, 2000, true, true, 10, 1, 1, 100.00, 'RUB');
+INSERT INTO public.items (actual_duration, estimated_duration, is_accepted, is_customer_material, quantity,
+                          technology_id, order_id, price_amount, price_currency)
+VALUES (2000, 3000, true, true, 10, 2, 1, 200.00, 'RUB');
+INSERT INTO public.items (actual_duration, estimated_duration, is_accepted, is_customer_material, quantity,
+                          technology_id, order_id, price_amount, price_currency)
+VALUES (3000, 4000, true, true, 10, 3, 1, 300.00, 'RUB');
+insert into tools(description, price_amount, price_currency, tool_name, tool_type)
+values ('Штангель MAHR 250', 50000, 'RUB', 'MAHR 250 digasinm', 'MeasureTool');
+insert into tools(description, price_amount, price_currency, tool_name, tool_type)
+values ('Штангель Insize 250', 15000, 'RUB', 'Insise 250', 'MeasureTool');
+insert into tools(description, price_amount, price_currency, tool_name, tool_type)
+values ('Микрометр MAHR 250', 22300, 'RUB', 'MAHR 25 mcrdig', 'MeasureTool');
+insert into tools(description, price_amount, price_currency, tool_name, tool_type)
+values ('Тиски BISON 250x40', 40000, 'RUB', 'Тиски 250', 'Tooling');
+insert into tools(description, price_amount, price_currency, tool_name, tool_type)
+values ('Прижим 25-100', 1000, 'RUB', 'Прижим', 'Tooling');
+insert into tools(description, price_amount, price_currency, tool_name, tool_type)
+values ('Набор паралеллек INSIZE', 50000, 'RUB', 'Набор паралеллек INSIZE', 'Tooling');
+insert into tools(description, price_amount, price_currency, tool_name, tool_type)
+VALUES ('Фреза ф12', 1000, 'RUB', 'DEC1212', 'CutterTool');
+insert into tools(description, price_amount, price_currency, tool_name, tool_type)
+VALUES ('Фреза ф10', 2000, 'RUB', 'DEC1010', 'CutterTool');
+insert into tools(description, price_amount, price_currency, tool_name, tool_type)
+VALUES ('Фреза ф8', 3000, 'RUB', 'DEC0808', 'CutterTool');
+insert into tools(description, price_amount, price_currency, tool_name, tool_type)
+VALUES ('Гриб ф12д6в2', 1000, 'RUB', 'Гриб ф12д6в2', 'SpecialTool');
+insert into tools(description, price_amount, price_currency, tool_name, tool_type)
+VALUES ('Гриб ф16д10в2', 2000, 'RUB', 'Гриб ф16д10в2', 'SpecialTool');
+insert into tools(description, price_amount, price_currency, tool_name, tool_type)
+VALUES ('Долбяк 2мм', 3000, 'RUB', 'Долбяк 2мм', 'SpecialTool');
+INSERT INTO public.tools (description, price_amount, price_currency, tool_name, tool_type)
+VALUES ('М32х1', null, null, 'пробка в жопу', 'MeasureTool');
+INSERT INTO public.tools (description, price_amount, price_currency, tool_name, tool_type)
+VALUES ('M40X2', null, null, 'Пробка в жопу', 'MeasureTool');
 insert into material_density_templates(material_type_name, density)
 values ('Алюминиевый сплав', 2700);
 insert into material_density_templates(material_type_name, density)
@@ -154,3 +119,53 @@ insert into material_density_templates(material_type_name, density)
 values ('Медь', 8900);
 insert into material_density_templates(material_type_name, density)
 values ('Бронза', 8100);
+insert into operations (payment_amount, payment_currency, operation_name, operation_time_management)
+values (1000, 'RUB', 'Фрезерная 3ос', 'FULL');
+insert into operations (payment_amount, payment_currency, operation_name, operation_time_management)
+values (2000, 'RUB', 'Фрезерная 3+2ос', 'FULL');
+insert into operations (payment_amount, payment_currency, operation_name, operation_time_management)
+values (3000, 'RUB', 'Фрезерная 5ос', 'FULL');
+insert into operations (payment_amount, payment_currency, operation_name, operation_time_management)
+values (2000, 'RUB', 'Фрезерная 4ос', 'FULL');
+insert into operations (payment_amount, payment_currency, operation_name, operation_time_management)
+values (1000, 'RUB', 'Токарная', 'FULL');
+insert into operations (payment_amount, payment_currency, operation_name, operation_time_management)
+values (1000, 'RUB', 'Токарно-фрезерная', 'FULL');
+insert into operations (payment_amount, payment_currency, operation_name, operation_time_management)
+values (1000, 'RUB', 'Слесарная', 'PROCESS_TIME_ONLY');
+insert into operations (payment_amount, payment_currency, operation_name, operation_time_management)
+values (1000, 'RUB', 'Термичка', 'COMPUTED');
+insert into operations (payment_amount, payment_currency, operation_name, operation_time_management)
+values (1000, 'RUB', 'Гальваника', 'NONE');
+INSERT INTO setups (interoperative_time, process_time, setup_number, setup_time, technology_id, operation_id, is_group,
+                    per_time, is_cooperate)
+VALUES (60000000000, 60000000000, 45, 60000000000, 3, 1, false, null, false);
+INSERT INTO setups (interoperative_time, process_time, setup_number, setup_time, technology_id, operation_id, is_group,
+                    per_time, is_cooperate)
+VALUES (120000000000, 120000000000, 30, 120000000000, 3, 4, false, null, false);
+INSERT INTO setups (interoperative_time, process_time, setup_number, setup_time, technology_id, operation_id, is_group,
+                    per_time, is_cooperate)
+VALUES (0, 7200000000000, 15, 0, 3, 8, true, 5, true);
+INSERT INTO setups (interoperative_time, process_time, setup_number, setup_time, technology_id, operation_id, is_group,
+                    per_time, is_cooperate)
+VALUES (0, 0, 50, 0, 3, 9, false, null, true);
+INSERT INTO public.tool_items (tool_id, setup_id, amount, tool_type)
+VALUES (7, 1, 12, 'CutterToolItem');
+INSERT INTO public.tool_items (tool_id, setup_id, amount, tool_type)
+VALUES (10, 1, 12, 'SpecialToolItem');
+INSERT INTO public.tool_items (tool_id, setup_id, amount, tool_type)
+VALUES (7, 4, 12, 'CutterToolItem');
+INSERT INTO public.tool_items (tool_id, setup_id, amount, tool_type)
+VALUES (10, 4, 3, 'SpecialToolItem');
+INSERT INTO setups_toolings (setup_id, tooling_id)
+VALUES (1, 5);
+INSERT INTO setups_toolings (setup_id, tooling_id)
+VALUES (1, 6);
+INSERT INTO setups_toolings (setup_id, tooling_id)
+VALUES (4, 4);
+INSERT INTO setups_measure_tools (setup_id, measure_tool_id)
+VALUES (1, 13);
+INSERT INTO setups_measure_tools (setup_id, measure_tool_id)
+VALUES (4, 14);
+INSERT INTO additionals (tool_name, workpiece_id, setup_id)
+VALUES ('Люлька', 3, 1);

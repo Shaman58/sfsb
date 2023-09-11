@@ -43,6 +43,4 @@ public class CompanyDto extends AbstractDto {
     private List<OrderDto> orders;
     @JsonIgnore
     private List<DepartmentDto> departments;
-    @JsonIgnore
-    private List<ProductionUnitDto> units;
 }

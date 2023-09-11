@@ -9,5 +9,5 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-public class MeasureTool extends Tool {
+public class CutterTool extends Tool {
 }

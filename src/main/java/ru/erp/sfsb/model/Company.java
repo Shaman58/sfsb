@@ -36,6 +36,4 @@ public class Company extends AbstractEntity {
     private List<Order> orders;
     @OneToMany(mappedBy = "company", cascade = MERGE)
     private List<Department> departments;
-    @OneToMany(mappedBy = "company", cascade = MERGE)
-    private List<ProductionUnit> units;
 }

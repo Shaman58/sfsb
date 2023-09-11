@@ -1,6 +1,7 @@
 package ru.erp.sfsb.dto;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,12 +22,16 @@ public class SetupDto extends AbstractDto {
     private Duration processTime;
     private Duration interoperativeTime;
     private List<MeasureToolDto> measureTools;
+    @JsonManagedReference
     private List<AdditionalToolDto> additionalTools;
-    private List<SpecialToolDto> specialTools;
+    @JsonManagedReference
+    private List<SpecialToolItemDto> specialToolItems;
+    @JsonManagedReference
+    private List<CutterToolItemDto> cutterToolItems;
     private List<ToolingDto> toolings;
-    private ProductionUnitDto productionUnit;
     @JsonBackReference
     private TechnologyDto technology;
     private boolean isGroup;
     private Integer perTime;
+    private boolean isCooperate;
 }

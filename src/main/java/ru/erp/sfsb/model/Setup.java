@@ -22,7 +22,8 @@ import static jakarta.persistence.CascadeType.ALL;
 public class Setup extends AbstractEntity {
 
     private Integer setupNumber;
-    @ManyToOne
+    @ManyToOne(cascade = ALL)
+    @JoinColumn(name = "operation_id")
     private Operation operation;
     @JdbcTypeCode(SqlTypes.NUMERIC)
     private Duration setupTime;
@@ -31,19 +32,31 @@ public class Setup extends AbstractEntity {
     @JdbcTypeCode(SqlTypes.NUMERIC)
     private Duration interoperativeTime;
     @ManyToMany(cascade = ALL)
+    @JoinTable(
+            name = "setups_measure_tools",
+            joinColumns = @JoinColumn(name = "setup_id"),
+            inverseJoinColumns = @JoinColumn(name = "measure_tool_id"))
     private List<MeasureTool> measureTools;
-    @ManyToMany(cascade = ALL)
+
+
+    @OneToMany(cascade = ALL, mappedBy = "setup")
     private List<AdditionalTool> additionalTools;
+
+
+    @OneToMany(cascade = ALL, mappedBy = "setup")
+    private List<SpecialToolItem> specialToolItems;
+    @OneToMany(cascade = ALL, mappedBy = "setup")
+    private List<CutterToolItem> cutterToolItems;
     @ManyToMany(cascade = ALL)
-    private List<SpecialTool> specialTools;
-    @ManyToMany(cascade = ALL)
+    @JoinTable(
+            name = "setups_toolings",
+            joinColumns = @JoinColumn(name = "setup_id"),
+            inverseJoinColumns = @JoinColumn(name = "tooling_id"))
     private List<Tooling> toolings;
-    @ManyToOne
-    @JoinColumn(name = "production_unit_id")
-    private ProductionUnit productionUnit;
     @ManyToOne
     @JoinColumn(name = "technology_id")
     private Technology technology;
     private boolean isGroup;
     private Integer perTime;
+    private boolean isCooperate;
 }

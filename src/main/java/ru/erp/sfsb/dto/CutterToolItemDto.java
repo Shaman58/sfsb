@@ -1,7 +1,6 @@
 package ru.erp.sfsb.dto;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,12 +11,11 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class AdditionalToolDto extends AbstractDto {
+public class CutterToolItemDto extends AbstractDto {
 
-    @NotBlank(message = "Название приспособления не может быть пустым")
-    private String toolName;
-    @NotNull(message = "Заготовка не может быть пустой")
-    private WorkpieceDto workpiece;
+    @NotNull(message = "Название инструмента не может быть пустым")
+    private CutterToolDto tool;
+    private Integer amount;
     @JsonBackReference
     private SetupDto setup;
 }
