@@ -23,7 +23,8 @@ public class AdditionalTool extends AbstractEntity {
     @ManyToOne(cascade = ALL)
     @JoinColumn(name = "workpiece_id")
     private Workpiece workpiece;
-    @ManyToOne(cascade = ALL)
+    @ManyToOne
     @JoinColumn(name = "setup_id")
     private Setup setup;
+    private Integer amount;
 }

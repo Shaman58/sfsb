@@ -31,6 +31,6 @@ public class Technology extends AbstractEntity {
     @ManyToOne(cascade = ALL)
     private Workpiece workpiece;
     private boolean isComputed;
-    @OneToMany(mappedBy = "technology", cascade = ALL)
+    @OneToMany(mappedBy = "technology", cascade = ALL, orphanRemoval = true)
     private List<Setup> setups;
 }

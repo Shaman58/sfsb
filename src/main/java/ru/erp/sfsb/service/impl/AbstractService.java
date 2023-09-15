@@ -66,7 +66,7 @@ public abstract class AbstractService
     @Transactional
     public D update(D dto) {
         log.info("Saving {} into DB", entityName);
-        get(dto.getId());
+        checkExistById(dto.getId());
         return mapper.toDto(repository.save(mapper.toEntity(dto)));
     }
 
@@ -74,9 +74,13 @@ public abstract class AbstractService
     @Transactional
     public void delete(Long id) {
         log.info("Deleting {} with id {} in DB", entityName, id);
+        checkExistById(id);
+        repository.deleteById(id);
+    }
+
+    private void checkExistById(Long id) {
         if (!repository.existsById(id)) {
             throw new EntityNotFoundException(String.format("Entity with id %d not found", id));
         }
-        repository.deleteById(id);
     }
 }

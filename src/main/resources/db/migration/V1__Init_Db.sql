@@ -42,6 +42,7 @@ create table additionals
     tool_name    varchar(255),
     workpiece_id bigint,
     setup_id     bigint,
+    amount       integer,
     primary key (id)
 );
 
@@ -166,7 +167,9 @@ create table setups
     technology_id       bigint,
     operation_id        bigint,
     is_group            boolean   not null,
+    is_aggregate        boolean   not null,
     per_Time            integer,
+    text                varchar(2047),
     is_cooperate        boolean   not null,
     primary key (id)
 );
@@ -224,22 +227,6 @@ create table operations
     primary key (id)
 );
 
-create table setups_measure_tools
-(
-    setup_id        bigint not null,
-    measure_tool_id bigint not null
-);
-
-alter table if exists setups_measure_tools
-    add constraint FK_measure_tool_id
-        foreign key (measure_tool_id)
-            references tools;
-
-alter table if exists setups_measure_tools
-    add constraint FK_setup_id
-        foreign key (setup_id)
-            references setups;
-
 create table setups_toolings
 (
     setup_id   bigint not null,
@@ -254,7 +241,8 @@ alter table if exists setups_toolings
 alter table if exists setups_toolings
     add constraint FK_setup_id
         foreign key (setup_id)
-            references setups;
+            references setups
+            on delete cascade;;
 
 alter table if exists employees
     add constraint FK_department_id
@@ -319,12 +307,13 @@ alter table if exists orders
 alter table if exists tool_items
     add constraint FK_tool_id
         foreign key (tool_id)
-            references tools;
+            references tools (id);
 
 alter table if exists tool_items
     add constraint FK_setup_id
         foreign key (setup_id)
-            references setups;
+            references setups (id)
+            on delete cascade;
 
 alter table if exists technologies
     add constraint FK_employee_id
@@ -344,7 +333,8 @@ alter table if exists additionals
 alter table if exists additionals
     add constraint FK_setup_id
         foreign key (setup_id)
-            references setups;
+            references setups
+            on delete cascade;;
 
 alter table if exists contacts
     add constraint FK_contact_customer_id

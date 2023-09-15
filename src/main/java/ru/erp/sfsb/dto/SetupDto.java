@@ -21,7 +21,8 @@ public class SetupDto extends AbstractDto {
     private Duration setupTime;
     private Duration processTime;
     private Duration interoperativeTime;
-    private List<MeasureToolDto> measureTools;
+    @JsonManagedReference
+    private List<MeasureToolItemDto> measureToolItems;
     @JsonManagedReference
     private List<AdditionalToolDto> additionalTools;
     @JsonManagedReference
@@ -32,6 +33,8 @@ public class SetupDto extends AbstractDto {
     @JsonBackReference
     private TechnologyDto technology;
     private boolean isGroup;
+    private boolean isAggregate;
     private Integer perTime;
     private boolean isCooperate;
+    private String text;
 }

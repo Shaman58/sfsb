@@ -22,7 +22,7 @@ import static jakarta.persistence.CascadeType.ALL;
 public class Setup extends AbstractEntity {
 
     private Integer setupNumber;
-    @ManyToOne(cascade = ALL)
+    @ManyToOne
     @JoinColumn(name = "operation_id")
     private Operation operation;
     @JdbcTypeCode(SqlTypes.NUMERIC)
@@ -31,23 +31,15 @@ public class Setup extends AbstractEntity {
     private Duration processTime;
     @JdbcTypeCode(SqlTypes.NUMERIC)
     private Duration interoperativeTime;
-    @ManyToMany(cascade = ALL)
-    @JoinTable(
-            name = "setups_measure_tools",
-            joinColumns = @JoinColumn(name = "setup_id"),
-            inverseJoinColumns = @JoinColumn(name = "measure_tool_id"))
-    private List<MeasureTool> measureTools;
-
-
-    @OneToMany(cascade = ALL, mappedBy = "setup")
+    @OneToMany(mappedBy = "setup", cascade = ALL)
+    private List<MeasureToolItem> measureToolItems;
+    @OneToMany(mappedBy = "setup", cascade = ALL)
     private List<AdditionalTool> additionalTools;
-
-
-    @OneToMany(cascade = ALL, mappedBy = "setup")
+    @OneToMany(mappedBy = "setup", cascade = ALL)
     private List<SpecialToolItem> specialToolItems;
-    @OneToMany(cascade = ALL, mappedBy = "setup")
+    @OneToMany(mappedBy = "setup", cascade = ALL)
     private List<CutterToolItem> cutterToolItems;
-    @ManyToMany(cascade = ALL)
+    @ManyToMany
     @JoinTable(
             name = "setups_toolings",
             joinColumns = @JoinColumn(name = "setup_id"),
@@ -57,6 +49,8 @@ public class Setup extends AbstractEntity {
     @JoinColumn(name = "technology_id")
     private Technology technology;
     private boolean isGroup;
+    private boolean isAggregate;
     private Integer perTime;
     private boolean isCooperate;
+    private String text;
 }
