@@ -26,5 +26,4 @@ public class OrderDto extends AbstractDto {
     @NotNull(message = "Менеджер не может быть пустым")
     private EmployeeDto employee;
     private ContactDto contact;
-    private CompanyDto company;
 }

@@ -1,6 +1,6 @@
 package ru.erp.sfsb.service.impl;
 
-import lombok.extern.slf4j.Slf4j;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import ru.erp.sfsb.dto.MaterialDensityTemplateDto;
 import ru.erp.sfsb.mapper.MaterialDensityTemplateMapper;
@@ -9,7 +9,7 @@ import ru.erp.sfsb.repository.MaterialDensityTemplateRepository;
 import ru.erp.sfsb.service.MaterialDensityTemplateService;
 
 @Service
-@Slf4j
+@Transactional
 public class MaterialDensityTemplateServiceImpl extends AbstractService<MaterialDensityTemplateDto, MaterialDensityTemplate, MaterialDensityTemplateRepository, MaterialDensityTemplateMapper>
         implements MaterialDensityTemplateService {
 

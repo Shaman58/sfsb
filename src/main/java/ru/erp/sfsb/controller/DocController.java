@@ -4,19 +4,19 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.erp.sfsb.service.impl.DocService;
+import ru.erp.sfsb.service.impl.ReportService;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/doc")
 public class DocController {
 
-    private final DocService docService;
+    private final ReportService reportService;
 
     @GetMapping("/kp")
     public void getKp(HttpServletResponse response,
                       @RequestParam Long orderId) {
-        docService.generateKp(orderId, response);
+        reportService.generateKp(orderId, response);
     }
 
 //    @GetMapping("/tool-order")
@@ -28,10 +28,10 @@ public class DocController {
 //        docService.generateToolOrder(response, teId, feId, orderId, body);
 //    }
 
-//    @ResponseBody
-//    @ResponseStatus(HttpStatus.OK)
-//    @GetMapping("/calculate")
-//    public void calculateItem(@RequestParam Long itemId) {
-//        docService.calculateItem(itemId);
-//    }
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/calculate")
+    public void calculateItem(@RequestParam Long itemId) {
+        reportService.calculateItem(itemId);
+    }
 }

@@ -1,5 +1,6 @@
 package ru.erp.sfsb.service.impl;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import ru.erp.sfsb.dto.ToolingDto;
 import ru.erp.sfsb.mapper.ToolingMapper;
@@ -8,6 +9,7 @@ import ru.erp.sfsb.repository.ToolingRepository;
 import ru.erp.sfsb.service.ToolingService;
 
 @Service
+@Transactional
 public class ToolingServiceImpl extends AbstractService<ToolingDto, Tooling, ToolingRepository, ToolingMapper>
         implements ToolingService {
 

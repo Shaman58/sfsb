@@ -1,7 +1,7 @@
 package ru.erp.sfsb.dto;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,7 +18,8 @@ public class DepartmentDto extends AbstractDto {
 
     @NotBlank(message = "Имя не может быть пустым")
     private String departmentName;
+    @JsonBackReference
     private CompanyDto company;
-    @JsonManagedReference
+    @JsonIgnore
     private List<EmployeeDto> employees;
 }

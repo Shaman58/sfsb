@@ -29,13 +29,6 @@ public class TechnologyController {
 
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/employee/{id}")
-    public List<TechnologyDto> getEmployeeTechnologies(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
-        return technologyService.getEmployeeTechnologies(id);
-    }
-
-    @ResponseBody
-    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     public TechnologyDto get(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         return technologyService.get(id);

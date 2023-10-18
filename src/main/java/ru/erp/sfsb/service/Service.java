@@ -4,7 +4,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-public abstract interface Service<D> {
+public interface Service<D> {
 
     List<D> getAll();
 

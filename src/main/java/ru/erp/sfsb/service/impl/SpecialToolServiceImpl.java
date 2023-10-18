@@ -1,6 +1,6 @@
 package ru.erp.sfsb.service.impl;
 
-import lombok.extern.slf4j.Slf4j;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import ru.erp.sfsb.dto.SpecialToolDto;
 import ru.erp.sfsb.mapper.SpecialToolMapper;
@@ -9,7 +9,7 @@ import ru.erp.sfsb.repository.SpecialToolRepository;
 import ru.erp.sfsb.service.SpecialToolService;
 
 @Service
-@Slf4j
+@Transactional
 public class SpecialToolServiceImpl extends AbstractService<SpecialToolDto, SpecialTool, SpecialToolRepository, SpecialToolMapper>
         implements SpecialToolService {
 

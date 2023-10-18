@@ -1,6 +1,6 @@
 package ru.erp.sfsb.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -39,8 +39,6 @@ public class CompanyDto extends AbstractDto {
     @Pattern(regexp = "^\\w+([.-]?\\w+)*@\\w+([.-]?\\w+)*(\\.\\w{2,3})+$")
     private String email;
     private EmployeeDto director;
-    @JsonIgnore
-    private List<OrderDto> orders;
-    @JsonIgnore
+    @JsonManagedReference
     private List<DepartmentDto> departments;
 }

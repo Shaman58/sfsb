@@ -17,5 +17,4 @@ public class CutterToolDto extends AbstractDto {
     @NotBlank(message = "Название инструмента не может быть пустым")
     private String toolName;
     private String description;
-    private MonetaryAmount price;
 }

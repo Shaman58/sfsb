@@ -1,6 +1,5 @@
 package ru.erp.sfsb.dto;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,11 +10,8 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class SpecialToolItemDto extends AbstractDto {
+public class SpecialToolItemDto extends ToolItemDto {
 
     @NotNull(message = "Название специнструмента не может быть пустым")
     private SpecialToolDto tool;
-    private Integer amount;
-    @JsonBackReference
-    private SetupDto setup;
 }

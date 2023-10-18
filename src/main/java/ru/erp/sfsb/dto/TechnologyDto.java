@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import javax.money.MonetaryAmount;
+import java.time.Duration;
 import java.util.List;
 
 @Data
@@ -24,7 +26,10 @@ public class TechnologyDto extends AbstractDto {
     private Integer quantityOfSetUpParts;
     private Integer quantityOfPartsFromWorkpiece;
     private WorkpieceDto workpiece;
+    private Duration technologistTime;
     private boolean isComputed;
     @JsonManagedReference
     private List<SetupDto> setups;
+    private MonetaryAmount outsourcedCosts;
+    private String outsourcedCostsDescription;
 }

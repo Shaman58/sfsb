@@ -1,6 +1,6 @@
 package ru.erp.sfsb.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -34,10 +34,10 @@ public class CustomerDto extends AbstractDto {
     private String bik;
     @Pattern(regexp = "^[0-9]{20}$")
     private String correspondentAccount;
-    @Pattern(regexp = "^\\+7\\s\\(\\d{4}\\)\\s\\d{2}-\\d{2}-\\d{2}$")
+    @Pattern(regexp = "^\\+?[78][-(]?\\d{3}\\)?-?\\d{3}-?\\d{2}-?\\d{2}$")
     private String phoneNumber;
     @Pattern(regexp = "^\\w+([.-]?\\w+)*@\\w+([.-]?\\w+)*(\\.\\w{2,3})+$")
     private String email;
-    @JsonIgnore
+    @JsonManagedReference
     private List<ContactDto> contacts;
 }

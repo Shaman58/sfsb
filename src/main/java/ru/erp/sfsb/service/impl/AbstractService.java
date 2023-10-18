@@ -1,6 +1,5 @@
 package ru.erp.sfsb.service.impl;
 
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -32,7 +31,6 @@ public abstract class AbstractService
     }
 
     @Override
-    @Transactional
     public List<D> getAll() {
         log.info("Looking all {}s in DB", entityName);
         var entities = repository.findAll();
@@ -40,7 +38,6 @@ public abstract class AbstractService
     }
 
     @Override
-    @Transactional
     public List<D> getAll(Pageable pageable) {
         log.info("Looking all {}s in DB", entityName);
         var entities = repository.findAll(pageable);
@@ -48,7 +45,6 @@ public abstract class AbstractService
     }
 
     @Override
-    @Transactional
     public D get(Long id) {
         log.info("Looking {} with id={} in DB", entityName, id);
         return mapper.toDto((repository.findById(id).orElseThrow(
@@ -56,14 +52,12 @@ public abstract class AbstractService
     }
 
     @Override
-    @Transactional
     public D save(D dto) {
         log.info("Saving {} into DB", entityName);
         return mapper.toDto(repository.save(mapper.toEntity(dto)));
     }
 
     @Override
-    @Transactional
     public D update(D dto) {
         log.info("Saving {} into DB", entityName);
         checkExistById(dto.getId());
@@ -71,7 +65,6 @@ public abstract class AbstractService
     }
 
     @Override
-    @Transactional
     public void delete(Long id) {
         log.info("Deleting {} with id {} in DB", entityName, id);
         checkExistById(id);

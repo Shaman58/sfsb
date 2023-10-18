@@ -9,7 +9,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.money.MonetaryAmount;
-import java.time.Duration;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -25,8 +24,5 @@ public class ItemDto extends AbstractDto {
     private boolean isCustomerMaterial;
     @NotNull(message = "Количество не должно быть пустым")
     private Integer quantity;
-    private Duration estimatedDuration;
-    private Duration actualDuration;
-    private boolean isAccepted;
     private MonetaryAmount price;
 }

@@ -38,14 +38,6 @@ public class ContactController {
     }
 
     @ResponseBody
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/customer/{id}")
-    public List<ContactDto> getAllByCustomerId(
-            @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
-        return contactService.getCustomerContacts(id);
-    }
-
-    @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping()
     public ContactDto save(@RequestBody @Valid ContactDto contactDto) {

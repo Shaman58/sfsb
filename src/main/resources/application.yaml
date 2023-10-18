@@ -4,8 +4,10 @@ spring:
   datasource:
     url: jdbc:postgresql://db:5432/sfsb
     driver-class-name: org.postgresql.Driver
-    username: user
-    password: password
+    username: sfsb
+    password: gFNQkM
+#    username: user
+#    password: password
   jpa:
     hibernate:
       ddl-auto: validate

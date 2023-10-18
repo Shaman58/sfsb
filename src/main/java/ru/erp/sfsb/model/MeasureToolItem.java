@@ -1,11 +1,13 @@
 package ru.erp.sfsb.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import io.hypersistence.utils.hibernate.type.money.MonetaryAmountType;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CompositeType;
+
+import javax.money.MonetaryAmount;
 
 import static jakarta.persistence.CascadeType.ALL;
 

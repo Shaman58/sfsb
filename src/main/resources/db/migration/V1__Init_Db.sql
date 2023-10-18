@@ -128,9 +128,6 @@ create table items
     id                   bigserial not null,
     created              timestamp(6),
     updated              timestamp(6),
-    actual_duration      numeric(21, 0),
-    estimated_duration   numeric(21, 0),
-    is_accepted          boolean   not null,
     is_customer_material boolean   not null,
     quantity             integer,
     technology_id        bigint,
@@ -151,7 +148,6 @@ create table orders
     customer_id        bigint,
     employee_id        bigint,
     contact_id         bigint,
-    company_id         bigint,
     primary key (id)
 );
 
@@ -171,32 +167,43 @@ create table setups
     per_Time            integer,
     text                varchar(2047),
     is_cooperate        boolean   not null,
+    price_amount        numeric(38, 2),
+    price_currency      varchar(255),
     primary key (id)
 );
 
 create table tools
 (
-    id             bigserial not null,
-    created        timestamp(6),
-    updated        timestamp(6),
-    description    varchar(255),
-    price_amount   numeric(38, 2),
-    price_currency varchar(255),
-    tool_name      varchar(255),
-    tool_type      varchar(20),
+    id          bigserial not null,
+    created     timestamp(6),
+    updated     timestamp(6),
+    description varchar(255),
+    tool_name   varchar(255),
+    tool_type   varchar(20),
     primary key (id)
 );
 
 create table tool_items
 (
-    id        bigserial not null,
-    created   timestamp(6),
-    updated   timestamp(6),
-    tool_id   bigint,
-    setup_id  bigint,
-    amount    integer,
-    tool_type varchar(20),
+    id             bigserial not null,
+    created        timestamp(6),
+    updated        timestamp(6),
+    tool_id        bigint,
+    setup_id       bigint,
+    amount         integer,
+    tool_type      varchar(20),
+    price_amount   numeric(38, 2),
+    price_currency varchar(255),
     primary key (id)
+);
+
+create table setup_price
+(
+    id             bigserial not null,
+    created        timestamp(6),
+    updated        timestamp(6),
+    price_amount   numeric(38, 2),
+    price_currency varchar(255)
 );
 
 create table technologies
@@ -211,7 +218,11 @@ create table technologies
     quantity_of_set_up_parts         integer,
     employee_id                      bigint,
     workpiece_id                     bigint,
+    technologist_time                numeric(21, 0),
     is_computed                      boolean,
+    outsourced_costs_amount          numeric(38, 2),
+    outsourced_costs_currency        varchar(255),
+    outsourced_costs_description     varchar(2047),
     primary key (id)
 );
 
@@ -263,11 +274,6 @@ alter table if exists setups
     add constraint FK_operation_id
         foreign key (operation_id)
             references operations;
-
-alter table if exists orders
-    add constraint FK_company_id
-        foreign key (company_id)
-            references companies;
 
 alter table if exists items
     add constraint FK_technology_id

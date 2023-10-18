@@ -38,16 +38,6 @@ public class DepartmentController {
     }
 
     @ResponseBody
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/company/{id}")
-    public List<DepartmentDto> getAllByCompanyId(
-            @RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
-            @RequestParam(value = "limit", defaultValue = "20") @Min(1) @Max(100) Integer limit,
-            @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
-        return departmentService.getCompanyDepartments(id, PageRequest.of(offset, limit));
-    }
-
-    @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping()
     public DepartmentDto save(@RequestBody @Valid DepartmentDto departmentDto) {

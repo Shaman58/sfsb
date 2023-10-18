@@ -6,8 +6,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.money.MonetaryAmount;
-
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
@@ -17,5 +15,4 @@ public class MeasureToolDto extends AbstractDto {
     @NotBlank(message = "Название инструмента не может быть пустым")
     private String toolName;
     private String description;
-    private MonetaryAmount price;
 }

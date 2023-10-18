@@ -38,14 +38,6 @@ public class EmployeeController {
     }
 
     @ResponseBody
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/department/{id}")
-    public List<EmployeeDto> getAllByDepartmentId(
-            @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
-        return employeeService.getDepartmentEmployees(id);
-    }
-
-    @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping()
     public EmployeeDto save(@RequestBody @Valid EmployeeDto employeeDto) {

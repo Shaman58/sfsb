@@ -1,13 +1,16 @@
 package ru.erp.sfsb.model;
 
+import io.hypersistence.utils.hibernate.type.money.MonetaryAmountType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CompositeType;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import javax.money.MonetaryAmount;
 import java.time.Duration;
 import java.util.List;
 
@@ -53,4 +56,15 @@ public class Setup extends AbstractEntity {
     private Integer perTime;
     private boolean isCooperate;
     private String text;
+    @AttributeOverride(
+            name = "amount",
+            column = @Column(name = "price_amount")
+    )
+    @AttributeOverride(
+            name = "currency",
+            column = @Column(name = "price_currency")
+    )
+    @CompositeType(MonetaryAmountType.class)
+    @SuppressWarnings("JpaAttributeTypeInspection")
+    private MonetaryAmount cooperatePrice;
 }

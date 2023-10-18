@@ -1,6 +1,6 @@
 package ru.erp.sfsb.service.impl;
 
-import lombok.extern.slf4j.Slf4j;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import ru.erp.sfsb.dto.MaterialDto;
 import ru.erp.sfsb.mapper.MaterialMapper;
@@ -9,7 +9,7 @@ import ru.erp.sfsb.repository.MaterialRepository;
 import ru.erp.sfsb.service.MaterialService;
 
 @Service
-@Slf4j
+@Transactional
 public class MaterialServiceImpl extends AbstractService<MaterialDto, Material, MaterialRepository, MaterialMapper>
         implements MaterialService {
 

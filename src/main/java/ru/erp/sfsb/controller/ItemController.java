@@ -29,13 +29,6 @@ public class ItemController {
 
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/order/{id}")
-    public List<ItemDto> getOrderItems(@PathVariable Long id) {
-        return itemService.getOrderItems(id);
-    }
-
-    @ResponseBody
-    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     public ItemDto get(@PathVariable Long id) {
         return itemService.get(id);

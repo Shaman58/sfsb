@@ -1,6 +1,5 @@
 package ru.erp.sfsb.dto;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,11 +11,8 @@ import ru.erp.sfsb.model.MeasureTool;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class MeasureToolItemDto extends AbstractDto {
+public class MeasureToolItemDto extends ToolItemDto {
 
     @NotNull(message = "Название мерителя не может быть пустым")
     private MeasureTool tool;
-    private Integer amount;
-    @JsonBackReference
-    private SetupDto setup;
 }

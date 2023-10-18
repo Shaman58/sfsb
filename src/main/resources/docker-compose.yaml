@@ -8,11 +8,9 @@ services:
     volumes:
       - db-data:/data/db
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
+      POSTGRES_USER: sfsb
+      POSTGRES_PASSWORD: gFNQkM
       POSTGRES_DB: sfsb
-    ports:
-      - "5432:5432"
     labels:
       - "com.centurylinklabs.watchtower.enable=false"
   adminer:
@@ -46,6 +44,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     command: --interval 30
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
 
 
 volumes:

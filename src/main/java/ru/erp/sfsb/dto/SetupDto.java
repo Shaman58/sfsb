@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import javax.money.MonetaryAmount;
 import java.time.Duration;
 import java.util.List;
 
@@ -37,4 +38,5 @@ public class SetupDto extends AbstractDto {
     private Integer perTime;
     private boolean isCooperate;
     private String text;
+    private MonetaryAmount cooperatePrice;
 }

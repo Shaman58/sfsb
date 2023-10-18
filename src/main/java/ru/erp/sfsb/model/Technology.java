@@ -1,14 +1,17 @@
 package ru.erp.sfsb.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import io.hypersistence.utils.hibernate.type.money.MonetaryAmountType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CompositeType;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
+import javax.money.MonetaryAmount;
+import java.time.Duration;
 import java.util.List;
 
 import static jakarta.persistence.CascadeType.ALL;
@@ -30,7 +33,21 @@ public class Technology extends AbstractEntity {
     private Integer quantityOfPartsFromWorkpiece;
     @ManyToOne(cascade = ALL)
     private Workpiece workpiece;
+    @JdbcTypeCode(SqlTypes.NUMERIC)
+    private Duration technologistTime;
     private boolean isComputed;
     @OneToMany(mappedBy = "technology", cascade = ALL, orphanRemoval = true)
     private List<Setup> setups;
+    @AttributeOverride(
+            name = "amount",
+            column = @Column(name = "outsourced_costs_amount")
+    )
+    @AttributeOverride(
+            name = "currency",
+            column = @Column(name = "outsourced_costs_currency")
+    )
+    @CompositeType(MonetaryAmountType.class)
+    @SuppressWarnings("JpaAttributeTypeInspection")
+    private MonetaryAmount outsourcedCosts;
+    private String outsourcedCostsDescription;
 }

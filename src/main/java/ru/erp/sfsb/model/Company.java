@@ -33,7 +33,5 @@ public class Company extends AbstractEntity {
     @JoinColumn
     private Employee director;
     @OneToMany(mappedBy = "company", cascade = MERGE)
-    private List<Order> orders;
-    @OneToMany(mappedBy = "company", cascade = MERGE)
     private List<Department> departments;
 }
