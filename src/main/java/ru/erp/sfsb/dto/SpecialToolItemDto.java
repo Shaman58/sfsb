@@ -14,4 +14,9 @@ public class SpecialToolItemDto extends ToolItemDto {
 
     @NotNull(message = "Название специнструмента не может быть пустым")
     private SpecialToolDto tool;
+
+    @Override
+    public SpecialToolDto getTool() {
+        return this.tool;
+    }
 }

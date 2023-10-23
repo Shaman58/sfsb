@@ -11,17 +11,14 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.springframework.stereotype.Service;
 import ru.erp.sfsb.dto.*;
 import ru.erp.sfsb.exception.EntityNullException;
-import ru.erp.sfsb.service.ItemService;
-import ru.erp.sfsb.service.OperationService;
-import ru.erp.sfsb.service.OrderService;
+import ru.erp.sfsb.service.*;
 import ru.erp.sfsb.utils.WordDocumentUtil;
 
 import javax.money.Monetary;
 import javax.money.MonetaryAmount;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static java.lang.Math.PI;
@@ -35,7 +32,9 @@ public class ReportService {
 
     private final OrderService orderService;
     private final ItemService itemService;
+    private final EmployeeService employeeService;
     private final OperationService operationService;
+    private final CompanyService companyService;
     private final Petrovich petrovich;
 
     public void generateKp(Long orderId, HttpServletResponse response) {
@@ -79,25 +78,25 @@ public class ReportService {
         }
     }
 
-//    public void generateToolOrder(HttpServletResponse response, Long targetEmployeeId, Long fromEmployeeId, Long orderId, String body) {
-//        try {
-//            var inputStream = new FileInputStream(Objects.requireNonNull(getClass().getClassLoader().getResource("tool-order-template.docx")).getFile());
-//            var doc = new WordDocumentUtil(inputStream);
-//            var targetEmployee = employeeService.get(targetEmployeeId);
-//            var fromEmployee = employeeService.get(fromEmployeeId);
-//            var companyName = orderService.get(orderId).getEmployee().getDepartment().getCompany().getCompanyName();
-//            var headerData = getHeaderFromEmployees(targetEmployee, fromEmployee, companyName);
-//            if (Objects.equals(body, null)) {
-//                body = "Прошу Вас, разрешить отделу снабжения приобрести следующие позиции:";
-//            }
-//            var footer = getFooterFromEmployee(fromEmployee);
-//            doc.generateToolOrder(getToolString(cutterToolService.getAllToolsByOrderId(orderId)), headerData, body, footer);
-//            response.setHeader("Content-Disposition", "attachment; filename=tool-order.docx");
-//            doc.save(response.getOutputStream());
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
+    public void generateToolOrder(HttpServletResponse response, Long targetEmployeeId, Long fromEmployeeId, Long orderId, String body) {
+        try {
+            var inputStream = getClass().getResourceAsStream("/tool-order-template.docx");
+            var doc = new WordDocumentUtil(inputStream);
+            var targetEmployee = employeeService.get(targetEmployeeId);
+            var fromEmployee = employeeService.get(fromEmployeeId);
+            var companyName = companyService.getCompany().getCompanyName();
+            var headerData = getHeaderFromEmployees(targetEmployee, fromEmployee, companyName);
+            if (Objects.equals(body, null)) {
+                body = "Прошу Вас, разрешить отделу снабжения приобрести следующие позиции:";
+            }
+            var footer = getFooterFromEmployee(fromEmployee);
+            doc.generateToolOrder(getAllToolsFromOrder(orderService.get(orderId)), headerData, body, footer);
+            response.setHeader("Content-Disposition", "attachment; filename=tool-order.docx");
+            doc.save(response.getOutputStream());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public void calculateItem(Long itemId) {
         var item = itemService.get(itemId);
@@ -112,6 +111,65 @@ public class ReportService {
             item.setPrice(itemPrice.add(materialPrice));
         }
         itemService.update(item);
+    }
+
+    private List<Map<String, String>> getAllToolsFromOrder(OrderDto order) {
+        var measurers = getToolList(getUniqueToolItems(getAllToolsFromOrderByType(order, MeasureToolItemDto.class)));
+        var cutters = getToolList(getUniqueToolItems(getAllToolsFromOrderByType(order, CutterToolItemDto.class)));
+        cutters.addAll(measurers);
+        return cutters;
+    }
+
+    private List<Map<String, String>> getToolList(List<? extends ToolItemDto> tools) {
+        return IntStream.range(0, tools.size()).mapToObj(i -> getToolMap(tools, i)).collect(toList());
+    }
+
+    private Map<String, String> getToolMap(List<? extends ToolItemDto> tools, Integer pos) {
+        return Map.of(
+                "[no]", String.valueOf(pos + 1),
+                "[name]", tools.get(pos).getTool().getToolName(),
+                "[description]", tools.get(pos).getTool().getDescription(),
+                "[amount]", String.valueOf(tools.get(pos).getAmount()),
+                "[tool-price]", tools.get(pos).getPrice().toString()
+        );
+    }
+
+    private List<? extends ToolItemDto> getUniqueToolItems(List<? extends ToolItemDto> toolItems) {
+        return toolItems.stream()
+                .collect(Collectors.toMap(ToolItemDto::getTool,
+                        item -> item,
+                        (existing, replacement) -> {
+                            existing.setAmount(existing.getAmount() + replacement.getAmount());
+                            return existing;
+                        }))
+                .values().stream().toList();
+    }
+
+    private List<? extends ToolItemDto> getAllToolsFromOrderByType(OrderDto order, Class<? extends ToolItemDto> toolClass) {
+        return order
+                .getItems().stream()
+                .flatMap(item -> getAllToolsFromTechnologyByType(item.getTechnology(), toolClass).stream())
+                .collect(toList());
+    }
+
+    private List<? extends ToolItemDto> getAllToolsFromTechnologyByType(TechnologyDto technology, Class<? extends ToolItemDto> toolClass) {
+        return technology
+                .getSetups().stream()
+                .flatMap(setup -> getAllToolItemsFromSetupByType(setup, toolClass).stream())
+                .collect(toList());
+    }
+
+    private List<? extends ToolItemDto> getAllToolItemsFromSetupByType(SetupDto setup, Class<? extends ToolItemDto> toolClass) {
+        if (toolClass == CutterToolItemDto.class) {
+            return setup.getCutterToolItems();
+        }
+        if (toolClass == MeasureToolItemDto.class) {
+            return setup.getMeasureToolItems();
+        }
+        if (toolClass == SpecialToolItemDto.class) {
+            return setup.getSpecialToolItems();
+        }
+        return new ArrayList<>();
     }
 
     private MonetaryAmount calculateItemPrice(ItemDto item) {

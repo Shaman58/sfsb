@@ -14,5 +14,10 @@ import ru.erp.sfsb.model.MeasureTool;
 public class MeasureToolItemDto extends ToolItemDto {
 
     @NotNull(message = "Название мерителя не может быть пустым")
-    private MeasureTool tool;
+    private MeasureToolDto tool;
+
+    @Override
+    public MeasureToolDto getTool() {
+        return this.tool;
+    }
 }

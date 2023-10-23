@@ -14,4 +14,6 @@ public abstract class ToolItemDto extends AbstractDto {
     @JsonBackReference
     private SetupDto setup;
     private MonetaryAmount price;
+
+    public abstract ToolDto getTool();
 }

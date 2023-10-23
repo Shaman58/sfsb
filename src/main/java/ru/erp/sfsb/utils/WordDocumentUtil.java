@@ -36,15 +36,15 @@ public class WordDocumentUtil {
         log.info("WordDocumentUtil-addImage");
         fillRun(bodyData);
         log.info("WordDocumentUtil-fillRun");
-        addItemsTable(itemList);
+        addItemsTable(itemList, 1);
         log.info("WordDocumentUtil-addItemsTable");
     }
 
-    public void generateToolOrder(String tools, String header, String body, String footer) {
+    public void generateToolOrder(List<Map<String, String>> tools, String header, String body, String footer) {
         log.info("WordDocumentUtil-generateToolOrder");
         fillText(header, "[header]");
         fillText(body, "[body]");
-        fillText(tools, "[items]");
+        addItemsTable(tools, 0);
         fillText(footer, "[footer]");
         fillText(LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")), "[date]");
     }
@@ -61,8 +61,8 @@ public class WordDocumentUtil {
         }
     }
 
-    private void addItemsTable(List<Map<String, String>> itemList) {
-        XWPFTable table = this.document.getTables().get(1);
+    private void addItemsTable(List<Map<String, String>> itemList, int tableNumber) {
+        XWPFTable table = this.document.getTables().get(tableNumber);
         var targetRowIndex = getTargetRowIndex(table, itemList.get(0).entrySet().stream().findFirst()
                 .orElseThrow(() -> new DocumentFormatException("Item list is empty"))
                 .getKey());

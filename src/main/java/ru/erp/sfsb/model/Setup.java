@@ -34,13 +34,13 @@ public class Setup extends AbstractEntity {
     private Duration processTime;
     @JdbcTypeCode(SqlTypes.NUMERIC)
     private Duration interoperativeTime;
-    @OneToMany(mappedBy = "setup", cascade = ALL)
+    @OneToMany(mappedBy = "setup", cascade = ALL, orphanRemoval = true)
     private List<MeasureToolItem> measureToolItems;
-    @OneToMany(mappedBy = "setup", cascade = ALL)
+    @OneToMany(mappedBy = "setup", cascade = ALL, orphanRemoval = true)
     private List<AdditionalTool> additionalTools;
-    @OneToMany(mappedBy = "setup", cascade = ALL)
+    @OneToMany(mappedBy = "setup", cascade = ALL, orphanRemoval = true)
     private List<SpecialToolItem> specialToolItems;
-    @OneToMany(mappedBy = "setup", cascade = ALL)
+    @OneToMany(mappedBy = "setup", cascade = ALL, orphanRemoval = true)
     private List<CutterToolItem> cutterToolItems;
     @ManyToMany
     @JoinTable(

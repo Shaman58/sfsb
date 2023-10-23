@@ -2,12 +2,12 @@ server:
   port: 9001
 spring:
   datasource:
-    url: jdbc:postgresql://db:5432/sfsb
+    url: jdbc:postgresql://localhost:5432/sfsb
     driver-class-name: org.postgresql.Driver
-    username: sfsb
-    password: gFNQkM
-#    username: user
-#    password: password
+#    username: sfsb
+#    password: gFNQkM
+    username: user
+    password: password
   jpa:
     hibernate:
       ddl-auto: validate

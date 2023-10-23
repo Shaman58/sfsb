@@ -14,4 +14,9 @@ public class CutterToolItemDto extends ToolItemDto {
 
     @NotNull(message = "Название инструмента не может быть пустым")
     private CutterToolDto tool;
+
+    @Override
+    public CutterToolDto getTool() {
+        return this.tool;
+    }
 }

@@ -1,20 +1,12 @@
 package ru.erp.sfsb.dto;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.money.MonetaryAmount;
-
 @Data
 @EqualsAndHashCode(callSuper = true)
-@NoArgsConstructor
-@AllArgsConstructor
-public class CutterToolDto extends AbstractDto {
+public class CutterToolDto extends ToolDto {
 
-    @NotBlank(message = "Название инструмента не может быть пустым")
-    private String toolName;
-    private String description;
 }
