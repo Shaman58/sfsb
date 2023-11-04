@@ -16,16 +16,16 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-public class WordDocumentUtil {
+public class DocxReportUtil {
 
-    private final XWPFDocument document;
+    private final XWPFDocument doc;
 
-    public WordDocumentUtil(InputStream is) throws IOException {
-        this.document = new XWPFDocument(is);
+    public DocxReportUtil(InputStream is) throws IOException {
+        this.doc = new XWPFDocument(is);
     }
 
     public void save(ServletOutputStream fos) throws IOException {
-        this.document.write(fos);
+        this.doc.write(fos);
     }
 
     public void generateKp(Map<String, String> company, List<Map<String, String>> itemList, Map<String, String> bodyData) throws IOException, InvalidFormatException {
@@ -62,7 +62,7 @@ public class WordDocumentUtil {
     }
 
     private void addItemsTable(List<Map<String, String>> itemList, int tableNumber) {
-        XWPFTable table = this.document.getTables().get(tableNumber);
+        XWPFTable table = this.doc.getTables().get(tableNumber);
         var targetRowIndex = getTargetRowIndex(table, itemList.get(0).entrySet().stream().findFirst()
                 .orElseThrow(() -> new DocumentFormatException("Item list is empty"))
                 .getKey());
@@ -92,7 +92,7 @@ public class WordDocumentUtil {
     }
 
     private XWPFRun getTargetRun(String text) {
-        for (XWPFParagraph paragraph : this.document.getParagraphs()) {
+        for (XWPFParagraph paragraph : this.doc.getParagraphs()) {
             for (XWPFRun run : paragraph.getRuns()) {
                 if (run.getText(0).toLowerCase().contains(text)) {
                     return run;
@@ -103,7 +103,7 @@ public class WordDocumentUtil {
     }
 
     private void writeCompanyHeader(Map<String, String> companyMap) {
-        XWPFTable table = this.document.getTables().get(0);
+        XWPFTable table = this.doc.getTables().get(0);
         table.getRows()
                 .forEach(row -> row.getTableCells()
                         .forEach(cell -> cell.getParagraphs()
@@ -121,7 +121,7 @@ public class WordDocumentUtil {
 
     private void addImage(String imagePath) throws IOException, InvalidFormatException {
         log.info("addImage1");
-        var cell = this.document.getTables().get(0).getRow(0).getCell(0);
+        var cell = this.doc.getTables().get(0).getRow(0).getCell(0);
         XWPFParagraph paragraph = cell.getParagraphs().get(0);
         XWPFRun run = paragraph.createRun();
         var is = getClass().getResourceAsStream(imagePath);
@@ -131,7 +131,7 @@ public class WordDocumentUtil {
     }
 
     private void fillRun(Map<String, String> data) {
-        for (XWPFParagraph paragraph : this.document.getParagraphs()) {
+        for (XWPFParagraph paragraph : this.doc.getParagraphs()) {
             for (XWPFRun run : paragraph.getRuns()) {
                 var tag = run.getText(0).replace(" ", "");
                 if (data.containsKey(tag)) {

@@ -2,8 +2,10 @@ package ru.erp.sfsb.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import ru.erp.sfsb.service.impl.ReportService;
 
 @RestController
@@ -28,10 +30,20 @@ public class DocController {
         reportService.generateToolOrder(response, teId, feId, orderId, body);
     }
 
-    @ResponseBody
-    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/calculate")
     public void calculateItem(@RequestParam Long itemId) {
         reportService.calculateItem(itemId);
+    }
+
+    @GetMapping("/manufacturing-report")
+    public void getManufacturingReport(HttpServletResponse response,
+                                       @RequestParam Long orderId) {
+        reportService.generateManufacturingReport(response, orderId);
+    }
+
+    @GetMapping("/operation-report")
+    public void getOperationReport(HttpServletResponse response,
+                                   @RequestParam Long orderId) {
+        reportService.generateOperationReport(response, orderId);
     }
 }

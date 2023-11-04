@@ -220,6 +220,7 @@ create table technologies
     workpiece_id                     bigint,
     technologist_time                numeric(21, 0),
     is_computed                      boolean,
+    is_assembly                      boolean,
     outsourced_costs_amount          numeric(38, 2),
     outsourced_costs_currency        varchar(255),
     outsourced_costs_description     varchar(2047),

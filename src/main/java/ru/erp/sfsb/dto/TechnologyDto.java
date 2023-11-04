@@ -28,6 +28,7 @@ public class TechnologyDto extends AbstractDto {
     private WorkpieceDto workpiece;
     private Duration technologistTime;
     private boolean isComputed;
+    private boolean isAssembly;
     @JsonManagedReference
     private List<SetupDto> setups;
     private MonetaryAmount outsourcedCosts;

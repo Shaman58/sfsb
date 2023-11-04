@@ -66,4 +66,11 @@ public class ExceptionControllerAdvice {
                 .map(error -> new ExceptionData(String.format("'%s' %s", error.getField(), error.getDefaultMessage())))
                 .toList();
     }
+
+    @ResponseBody
+    @ExceptionHandler(ReportGenerateException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ExceptionData handleException(ReportGenerateException e) {
+        return new ExceptionData(e.getMessage());
+    }
 }

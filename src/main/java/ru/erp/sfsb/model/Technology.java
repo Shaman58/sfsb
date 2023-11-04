@@ -36,6 +36,7 @@ public class Technology extends AbstractEntity {
     @JdbcTypeCode(SqlTypes.NUMERIC)
     private Duration technologistTime;
     private boolean isComputed;
+    private boolean isAssembly;
     @OneToMany(mappedBy = "technology", cascade = ALL, orphanRemoval = true)
     private List<Setup> setups;
     @AttributeOverride(

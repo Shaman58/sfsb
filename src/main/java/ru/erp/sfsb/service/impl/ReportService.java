@@ -11,19 +11,26 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.springframework.stereotype.Service;
 import ru.erp.sfsb.dto.*;
 import ru.erp.sfsb.exception.EntityNullException;
+import ru.erp.sfsb.exception.ReportGenerateException;
+import ru.erp.sfsb.model.OperationTimeManagement;
 import ru.erp.sfsb.service.*;
-import ru.erp.sfsb.utils.WordDocumentUtil;
+import ru.erp.sfsb.utils.DocxReportUtil;
+import ru.erp.sfsb.utils.DurationRuCustomFormatter;
+import ru.erp.sfsb.utils.XlsxReportUtil;
 
 import javax.money.Monetary;
 import javax.money.MonetaryAmount;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static java.lang.Math.PI;
 import static java.lang.Math.pow;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 @Service
 @Slf4j
@@ -36,42 +43,43 @@ public class ReportService {
     private final OperationService operationService;
     private final CompanyService companyService;
     private final Petrovich petrovich;
+    private final DurationRuCustomFormatter durationFormatter;
 
     public void generateKp(Long orderId, HttpServletResponse response) {
         log.info("Generating kp with order id {}", orderId);
         try {
             var inputStream = getClass().getResourceAsStream("/kp-template.docx");
-            log.info("inputStream");
-            var doc = new WordDocumentUtil(inputStream);
-            log.info("doc");
+            log.debug("inputStream");
+            var doc = new DocxReportUtil(inputStream);
+            log.debug("doc");
             var order = orderService.get(orderId);
             var company = order.getEmployee().getDepartment().getCompany();
-            log.info("company");
+            log.debug("company");
             var contact = order.getContact();
-            log.info("contact");
+            log.debug("contact");
             var employee = String.format("%s %s %s",
                     order.getEmployee().getPosition(),
                     order.getEmployee().getFirstName(),
                     order.getEmployee().getLastName());
-            log.info("employee");
+            log.debug("employee");
             var bodyData = Map.of(
                     "[proposal]", order.getBusinessProposal(),
                     "[manager]", employee
             );
-            log.info("bodyData");
+            log.debug("bodyData");
             var headerData = getCompanyMap(company);
-            log.info("headerData1");
+            log.debug("headerData1");
             headerData.put("[app-number]", String.valueOf(order.getApplicationNumber()));
-            log.info("headerData2");
+            log.debug("headerData2");
             headerData.put("[target]", String.format("%s %s %s",
                     order.getCustomer().getCompanyName(),
                     contact.getFirstName(),
                     contact.getLastName()));
-            log.info("headerData3");
+            log.debug("headerData3");
             doc.generateKp(headerData, getItemList(order.getItems()), bodyData);
-            log.info("doc.generateKp");
+            log.debug("doc.generateKp");
             response.setHeader("Content-Disposition", "attachment; filename=kp.docx");
-            log.info("setHeader");
+            log.debug("setHeader");
             doc.save(response.getOutputStream());
         } catch (IOException | InvalidFormatException e) {
             throw new RuntimeException(e);
@@ -81,7 +89,7 @@ public class ReportService {
     public void generateToolOrder(HttpServletResponse response, Long targetEmployeeId, Long fromEmployeeId, Long orderId, String body) {
         try {
             var inputStream = getClass().getResourceAsStream("/tool-order-template.docx");
-            var doc = new WordDocumentUtil(inputStream);
+            var doc = new DocxReportUtil(inputStream);
             var targetEmployee = employeeService.get(targetEmployeeId);
             var fromEmployee = employeeService.get(fromEmployeeId);
             var companyName = companyService.getCompany().getCompanyName();
@@ -100,23 +108,235 @@ public class ReportService {
 
     public void calculateItem(Long itemId) {
         var item = itemService.get(itemId);
-        item.getTechnology().setComputed(true);
-        if (item.isCustomerMaterial()) {
+        if (item.isCustomerMaterial() || item.getTechnology().isAssembly()) {
             item.setPrice(calculateItemPrice(item));
         } else {
             var materialPrice = getItemWorkpiecesPrice(item);
             var itemPrice = calculateItemPrice(item);
-            System.out.println("material price " + materialPrice);
-            System.out.println("item price " + itemPrice);
             item.setPrice(itemPrice.add(materialPrice));
         }
+        item.getTechnology().setComputed(true);
         itemService.update(item);
+    }
+
+    public void generateManufacturingReport(HttpServletResponse response, Long orderId) {
+        try {
+            var xls = new XlsxReportUtil();
+            log.debug("created xls");
+            var order = orderService.get(orderId);
+            var data = getOrderManData(order);
+            xls.fillXlsxDocument(data);
+            log.debug("generate report");
+            response.setHeader("Content-Disposition", "attachment; filename=manufacturing-report.xlsx");
+            xls.save(response.getOutputStream());
+            log.debug("saved report");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void generateOperationReport(HttpServletResponse response, Long orderId) {
+        try {
+            var xls = new XlsxReportUtil();
+            log.debug("created xls");
+            var data = createOperationTable(orderService.get(orderId));
+            xls.fillXlsxDocument(data);
+            log.debug("generate report");
+            response.setHeader("Content-Disposition", "attachment; filename=manufacturing-report.xlsx");
+            xls.save(response.getOutputStream());
+            log.debug("saved report");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private List<List<String>> createOperationTable(OrderDto order) {
+        var operations = operationService.getAll();
+        var firstHeader = new ArrayList<>(List.of("", "", "", ""));
+        var secondHeader = new ArrayList<>(List.of(
+                "Наименование",
+                "Инструмент и меритель",
+                "Кол-во по заказу",
+                "Кол-во с наладкой и браком"
+        ));
+        operations.forEach(operation -> firstHeader.addAll(List.of(operation.getOperationName(), "", "", "", "", "")));
+        operations.forEach(operation -> secondHeader.addAll(List.of("1 дет Маш-е", "1 дет МОР", "Общ.на 1дет", "Тмаш + МОР", "М.+н", "Нал.")));
+        var data = new ArrayList<>(order
+                .getItems()
+                .stream()
+                .collect(toMap(this::getItemHeadData, this::getItemData))
+                .entrySet()
+                .stream()
+                .map(entry -> getItemDataWithHeader(entry.getValue(), entry.getKey(), operations))
+                .toList());
+        data.add(0, firstHeader);
+        data.add(1, secondHeader);
+        return data;
+    }
+
+    private List<String> getItemDataWithHeader(Map<String, List<Duration>> itemData, List<String> itemHead, List<OperationDto> operations) {
+        List<String> result = new ArrayList<>(itemHead);
+        var data = operations.stream()
+                .flatMap(operation -> itemData.get(operation.getOperationName()) == null
+                        ? Stream.of("", "", "", "", "", "")
+                        : itemData.get(operation.getOperationName()).stream().map(durationFormatter::getRusTimeFormat))
+                .toList();
+        result.addAll(data);
+        return result;
+    }
+
+    private Map<String, List<Duration>> getItemData(ItemDto item) {
+        var setups = item.getTechnology().getSetups();
+        return setups.stream()
+                .filter(setup -> !setup.isCooperate())
+                .collect(toMap(setup -> setup.getOperation().getOperationName(),
+                        setup -> getSetupInfo(setup, item.getQuantity(), item.getTechnology().getQuantityOfPartsFromWorkpiece()),
+                        this::sumAllTimes));
+    }
+
+    private List<String> getItemHeadData(ItemDto item) {
+        var cutters = new ArrayList<>(getAllToolsFromTechnologyByType(item.getTechnology(), CutterToolItemDto.class)
+                .stream()
+                .map(tool -> String.format("%s(%s)", tool.getTool().getToolName(), tool.getTool().getDescription()))
+                .toList());
+        var measurers = getAllToolsFromTechnologyByType(item.getTechnology(), MeasureToolItemDto.class)
+                .stream()
+                .map(tool -> String.format("%s(%s)", tool.getTool().getToolName(), tool.getTool().getDescription()))
+                .toList();
+        cutters.addAll(measurers);
+        var tools = cutters
+                .stream()
+                .reduce("", (s1, s2) -> s1.isEmpty() ? s2 : s1.concat(", ").concat(s2));
+        return List.of(
+                String.format("%s %s", item.getTechnology().getDrawingNumber(), item.getTechnology().getDrawingName()),
+                tools,
+                item.getQuantity().toString(),
+                String.valueOf(item.getQuantity() +
+                        item.getTechnology().getQuantityOfSetUpParts() +
+                        item.getTechnology().getQuantityOfDefectiveParts())
+        );
+    }
+
+    private List<Duration> sumAllTimes(List<Duration> existing, List<Duration> replacement) {
+        var modified = new ArrayList<Duration>();
+        for (int i = 0; i < existing.size(); i++) {
+            modified.add(existing.get(i).plus(replacement.get(i)));
+        }
+        return modified;
+    }
+
+    private List<Duration> getSetupInfo(SetupDto setup, Integer quantity, Integer quantityOfPartsFromWorkpiece) {
+        return switch (setup.getOperation().getOperationTimeManagement()) {
+            case FULL -> getSetupInfo_Full(setup, quantity, quantityOfPartsFromWorkpiece);
+            case PROCESS_TIME_ONLY -> getSetupInfo_PROCESS_TIME_ONLY(setup, quantity);
+            case COMPUTED -> getSetupInfo_COMPUTED(setup, quantity, quantityOfPartsFromWorkpiece);
+        };
+    }
+
+    private List<Duration> getSetupInfo_COMPUTED(SetupDto setup, Integer quantity, Integer quantityOfPartsFromWorkpiece) {
+        var times = getTimes_COMPUTED(quantity, quantityOfPartsFromWorkpiece, setup);
+        var fullTimeForAll = setup.getProcessTime().multipliedBy(times);
+        var processTime = fullTimeForAll.dividedBy(quantity);
+        return List.of(
+                processTime,
+                Duration.of(0, ChronoUnit.MILLIS),
+                processTime,
+                fullTimeForAll,
+                fullTimeForAll,
+                Duration.of(0, ChronoUnit.MILLIS)
+        );
+    }
+
+    private List<Duration> getSetupInfo_PROCESS_TIME_ONLY(SetupDto setup, Integer quantity) {
+        return List.of(
+                setup.getProcessTime(),
+                Duration.of(0, ChronoUnit.MILLIS),
+                setup.getProcessTime(),
+                setup.getProcessTime().multipliedBy(quantity),
+                setup.getProcessTime().multipliedBy(quantity),
+                Duration.of(0, ChronoUnit.MILLIS)
+        );
+    }
+
+    private List<Duration> getSetupInfo_Full(SetupDto setup, Integer quantity, Integer quantityOfPartsFromWorkpiece) {
+        var times = getTimes_FULL(quantity, quantityOfPartsFromWorkpiece);
+        Duration processTime;
+        Duration interoperativeTime;
+        if (setup.isGroup()) {
+            processTime = setup.getProcessTime().dividedBy(times);
+            interoperativeTime = setup.getInteroperativeTime().dividedBy(times);
+        } else {
+            processTime = setup.getProcessTime();
+            interoperativeTime = setup.getInteroperativeTime();
+        }
+        var fullTime = processTime.plus(interoperativeTime);
+        var fullTimeForAll = fullTime.multipliedBy(quantity);
+        return List.of(
+                processTime,
+                interoperativeTime,
+                fullTime,
+                fullTimeForAll,
+                fullTimeForAll.plus(setup.getSetupTime()),
+                setup.getSetupTime());
+    }
+
+    private List<List<String>> getOrderManData(OrderDto order) {
+        var data = order
+                .getItems()
+                .stream()
+                .map(this::getItemDataList)
+                .flatMap(List::stream)
+                .collect(toList());
+        data.add(0, List.of(
+                "Наименование",
+                "Длительность, ч",
+                "Количество (с учетом наладки и брака), шт",
+                "Время наладки, ч",
+                "Время обработки с учетом межоперационного времени, ч"));
+        return data;
+    }
+
+    private List<List<String>> getItemDataList(ItemDto item) {
+        var itemData = item
+                .getTechnology()
+                .getSetups()
+                .stream()
+                .map(setup -> getSetupDataList(setup, item.getQuantity()))
+                .collect(toList());
+        itemData.add(0, List.of(
+                String.format("%s %s",
+                        item.getTechnology().getDrawingName(),
+                        item.getTechnology().getDrawingNumber()), "", "", "", ""));
+        itemData.add(1, List.of(
+                "Технолог",
+                durationFormatter.getRusTimeFormat(item.getTechnology().getTechnologistTime()),
+                "", "", ""
+        ));
+        return itemData;
+    }
+
+    private List<String> getSetupDataList(SetupDto setup, Integer amount) {
+        return List.of(
+                setup.getOperation().getOperationName(),
+                durationFormatter.getRusTimeFormat(
+                        setup.getInteroperativeTime()
+                                .plus(setup.getProcessTime())
+                                .multipliedBy(amount)),
+                amount.toString(),
+                durationFormatter.getRusTimeFormat(setup.getSetupTime()),
+                durationFormatter.getRusTimeFormat(setup.getProcessTime()
+                        .plus(setup.getInteroperativeTime()))
+        );
     }
 
     private List<Map<String, String>> getAllToolsFromOrder(OrderDto order) {
         var measurers = getToolList(getUniqueToolItems(getAllToolsFromOrderByType(order, MeasureToolItemDto.class)));
         var cutters = getToolList(getUniqueToolItems(getAllToolsFromOrderByType(order, CutterToolItemDto.class)));
         cutters.addAll(measurers);
+        if (cutters.size() == 0) {
+            log.debug("This order has no any tools!");
+            throw new ReportGenerateException("This order has no any tools!");
+        }
         return cutters;
     }
 
@@ -136,7 +356,7 @@ public class ReportService {
 
     private List<? extends ToolItemDto> getUniqueToolItems(List<? extends ToolItemDto> toolItems) {
         return toolItems.stream()
-                .collect(Collectors.toMap(ToolItemDto::getTool,
+                .collect(toMap(ToolItemDto::getTool,
                         item -> item,
                         (existing, replacement) -> {
                             existing.setAmount(existing.getAmount() + replacement.getAmount());
@@ -160,14 +380,18 @@ public class ReportService {
     }
 
     private List<? extends ToolItemDto> getAllToolItemsFromSetupByType(SetupDto setup, Class<? extends ToolItemDto> toolClass) {
-        if (toolClass == CutterToolItemDto.class) {
-            return setup.getCutterToolItems();
-        }
-        if (toolClass == MeasureToolItemDto.class) {
-            return setup.getMeasureToolItems();
-        }
-        if (toolClass == SpecialToolItemDto.class) {
-            return setup.getSpecialToolItems();
+        if (!setup.isCooperate() &&
+                ((setup.getOperation().getOperationTimeManagement() == OperationTimeManagement.PROCESS_TIME_ONLY) ||
+                        (setup.getOperation().getOperationTimeManagement() == OperationTimeManagement.FULL))) {
+            if (toolClass == CutterToolItemDto.class) {
+                return setup.getCutterToolItems();
+            }
+            if (toolClass == MeasureToolItemDto.class) {
+                return setup.getMeasureToolItems();
+            }
+            if (toolClass == SpecialToolItemDto.class) {
+                return setup.getSpecialToolItems();
+            }
         }
         return new ArrayList<>();
     }
@@ -185,7 +409,8 @@ public class ReportService {
                 .add(item.getTechnology().getOutsourcedCosts());
     }
 
-    private MonetaryAmount calculateSetup(SetupDto setup, Integer itemQuantity, Integer quantityOfPartsFromWorkpiece) {
+    private MonetaryAmount calculateSetup(SetupDto setup, Integer itemQuantity, Integer
+            quantityOfPartsFromWorkpiece) {
         if (setup.isCooperate()) {
             return setup.getCooperatePrice().multiply(itemQuantity);
         }
@@ -193,9 +418,8 @@ public class ReportService {
             case FULL -> calculateSetupPrice_FULL(setup, itemQuantity, quantityOfPartsFromWorkpiece);
             case PROCESS_TIME_ONLY -> calculateSetupPrice_PROCESS_TIME_ONLY(setup, itemQuantity);
             case COMPUTED -> calculateSetupPrice_COMPUTED(setup, itemQuantity, quantityOfPartsFromWorkpiece);
-            case NONE -> Monetary.getDefaultAmountFactory().setCurrency("RUB").setNumber(0).create();
         };
-        System.out.println(setup.getSetupNumber() + " " + timePrice);
+        log.debug(setup.getSetupNumber() + " " + timePrice);
         return timePrice;
     }
 
@@ -217,6 +441,12 @@ public class ReportService {
     //Время цикла ставится на несколько заготовок. Причем из каждой заготовки может изготовливаться несколько деталей
     private MonetaryAmount calculateSetupPrice_COMPUTED(SetupDto setup, Integer itemQuantity, Integer quantityOfPartsFromWorkpiece) {
         long millis;
+        var times = getTimes_COMPUTED(itemQuantity, quantityOfPartsFromWorkpiece, setup);
+        millis = setup.getProcessTime().multipliedBy(times).toMillis();
+        return calculateSetupPriceGeneral(setup.getOperation(), millis);
+    }
+
+    private int getTimes_COMPUTED(Integer itemQuantity, Integer quantityOfPartsFromWorkpiece, SetupDto setup) {
         int times;
         if (setup.isAggregate()) {
             times = itemQuantity / ((setup.isGroup() ? quantityOfPartsFromWorkpiece : 1) * setup.getPerTime());
@@ -229,18 +459,15 @@ public class ReportService {
                 times++;
             }
         }
-        millis = setup.getProcessTime().multipliedBy(times).toMillis();
-        return calculateSetupPriceGeneral(setup.getOperation(), millis);
+        return times;
     }
 
     //FULL
     //Время цикла + межоперационка. Время может быть на заготовку или на деталь
-    private MonetaryAmount calculateSetupPrice_FULL(SetupDto setup, Integer itemQuantity, Integer quantityOfPartsFromWorkpiece) {
+    private MonetaryAmount calculateSetupPrice_FULL(SetupDto setup, Integer itemQuantity, Integer
+            quantityOfPartsFromWorkpiece) {
         long millis;
-        var times = itemQuantity / quantityOfPartsFromWorkpiece;
-        if (itemQuantity % quantityOfPartsFromWorkpiece != 0) {
-            times++;
-        }
+        var times = getTimes_FULL(itemQuantity, quantityOfPartsFromWorkpiece);
         if (setup.isGroup()) {
             millis = setup.getProcessTime().plus(setup.getInteroperativeTime()).multipliedBy(times).toMillis();
         } else {
@@ -250,9 +477,6 @@ public class ReportService {
         var setupPrice = operationService.getSetupPrice().getPaymentPerHour()
                 .divide(60 * 60 * 1000)
                 .multiply(setup.getSetupTime().toMillis());
-        if (setup.getAdditionalTools().size() == 0) {
-            return productionPrice.add(setupPrice);
-        }
         var additionalPrice = setup
                 .getAdditionalTools().stream()
                 .map(tool -> tool.getWorkpiece()
@@ -262,19 +486,27 @@ public class ReportService {
                         .multiply(tool.getAmount()))
                 .reduce(MonetaryAmount::add)
                 .orElseThrow(() -> new EntityNullException("Price of setup additional is missed"));
-        System.out.println("additional " + additionalPrice);
+        log.debug("additional " + additionalPrice);
         var cuttersPrice = getToolsMonetary(setup.getCutterToolItems());
-        System.out.println("cutter " + cuttersPrice);
+        log.debug("cutter " + cuttersPrice);
         var measurersPrice = getToolsMonetary(setup.getMeasureToolItems());
-        System.out.println("measure " + measurersPrice);
+        log.debug("measure " + measurersPrice);
         var specialsPrice = getToolsMonetary(setup.getSpecialToolItems());
-        System.out.println("spec " + specialsPrice);
+        log.debug("spec " + specialsPrice);
         return productionPrice
                 .add(setupPrice)
                 .add(additionalPrice)
                 .add(cuttersPrice)
                 .add(measurersPrice)
                 .add(specialsPrice);
+    }
+
+    private int getTimes_FULL(Integer itemQuantity, Integer quantityOfPartsFromWorkpiece) {
+        var times = itemQuantity / quantityOfPartsFromWorkpiece;
+        if (itemQuantity % quantityOfPartsFromWorkpiece != 0) {
+            times++;
+        }
+        return times;
     }
 
     private <E extends ToolItemDto> MonetaryAmount getToolsMonetary(List<E> tools) {
@@ -374,7 +606,7 @@ public class ReportService {
                     2 * Math.sqrt(3) * pow((double) workpiece.getGeom1(), 2) * (double) workpiece.getGeom2() * (double) workpiece.getMaterial().getDensity() / 1000000000;
             case PROFILE, OTHER -> 0;
         };
-        System.out.println("weight " + weight);
+        log.debug("weight " + weight);
         return weight;
     }
 }
