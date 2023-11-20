@@ -8,6 +8,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
+import java.time.Duration;
 
 import static jakarta.persistence.CascadeType.ALL;
 
@@ -27,4 +31,6 @@ public class AdditionalTool extends AbstractEntity {
     @JoinColumn(name = "setup_id")
     private Setup setup;
     private Integer amount;
+    @JdbcTypeCode(SqlTypes.NUMERIC)
+    private Duration processTime;
 }

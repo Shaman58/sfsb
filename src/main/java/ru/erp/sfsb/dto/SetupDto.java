@@ -39,4 +39,5 @@ public class SetupDto extends AbstractDto {
     private boolean isCooperate;
     private String text;
     private MonetaryAmount cooperatePrice;
+    private String additionalComments;
 }

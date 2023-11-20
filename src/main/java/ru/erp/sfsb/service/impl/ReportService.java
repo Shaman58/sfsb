@@ -230,6 +230,7 @@ public class ReportService {
             case FULL -> getSetupInfo_Full(setup, quantity, quantityOfPartsFromWorkpiece);
             case PROCESS_TIME_ONLY -> getSetupInfo_PROCESS_TIME_ONLY(setup, quantity);
             case COMPUTED -> getSetupInfo_COMPUTED(setup, quantity, quantityOfPartsFromWorkpiece);
+            case NONE -> new ArrayList<>();
         };
     }
 
@@ -418,6 +419,8 @@ public class ReportService {
             case FULL -> calculateSetupPrice_FULL(setup, itemQuantity, quantityOfPartsFromWorkpiece);
             case PROCESS_TIME_ONLY -> calculateSetupPrice_PROCESS_TIME_ONLY(setup, itemQuantity);
             case COMPUTED -> calculateSetupPrice_COMPUTED(setup, itemQuantity, quantityOfPartsFromWorkpiece);
+            case NONE ->
+                    throw new ReportGenerateException("Setup " + setup.getId() + " can not be NONE OperationTimeManagement");
         };
         log.debug(setup.getSetupNumber() + " " + timePrice);
         return timePrice;
@@ -477,15 +480,7 @@ public class ReportService {
         var setupPrice = operationService.getSetupPrice().getPaymentPerHour()
                 .divide(60 * 60 * 1000)
                 .multiply(setup.getSetupTime().toMillis());
-        var additionalPrice = setup
-                .getAdditionalTools().stream()
-                .map(tool -> tool.getWorkpiece()
-                        .getMaterial()
-                        .getPrice()
-                        .multiply(getWorkpieceWeight(tool.getWorkpiece()))
-                        .multiply(tool.getAmount()))
-                .reduce(MonetaryAmount::add)
-                .orElseThrow(() -> new EntityNullException("Price of setup additional is missed"));
+        var additionalPrice = getAdditionalsMonetary(setup.getAdditionalTools());
         log.debug("additional " + additionalPrice);
         var cuttersPrice = getToolsMonetary(setup.getCutterToolItems());
         log.debug("cutter " + cuttersPrice);
@@ -509,15 +504,22 @@ public class ReportService {
         return times;
     }
 
+    private MonetaryAmount getAdditionalsMonetary(List<AdditionalToolDto> tools) {
+        return tools.stream()
+                .map(tool -> tool.getWorkpiece()
+                        .getMaterial()
+                        .getPrice()
+                        .multiply(getWorkpieceWeight(tool.getWorkpiece()))
+                        .multiply(tool.getAmount()))
+                .reduce(MonetaryAmount::add)
+                .orElse(Monetary.getDefaultAmountFactory().setCurrency("RUB").setNumber(0).create());
+    }
+
     private <E extends ToolItemDto> MonetaryAmount getToolsMonetary(List<E> tools) {
-        if (tools.size() == 0) {
-            return Monetary.getDefaultAmountFactory()
-                    .setCurrency("RUB").setNumber(0).create();
-        }
         return tools
                 .stream().map(item -> item.getPrice().multiply(item.getAmount()))
                 .reduce(MonetaryAmount::add)
-                .orElseThrow(() -> new EntityNullException("Price of tools is missed"));
+                .orElse(Monetary.getDefaultAmountFactory().setCurrency("RUB").setNumber(0).create());
     }
 
     private MonetaryAmount calculateSetupPriceGeneral(OperationDto operation, Long millis) {

@@ -9,6 +9,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.time.Duration;
+
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
@@ -23,4 +25,5 @@ public class AdditionalToolDto extends AbstractDto {
     private SetupDto setup;
     @Positive(message = "Количество должно быть больше 0")
     private Integer amount;
+    private Duration processTime;
 }

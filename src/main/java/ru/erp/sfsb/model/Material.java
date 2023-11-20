@@ -15,12 +15,16 @@ import javax.money.MonetaryAmount;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "materials")
+@Table(name = "materials", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"gost_1", "gost_2"})
+})
 public class Material extends AbstractEntity {
 
     private String materialName;
-    @Column(unique = true)
-    private String gost;
+    @Column(name = "gost_1")
+    private String gost1;
+    @Column(name = "gost_2")
+    private String gost2;
     @Enumerated(EnumType.STRING)
     private Geometry geometry;
     @AttributeOverride(

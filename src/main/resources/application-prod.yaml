@@ -1,0 +1,35 @@
+server:
+  port: 9001
+spring:
+  datasource:
+    url: jdbc:postgresql://db:5432/sfsb
+    driver-class-name: org.postgresql.Driver
+    username: sfsb
+    password: gFNQkM
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+  main:
+    allow-circular-references: true
+  banner:
+    location: classpath:banner.txt
+springAsyncConfig:
+  corePoolSize: 4
+  maxPoolSize: 10
+  queueCapacity: 50
+  threadNamePrefix: 'AsyncTaskThread::'
+  waitForTasksToCompleteOnShutdown: true
+logging:
+  level:
+    root: OFF
+    org.springframework: INFO
+    org.hibernate: INFO
+    ru.erp.sfsb: DEBUG
+  file:
+    name: logs/log.log
+    max-size: 1mb
+    max-history: 7

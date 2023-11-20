@@ -67,4 +67,5 @@ public class Setup extends AbstractEntity {
     @CompositeType(MonetaryAmountType.class)
     @SuppressWarnings("JpaAttributeTypeInspection")
     private MonetaryAmount cooperatePrice;
+    private String additionalComments;
 }
