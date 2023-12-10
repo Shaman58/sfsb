@@ -45,7 +45,7 @@ public class ContactController {
     }
 
     @ResponseBody
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
     public ContactDto update(@RequestBody @Valid ContactDto contactDto,
                              @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
@@ -53,6 +53,7 @@ public class ContactController {
         return contactService.update(contactDto);
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         contactService.delete(id);

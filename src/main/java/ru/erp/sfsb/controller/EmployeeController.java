@@ -45,7 +45,7 @@ public class EmployeeController {
     }
 
     @ResponseBody
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
     public EmployeeDto update(@RequestBody @Valid EmployeeDto employeeDto,
                               @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
@@ -53,6 +53,7 @@ public class EmployeeController {
         return employeeService.update(employeeDto);
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         employeeService.delete(id);

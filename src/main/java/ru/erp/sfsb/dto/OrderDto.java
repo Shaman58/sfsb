@@ -26,4 +26,6 @@ public class OrderDto extends AbstractDto {
     @NotNull(message = "Менеджер не может быть пустым")
     private EmployeeDto employee;
     private ContactDto contact;
+    @JsonManagedReference
+    private List<FileDto> files;
 }

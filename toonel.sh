@@ -1,0 +1,1 @@
+sshpass -p 'Sy6bJ%Z3&ILA' ssh -L 8282:localhost:8282 root@45.12.237.10

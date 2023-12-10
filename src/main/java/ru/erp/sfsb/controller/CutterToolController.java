@@ -45,7 +45,7 @@ public class CutterToolController {
     }
 
     @ResponseBody
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
     public CutterToolDto update(@RequestBody @Valid CutterToolDto cutterToolDto,
                                 @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
@@ -53,6 +53,7 @@ public class CutterToolController {
         return cutterToolService.update(cutterToolDto);
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         cutterToolService.delete(id);

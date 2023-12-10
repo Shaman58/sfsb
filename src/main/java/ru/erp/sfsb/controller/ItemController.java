@@ -42,7 +42,7 @@ public class ItemController {
     }
 
     @ResponseBody
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
     public ItemDto update(@RequestBody @Valid ItemDto itemDto,
                           @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
@@ -50,6 +50,7 @@ public class ItemController {
         return itemService.update(itemDto);
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         itemService.delete(id);

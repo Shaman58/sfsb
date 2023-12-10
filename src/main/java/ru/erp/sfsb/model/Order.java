@@ -1,9 +1,6 @@
 package ru.erp.sfsb.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,4 +29,6 @@ public class Order extends AbstractEntity {
     private Employee employee;
     @ManyToOne
     private Contact contact;
+    @OneToMany(mappedBy = "order", cascade = ALL, orphanRemoval = true)
+    private List<File> files;
 }

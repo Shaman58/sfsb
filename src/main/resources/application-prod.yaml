@@ -1,11 +1,13 @@
 server:
-  port: 9001
+  port: 9000
 spring:
+  config:
+    import: optional:file:.env[.properties]
   datasource:
-    url: jdbc:postgresql://db:5432/sfsb
-    driver-class-name: org.postgresql.Driver
-    username: sfsb
-    password: gFNQkM
+    url: ${DB-URL}
+    driver-class-name: ${DB-DRIVER-CLASS-NAME}
+    username: ${DB-USERNAME}
+    password: ${DB-PASSWORD}
   jpa:
     hibernate:
       ddl-auto: validate
@@ -13,6 +15,15 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  servlet:
+    multipart:
+      max-file-size: 15MB
+      max-request-size: 15MB
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${JWK-SET-URI}
   main:
     allow-circular-references: true
   banner:
@@ -33,3 +44,16 @@ logging:
     name: logs/log.log
     max-size: 1mb
     max-history: 7
+webclient:
+  file-service:
+    file-url: ${FILE-URL}
+    connect-timeout: 5000
+    read-timeout: 5000
+keycloak:
+  auth-server-url: ${KC_AUTH_SERVER_URL}
+  realm: ${KC_REALM}
+  resource: ${KC_AUTH_RESOURCE}
+  ssl-required: external
+  credentials:
+    secret: ${KC_AUTH_SECRET}
+  use-resource-role-mappings: true

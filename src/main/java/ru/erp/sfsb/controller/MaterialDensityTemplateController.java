@@ -45,7 +45,7 @@ public class MaterialDensityTemplateController {
     }
 
     @ResponseBody
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
     public MaterialDensityTemplateDto update(@RequestBody @Valid MaterialDensityTemplateDto materialDto,
                                              @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
@@ -53,6 +53,7 @@ public class MaterialDensityTemplateController {
         return materialService.update(materialDto);
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         materialService.delete(id);

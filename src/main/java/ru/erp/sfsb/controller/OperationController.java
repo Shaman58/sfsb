@@ -50,6 +50,7 @@ public class OperationController {
         return service.update(operationDto);
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         service.delete(id);
@@ -77,7 +78,7 @@ public class OperationController {
     }
 
     @ResponseBody
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     @PutMapping("/technology")
     public OperationDto updateTechnologyPrice(@RequestBody @Valid OperationDto operationDto) {
         return service.updateTechnologyPrice(operationDto);

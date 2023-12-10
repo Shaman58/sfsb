@@ -24,7 +24,7 @@ public class CompanyController {
     }
 
     @ResponseBody
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     @PutMapping()
     public CompanyDto update(@RequestBody @Valid CompanyDto companyDto) {
         return companyService.update(companyDto);

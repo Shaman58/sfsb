@@ -19,7 +19,6 @@ public class MaterialDto extends AbstractDto {
 
     @NotBlank(message = "Название материала не может быть пустым")
     private String materialName;
-    @NotBlank(message = "ГОСТ материала не может быть пустым")
     private String gost1;
     private String gost2;
     @NotNull(message = "Геометрия материала не может быть пустым")

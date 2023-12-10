@@ -42,7 +42,7 @@ public class SetupController {
     }
 
     @ResponseBody
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
     public SetupDto update(@RequestBody @Valid SetupDto setupDto,
                            @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
@@ -50,6 +50,7 @@ public class SetupController {
         return setupService.update(setupDto);
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         setupService.delete(id);

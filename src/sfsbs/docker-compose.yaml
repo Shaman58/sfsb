@@ -1,0 +1,51 @@
+version: '3.9'
+
+services:
+
+  db:
+    image: postgres
+    restart: always
+    volumes:
+      - db-data:/data/db
+    environment:
+      POSTGRES_USER: sfsb
+      POSTGRES_PASSWORD: gFNQkM
+      POSTGRES_DB: sfsb
+    healthcheck:
+      test: pg_isready -d sfsb -U sfsb
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
+  sfsb:
+    image: shaman58/sfsb:0.1.4
+    env_file:
+      - .env
+    restart: always
+    ports:
+      - "9000:9000"
+    depends_on:
+      db:
+        condition: service_healthy
+  watchtower:
+    image: containrrr/watchtower
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 30
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
+volumes:
+  db-data:

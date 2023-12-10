@@ -45,7 +45,7 @@ public class MeasureToolController {
     }
 
     @ResponseBody
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
     public MeasureToolDto update(@RequestBody @Valid MeasureToolDto measureToolDto,
                                  @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
@@ -53,6 +53,7 @@ public class MeasureToolController {
         return measureToolService.update(measureToolDto);
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         measureToolService.delete(id);

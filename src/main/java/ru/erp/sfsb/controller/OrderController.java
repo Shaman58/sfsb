@@ -40,7 +40,7 @@ public class OrderController {
     }
 
     @ResponseBody
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
     public OrderDto update(@RequestBody @Valid OrderDto orderDto,
                            @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
@@ -48,6 +48,7 @@ public class OrderController {
         return orderService.update(orderDto);
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         orderService.delete(id);

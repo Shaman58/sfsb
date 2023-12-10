@@ -45,7 +45,7 @@ public class WorkpieceController {
     }
 
     @ResponseBody
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
     public WorkpieceDto update(@RequestBody @Valid WorkpieceDto workpieceDto,
                                @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
@@ -53,6 +53,7 @@ public class WorkpieceController {
         return workpieceService.update(workpieceDto);
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         workpieceService.delete(id);

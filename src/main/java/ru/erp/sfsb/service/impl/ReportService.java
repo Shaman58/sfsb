@@ -73,8 +73,8 @@ public class ReportService {
             log.debug("headerData2");
             headerData.put("[target]", String.format("%s %s %s",
                     order.getCustomer().getCompanyName(),
-                    contact.getFirstName(),
-                    contact.getLastName()));
+                    contact == null ? "" : contact.getFirstName(),
+                    contact == null ? "" : contact.getLastName()));
             log.debug("headerData3");
             doc.generateKp(headerData, getItemList(order.getItems()), bodyData);
             log.debug("doc.generateKp");
@@ -302,7 +302,10 @@ public class ReportService {
                 .getTechnology()
                 .getSetups()
                 .stream()
-                .map(setup -> getSetupDataList(setup, item.getQuantity()))
+                .map(setup -> getSetupDataList(setup,
+                        item.getQuantity() +
+                                item.getTechnology().getQuantityOfDefectiveParts() +
+                                item.getTechnology().getQuantityOfSetUpParts()))
                 .collect(toList());
         itemData.add(0, List.of(
                 String.format("%s %s",
@@ -336,7 +339,7 @@ public class ReportService {
         cutters.addAll(measurers);
         if (cutters.size() == 0) {
             log.debug("This order has no any tools!");
-            throw new ReportGenerateException("This order has no any tools!");
+            throw new ReportGenerateException("В заявке отсутствуют инструменты");
         }
         return cutters;
     }
@@ -510,7 +513,10 @@ public class ReportService {
                         .getMaterial()
                         .getPrice()
                         .multiply(getWorkpieceWeight(tool.getWorkpiece()))
-                        .multiply(tool.getAmount()))
+                        .multiply(tool.getAmount())
+                        .add(operationService.getSetupPrice().getPaymentPerHour()
+                                .divide(60 * 60 * 1000)
+                                .multiply(tool.getProcessTime().toMillis())))
                 .reduce(MonetaryAmount::add)
                 .orElse(Monetary.getDefaultAmountFactory().setCurrency("RUB").setNumber(0).create());
     }

@@ -1,13 +1,15 @@
 server:
-  port: 9001
+  port: 9000
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/sfsb
     driver-class-name: org.postgresql.Driver
-#    username: sfsb
-#    password: gFNQkM
     username: user
     password: password
+  servlet:
+    multipart:
+      max-file-size: 15MB
+      max-request-size: 15MB
   jpa:
     hibernate:
       ddl-auto: validate
@@ -15,6 +17,11 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://5.35.82.32/realms/sfsb-realm/protocol/openid-connect/certs
   main:
     allow-circular-references: true
   banner:
@@ -28,22 +35,26 @@ springAsyncConfig:
 logging:
   level:
     root: OFF
-    org.springframework: INFO
+    org:
+      springframework:
+        security: DEBUG
     org.hibernate: INFO
     ru.erp.sfsb: DEBUG
   file:
     name: logs/log.log
     max-size: 1mb
     max-history: 7
-
-#keycloak:
-#  auth-server-url: http://localhost:8282/auth
-#  realm: "sfsb"
-#  resource: "sfsb"
-#  bearer-only: true
-#  security-constraints:
-#    - authRoles:
-#        - uma_authorization
-#      securityCollections:
-#        - patterns:
-#            - /api/*
+webclient:
+  file-service:
+    file-url: http://localhost:9005/api/file
+    connect-timeout: 5000
+    read-timeout: 5000
+    external-url: http://localhost:9005/api/file
+keycloak:
+  auth-server-url: http://localhost:8282/
+  realm: sfsb-realm
+  resource: sfsb-user-manage-client
+  ssl-required: external
+  credentials:
+    secret: 2Zm0H52f0rkuvLiTjDMsOk2rz1kpea11
+  use-resource-role-mappings: true

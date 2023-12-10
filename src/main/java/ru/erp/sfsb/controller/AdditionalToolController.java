@@ -45,7 +45,7 @@ public class AdditionalToolController {
     }
 
     @ResponseBody
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
     public AdditionalToolDto update(@RequestBody @Valid AdditionalToolDto additionalToolDto,
                                     @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
@@ -53,6 +53,7 @@ public class AdditionalToolController {
         return additionalToolService.update(additionalToolDto);
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         additionalToolService.delete(id);
