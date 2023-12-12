@@ -1,0 +1,1 @@
+sshpass -p 'sAKmlI%MSKs9' ssh root@5.35.82.6

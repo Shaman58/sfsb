@@ -57,3 +57,6 @@ keycloak:
   credentials:
     secret: ${KC_AUTH_SECRET}
   use-resource-role-mappings: true
+cors:
+  url: ${CORS_URL}
+  ip: ${CORS_IP}

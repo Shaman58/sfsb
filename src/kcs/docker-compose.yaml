@@ -18,6 +18,7 @@ services:
       start_period: 5s
   keycloak:
     image: quay.io/keycloak/keycloak:22.0.2
+    restart: always
     command:
       - start
       - --db postgres

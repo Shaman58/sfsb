@@ -1,0 +1,16 @@
+version: '3.9'
+
+services:
+  sfsb-front:
+    image: shaman58/sfsb-front:0.1.4
+    restart: always
+    ports:
+      - "80:80"
+  watchtower:
+    image: containrrr/watchtower
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 30
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
