@@ -26,8 +26,7 @@ public class FileController {
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/order/{orderId}")
-    public FileDto saveToOrder(@PathVariable Long orderId,
-                        @RequestBody MultipartFile file) {
+    public FileDto saveToOrder(@PathVariable Long orderId, @RequestBody MultipartFile file) {
         return fileService.addFileToOrder(orderId, file);
     }
 

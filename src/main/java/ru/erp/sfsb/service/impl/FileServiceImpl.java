@@ -41,6 +41,7 @@ public class FileServiceImpl extends AbstractService<FileDto, File, FileReposito
     @Override
     public FileDto addFileToOrder(Long id, MultipartFile file) {
         var order = orderService.get(id);
+        log.info("Add file in DB");
         var link = uploadFile(file)
                 .blockOptional()
                 .orElseThrow();
