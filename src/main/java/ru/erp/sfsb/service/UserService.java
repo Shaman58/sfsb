@@ -2,19 +2,17 @@ package ru.erp.sfsb.service;
 
 
 import jakarta.ws.rs.core.Response;
-import org.keycloak.representations.idm.RoleRepresentation;
-import org.keycloak.representations.idm.UserRepresentation;
-import ru.erp.sfsb.dto.EmployeeDto;
+import ru.erp.sfsb.dto.UserDto;
 
 import java.util.List;
 
 public interface UserService {
 
-    Response createKCUser(EmployeeDto employee);
+    Response createKCUser(UserDto user);
 
-    List<UserRepresentation> getUsers();
+    List<UserDto> getUsers();
 
-    List<RoleRepresentation> getRoles();
+    List<String> getRoles();
 
     void addRoles(String userId, List<String> roles);
 }

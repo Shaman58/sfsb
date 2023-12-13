@@ -52,7 +52,7 @@ public class ExceptionControllerAdvice {
     @ResponseBody
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public List<ExceptionData> onConstraintValidationException(ConstraintViolationException e) {
+    public List<ExceptionData> handleException(ConstraintViolationException e) {
         return e.getConstraintViolations().stream()
                 .map(violation -> new ExceptionData(String.format("'%s' %s", violation.getPropertyPath().toString(), violation.getMessage())))
                 .toList();
@@ -61,7 +61,7 @@ public class ExceptionControllerAdvice {
     @ResponseBody
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public List<ExceptionData> onMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    public List<ExceptionData> handleException(MethodArgumentNotValidException e) {
         return e.getBindingResult().getFieldErrors().stream()
                 .map(error -> new ExceptionData(String.format("'%s' %s", error.getField(), error.getDefaultMessage())))
                 .toList();
@@ -71,6 +71,13 @@ public class ExceptionControllerAdvice {
     @ExceptionHandler(ReportGenerateException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ExceptionData handleException(ReportGenerateException e) {
+        return new ExceptionData(e.getMessage());
+    }
+
+    @ResponseBody
+    @ExceptionHandler(KeycloakUserConflictException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ExceptionData handleException(KeycloakUserConflictException e) {
         return new ExceptionData(e.getMessage());
     }
 }

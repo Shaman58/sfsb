@@ -1,11 +1,9 @@
 package ru.erp.sfsb.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.keycloak.representations.idm.RoleRepresentation;
-import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.erp.sfsb.dto.EmployeeDto;
+import ru.erp.sfsb.dto.UserDto;
 import ru.erp.sfsb.service.UserService;
 
 import java.util.List;
@@ -19,20 +17,20 @@ public class UserController {
 
     @ResponseBody
     @GetMapping("/user")
-    public List<UserRepresentation> getAllUsers() {
+    public List<UserDto> getAllUsers() {
         return userService.getUsers();
     }
 
     @ResponseBody
     @GetMapping("/role")
-    public List<RoleRepresentation> getAllRoles() {
+    public List<String> getAllRoles() {
         return userService.getRoles();
     }
 
     @ResponseBody
     @PostMapping("/user")
-    public ResponseEntity save(@RequestBody EmployeeDto employee) {
-        var response = userService.createKCUser(employee);
+    public ResponseEntity save(@RequestBody UserDto user) {
+        var response = userService.createKCUser(user);
         return ResponseEntity.status(response.getStatus()).build();
     }
 }

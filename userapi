@@ -1,0 +1,28 @@
+user:
+{
+    "firstName": "firstName",
+    "lastName": "lastName",
+    "email": "email@email.ru",
+    "username": "username",
+    "password": "password",
+    "roles":["HR","COMMERCE"]
+}
+
+
+post:
+/api/user
+body: user
+
+
+get:
+/api/user
+return users []
+
+
+get:
+/api/role
+return roles [
+                 "TECHNOLOGIST",
+                 "HR",
+                 "COMMERCE"
+             ]

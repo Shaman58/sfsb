@@ -21,7 +21,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://5.35.82.32/realms/sfsb-realm/protocol/openid-connect/certs
+          jwk-set-uri: http://auth.ra58.ru/realms/sfsb-realm/protocol/openid-connect/certs
   main:
     allow-circular-references: true
   banner:
@@ -46,15 +46,18 @@ logging:
     max-history: 7
 webclient:
   file-service:
-    file-url: http://localhost:9005/api/file
+    file-url: http://fs.ra58.ru:9000/api/file
     connect-timeout: 5000
     read-timeout: 5000
-    external-url: http://localhost:9005/api/file
+    external-url: http://fs.ra58.ru:9000/api/file
 keycloak:
-  auth-server-url: http://localhost:8282/
+  auth-server-url: http://auth.ra58.ru
   realm: sfsb-realm
   resource: sfsb-user-manage-client
   ssl-required: external
   credentials:
-    secret: 2Zm0H52f0rkuvLiTjDMsOk2rz1kpea11
+    secret: aP9J72MFDrdnqNu9L1KCqrRZh8jDIeKf
   use-resource-role-mappings: true
+cors:
+  url: http://ra58.ru
+  ip: http://5.35.82.6
