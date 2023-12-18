@@ -29,6 +29,10 @@ public class Order extends AbstractEntity {
     private Employee employee;
     @ManyToOne
     private Contact contact;
-    @OneToMany(mappedBy = "order", cascade = ALL, orphanRemoval = true)
+    @ManyToMany
+    @JoinTable(
+            name = "order_files",
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "file_id"))
     private List<File> files;
 }

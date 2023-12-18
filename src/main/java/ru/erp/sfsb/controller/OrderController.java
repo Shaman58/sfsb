@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.erp.sfsb.dto.OrderDto;
 import ru.erp.sfsb.service.OrderService;
 
@@ -37,6 +38,13 @@ public class OrderController {
     @PostMapping()
     public OrderDto save(@RequestBody @Valid OrderDto orderDto) {
         return orderService.save(orderDto);
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/{id}")
+    public OrderDto saveFileToOrder(@PathVariable Long id, @RequestBody MultipartFile file) {
+        return orderService.addFileToOrder(id, file);
     }
 
     @ResponseBody

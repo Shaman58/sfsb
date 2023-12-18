@@ -7,7 +7,11 @@ import java.util.List;
 
 public interface FileService extends Service<FileDto> {
 
-    FileDto addFileToOrder(Long id, MultipartFile file);
+    FileDto save(MultipartFile file);
+
+    String saveMultipart(MultipartFile file);
 
     List<FileDto> getFilesByOrderId(Long orderId);
+
+    void deleteMultipart(String filename);
 }

@@ -2,7 +2,7 @@ package ru.erp.sfsb.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +10,6 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class UserDto {
 
     private String id;
@@ -20,10 +19,10 @@ public class UserDto {
     private String firstName;
     @NotBlank(message = "Фамилия не может быть пустой")
     private String lastName;
-    @NotBlank(message = "Почта не может быть пустой")
+    @Pattern(regexp = "^\\w+([.-]?\\w+)*@\\w+([.-]?\\w+)*(\\.\\w{2,3})+$")
     private String email;
-    @NotBlank(message = "Пароль не может быть пустой")
     private String password;
     @NotNull()
     private List<String> roles;
+    private String picture;
 }

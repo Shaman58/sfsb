@@ -1,18 +1,22 @@
 package ru.erp.sfsb.service;
 
 
-import jakarta.ws.rs.core.Response;
+import org.springframework.web.multipart.MultipartFile;
 import ru.erp.sfsb.dto.UserDto;
 
 import java.util.List;
 
 public interface UserService {
 
-    Response createKCUser(UserDto user);
+    UserDto save(UserDto user);
 
-    List<UserDto> getUsers();
+    UserDto update(String uuid, UserDto user);
+
+    List<UserDto> getAll();
 
     List<String> getRoles();
 
-    void addRoles(String userId, List<String> roles);
+    void delete(String uuid);
+
+    void setPicture(String uuid, MultipartFile file);
 }

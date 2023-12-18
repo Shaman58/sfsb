@@ -13,7 +13,6 @@ import ru.erp.sfsb.mapper.FileMapper;
 import ru.erp.sfsb.model.File;
 import ru.erp.sfsb.repository.FileRepository;
 import ru.erp.sfsb.service.FileService;
-import ru.erp.sfsb.service.OrderService;
 
 import java.util.List;
 
@@ -26,27 +25,30 @@ public class FileServiceImpl extends AbstractService<FileDto, File, FileReposito
         implements FileService {
 
     private final WebClient webClient;
-    private final OrderService orderService;
     private final FileRepository fileRepository;
     private final FileMapper mapper;
 
-    public FileServiceImpl(FileMapper mapper, FileRepository repository, WebClient webClient, OrderService orderService, FileRepository fileRepository, FileMapper mapper1) {
+    public FileServiceImpl(FileMapper mapper, FileRepository repository, WebClient webClient, FileRepository fileRepository, FileMapper mapper1) {
         super(mapper, repository, "File");
         this.webClient = webClient;
-        this.orderService = orderService;
         this.fileRepository = fileRepository;
         this.mapper = mapper1;
     }
 
     @Override
-    public FileDto addFileToOrder(Long id, MultipartFile file) {
-        var order = orderService.get(id);
-        log.info("Add file in DB");
-        var link = uploadFile(file)
+    public FileDto save(MultipartFile file) {
+        log.info("Save file in DB");
+        var link = saveMultipart(file);
+        var filename = file.getOriginalFilename();
+        return save(new FileDto(filename, link));
+    }
+
+    @Override
+    public String saveMultipart(MultipartFile file) {
+        log.info("Save file in FS");
+        return uploadFile(file)
                 .blockOptional()
                 .orElseThrow();
-        var filename = file.getOriginalFilename();
-        return save(new FileDto(filename, link, order));
     }
 
     @Override
@@ -54,6 +56,18 @@ public class FileServiceImpl extends AbstractService<FileDto, File, FileReposito
         log.info("Deleting file with id {} in DB", id);
         var filename = get(id).getFilename();
         repository.removeById(id);
+        webClient.delete()
+                .uri(uriBuilder -> uriBuilder
+                        .queryParam("filename", filename)
+                        .build(filename))
+                .retrieve()
+                .bodyToMono(Void.class)
+                .block();
+    }
+
+    @Override
+    public void deleteMultipart(String filename) {
+        log.info("Deleting file with name {} in FS", filename);
         webClient.delete()
                 .uri(uriBuilder -> uriBuilder
                         .queryParam("filename", filename)
