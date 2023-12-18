@@ -14,6 +14,8 @@ public interface UserService {
 
     List<UserDto> getAll();
 
+    UserDto get(String uuid);
+
     List<String> getRoles();
 
     void delete(String uuid);

@@ -2,8 +2,12 @@ package ru.erp.sfsb.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import ru.erp.sfsb.service.impl.ReportService;
 
 @RestController
@@ -20,12 +24,11 @@ public class DocController {
     }
 
     @GetMapping("/tool-order")
-    public void getToolOrder(HttpServletResponse response,
-                             @RequestParam Long teId,
-                             @RequestParam Long feId,
+    public void getToolOrder(HttpServletResponse response, @AuthenticationPrincipal Jwt jwt,
                              @RequestParam Long orderId,
                              @RequestParam(required = false) String body) {
-        reportService.generateToolOrder(response, teId, feId, orderId, body);
+        var feId = jwt.getClaim("sub").toString();
+        reportService.generateToolOrder(response, feId, orderId, body);
     }
 
     @GetMapping("/calculate")

@@ -1,16 +1,11 @@
 package ru.erp.sfsb.model;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
-
-import static jakarta.persistence.CascadeType.MERGE;
 
 @Getter
 @Setter
@@ -31,6 +26,4 @@ public class Customer extends AbstractEntity {
     private String correspondentAccount;
     private String phoneNumber;
     private String email;
-    @OneToMany(mappedBy = "customer", cascade = MERGE)
-    private List<Contact> contacts;
 }

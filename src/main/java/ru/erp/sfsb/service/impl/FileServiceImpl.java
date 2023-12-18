@@ -13,6 +13,7 @@ import ru.erp.sfsb.mapper.FileMapper;
 import ru.erp.sfsb.model.File;
 import ru.erp.sfsb.repository.FileRepository;
 import ru.erp.sfsb.service.FileService;
+import ru.erp.sfsb.service.OrderService;
 
 import java.util.List;
 
@@ -27,12 +28,14 @@ public class FileServiceImpl extends AbstractService<FileDto, File, FileReposito
     private final WebClient webClient;
     private final FileRepository fileRepository;
     private final FileMapper mapper;
+    private final OrderService orderService;
 
-    public FileServiceImpl(FileMapper mapper, FileRepository repository, WebClient webClient, FileRepository fileRepository, FileMapper mapper1) {
+    public FileServiceImpl(FileMapper mapper, FileRepository repository, WebClient webClient, FileRepository fileRepository, FileMapper mapper1, OrderService orderService) {
         super(mapper, repository, "File");
         this.webClient = webClient;
         this.fileRepository = fileRepository;
         this.mapper = mapper1;
+        this.orderService = orderService;
     }
 
     @Override
@@ -81,6 +84,14 @@ public class FileServiceImpl extends AbstractService<FileDto, File, FileReposito
     public List<FileDto> getFilesByOrderId(Long orderId) {
         log.info("Looking all files by order id in DB");
         return fileRepository.getFilesByOrderId(orderId).stream().map(mapper::toDto).collect(toList());
+    }
+
+    @Override
+    public void addFileToOrder(Long id, MultipartFile file) {
+        var order = orderService.get(id);
+        var fileDto = save(file);
+        order.getFiles().add(fileDto);
+        orderService.save(order);
     }
 
     private Mono<String> uploadFile(MultipartFile file) {

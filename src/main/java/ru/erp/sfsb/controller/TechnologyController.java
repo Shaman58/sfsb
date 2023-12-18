@@ -6,10 +6,13 @@ import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.erp.sfsb.dto.TechnologyDto;
 import ru.erp.sfsb.service.TechnologyService;
+import ru.erp.sfsb.service.UserService;
 
 import java.util.List;
 
@@ -20,6 +23,7 @@ import java.util.List;
 public class TechnologyController {
 
     private final TechnologyService technologyService;
+    private final UserService userService;
 
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
@@ -40,8 +44,12 @@ public class TechnologyController {
     @ResponseStatus(HttpStatus.CREATED)
     @PutMapping("/{id}")
     public TechnologyDto update(@RequestBody @Valid TechnologyDto technologyDto,
-                                @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
+                                @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id,
+                                @AuthenticationPrincipal Jwt jwt) {
+        var uuid = jwt.getClaim("sub").toString();
+        var user = userService.get(uuid);
         technologyDto.setId(id);
+        technologyDto.setUser(user);
         technologyDto.setComputed(false);
         return technologyService.update(technologyDto);
     }

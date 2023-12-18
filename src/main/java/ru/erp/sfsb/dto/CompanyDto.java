@@ -1,14 +1,11 @@
 package ru.erp.sfsb.dto;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -38,7 +35,4 @@ public class CompanyDto extends AbstractDto {
     private String phoneNumber;
     @Pattern(regexp = "^\\w+([.-]?\\w+)*@\\w+([.-]?\\w+)*(\\.\\w{2,3})+$")
     private String email;
-    private EmployeeDto director;
-    @JsonManagedReference
-    private List<DepartmentDto> departments;
 }

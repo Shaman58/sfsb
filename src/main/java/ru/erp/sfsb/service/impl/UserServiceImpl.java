@@ -87,6 +87,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserDto get(String uuid) {
+        log.info("Get user profile from KC DB");
+        return repToUserDto(usersResource.get(uuid).toRepresentation());
+    }
+
+    @Override
     public List<String> getRoles() {
         log.info("Get all roles from KC DB");
         return rolesResource.list().stream()

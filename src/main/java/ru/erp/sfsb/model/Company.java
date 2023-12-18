@@ -1,14 +1,11 @@
 package ru.erp.sfsb.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
-
-import static jakarta.persistence.CascadeType.MERGE;
 
 @Getter
 @Setter
@@ -29,9 +26,4 @@ public class Company extends AbstractEntity {
     private String correspondentAccount;
     private String phoneNumber;
     private String email;
-    @OneToOne
-    @JoinColumn
-    private Employee director;
-    @OneToMany(mappedBy = "company", cascade = MERGE)
-    private List<Department> departments;
 }

@@ -14,4 +14,6 @@ public interface FileService extends Service<FileDto> {
     List<FileDto> getFilesByOrderId(Long orderId);
 
     void deleteMultipart(String filename);
+
+    void addFileToOrder(Long id, MultipartFile file);
 }

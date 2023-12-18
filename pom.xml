@@ -10,7 +10,7 @@
     </parent>
     <groupId>ru.erp</groupId>
     <artifactId>sfsb</artifactId>
-    <version>0.1.4</version>
+    <version>0.1.5</version>
     <name>sfsb</name>
     <description>ERP system for small business</description>
     <properties>
@@ -98,6 +98,18 @@
             <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
         </dependency>
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.keycloak.bom</groupId>
+                <artifactId>keycloak-adapter-bom</artifactId>
+                <version>22.0.5</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <plugins>

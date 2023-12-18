@@ -21,7 +21,7 @@ public class TechnologyDto extends AbstractDto {
     private String drawingNumber;
     @NotBlank(message = "Название чертежа не может быть пустым")
     private String drawingName;
-    private EmployeeDto employee;
+    private UserDto user;
     private Integer quantityOfDefectiveParts;
     private Integer quantityOfSetUpParts;
     private Integer quantityOfPartsFromWorkpiece;

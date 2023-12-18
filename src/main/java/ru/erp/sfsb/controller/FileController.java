@@ -3,6 +3,7 @@ package ru.erp.sfsb.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.erp.sfsb.dto.FileDto;
 import ru.erp.sfsb.service.FileService;
 
@@ -20,6 +21,13 @@ public class FileController {
     @GetMapping("/order/{orderId}")
     public List<FileDto> getAllByOrderId(@PathVariable Long orderId) {
         return fileService.getFilesByOrderId(orderId);
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/order/{id}")
+    public void saveFileToOrder(@PathVariable Long id, @RequestBody MultipartFile file) {
+        fileService.addFileToOrder(id, file);
     }
 
     @ResponseStatus(HttpStatus.OK)

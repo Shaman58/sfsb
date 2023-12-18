@@ -15,7 +15,5 @@ public class ItemServiceImpl extends AbstractService<ItemDto, Item, ItemReposito
 
     public ItemServiceImpl(ItemMapper mapper, ItemRepository repository) {
         super(mapper, repository, "Item");
-        this.mapper = mapper;
-        this.repository = repository;
     }
 }

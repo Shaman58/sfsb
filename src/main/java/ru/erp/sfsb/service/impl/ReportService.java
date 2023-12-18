@@ -39,11 +39,11 @@ public class ReportService {
 
     private final OrderService orderService;
     private final ItemService itemService;
-    private final EmployeeService employeeService;
     private final OperationService operationService;
     private final CompanyService companyService;
     private final Petrovich petrovich;
     private final DurationRuCustomFormatter durationFormatter;
+    private final UserService userService;
 
     public void generateKp(Long orderId, HttpServletResponse response) {
         log.info("Generating kp with order id {}", orderId);
@@ -53,14 +53,11 @@ public class ReportService {
             var doc = new DocxReportUtil(inputStream);
             log.debug("doc");
             var order = orderService.get(orderId);
-            var company = order.getEmployee().getDepartment().getCompany();
+            var company = companyService.getCompany();
             log.debug("company");
-            var contact = order.getContact();
-            log.debug("contact");
-            var employee = String.format("%s %s %s",
-                    order.getEmployee().getPosition(),
-                    order.getEmployee().getFirstName(),
-                    order.getEmployee().getLastName());
+            var employee = String.format("%s %s",
+                    order.getUser().getFirstName(),
+                    order.getUser().getLastName());
             log.debug("employee");
             var bodyData = Map.of(
                     "[proposal]", order.getBusinessProposal(),
@@ -71,10 +68,6 @@ public class ReportService {
             log.debug("headerData1");
             headerData.put("[app-number]", String.valueOf(order.getApplicationNumber()));
             log.debug("headerData2");
-            headerData.put("[target]", String.format("%s %s %s",
-                    order.getCustomer().getCompanyName(),
-                    contact == null ? "" : contact.getFirstName(),
-                    contact == null ? "" : contact.getLastName()));
             log.debug("headerData3");
             doc.generateKp(headerData, getItemList(order.getItems()), bodyData);
             log.debug("doc.generateKp");
@@ -86,14 +79,13 @@ public class ReportService {
         }
     }
 
-    public void generateToolOrder(HttpServletResponse response, Long targetEmployeeId, Long fromEmployeeId, Long orderId, String body) {
+    public void generateToolOrder(HttpServletResponse response, String fromEmployeeId, Long orderId, String body) {
         try {
             var inputStream = getClass().getResourceAsStream("/tool-order-template.docx");
             var doc = new DocxReportUtil(inputStream);
-            var targetEmployee = employeeService.get(targetEmployeeId);
-            var fromEmployee = employeeService.get(fromEmployeeId);
+            var fromEmployee = userService.get(fromEmployeeId);
             var companyName = companyService.getCompany().getCompanyName();
-            var headerData = getHeaderFromEmployees(targetEmployee, fromEmployee, companyName);
+            var headerData = getHeaderFromEmployees(fromEmployee, companyName);
             if (Objects.equals(body, null)) {
                 body = "Прошу Вас, разрешить отделу снабжения приобрести следующие позиции:";
             }
@@ -535,17 +527,13 @@ public class ReportService {
                 .multiply(millis);
     }
 
-    private String getFooterFromEmployee(EmployeeDto employee) {
-        return String.format("%s %s %s", employee.getPosition(), getInitials(employee.getFirstName()), employee.getLastName());
+    private String getFooterFromEmployee(UserDto employee) {
+        return String.format("%s %s", getInitials(employee.getFirstName()), employee.getLastName());
     }
 
-    private String getHeaderFromEmployees(EmployeeDto targetEmployee, EmployeeDto fromEmployee, String companyName) {
-        return String.format("%s \n%s \n%s %s \nот %s \n%s %s",
-                targetEmployee.getPosition(),
+    private String getHeaderFromEmployees(UserDto fromEmployee, String companyName) {
+        return String.format("%s \nот \n%s %s",
                 companyName,
-                petrovich.say(targetEmployee.getLastName(), NameType.LastName, petrovich.gender(targetEmployee.getLastName(), Gender.Male), Case.Dative),
-                getInitials(targetEmployee.getFirstName()),
-                fromEmployee.getPosition().toLowerCase(),
                 petrovich.say(fromEmployee.getLastName(), NameType.LastName, petrovich.gender(fromEmployee.getLastName(), Gender.Male), Case.Genitive),
                 getInitials(fromEmployee.getFirstName()));
     }

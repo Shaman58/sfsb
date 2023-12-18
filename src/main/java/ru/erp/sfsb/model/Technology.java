@@ -26,8 +26,7 @@ public class Technology extends AbstractEntity {
 
     private String drawingNumber;
     private String drawingName;
-    @ManyToOne
-    private Employee employee;
+    private String userUuid;
     private Integer quantityOfDefectiveParts;
     private Integer quantityOfSetUpParts;
     private Integer quantityOfPartsFromWorkpiece;
