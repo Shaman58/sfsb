@@ -10,6 +10,7 @@ import java.util.List;
 
 public interface FileRepository extends JpaRepository<File, Long> {
 
+
     @Query(value = "SELECT f.id, f.filename, f.link, f.created, f.updated FROM files f JOIN order_files of ON of.file_id = f.id WHERE of.order_id = :orderId", nativeQuery = true)
     List<File> getFilesByOrderId(@Param("orderId") Long orderId);
 

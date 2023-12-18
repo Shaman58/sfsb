@@ -23,7 +23,6 @@ public class FileController {
         return fileService.getFilesByOrderId(orderId);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/order/{id}")
     public void saveFileToOrder(@PathVariable Long id, @RequestBody MultipartFile file) {
