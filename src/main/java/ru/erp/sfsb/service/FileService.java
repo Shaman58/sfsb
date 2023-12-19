@@ -16,4 +16,6 @@ public interface FileService extends Service<FileDto> {
     void deleteMultipart(String filename);
 
     void addFileToOrder(Long id, MultipartFile file);
+
+    void setPicture(String uuid, MultipartFile file);
 }

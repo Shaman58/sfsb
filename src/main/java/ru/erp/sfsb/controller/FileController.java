@@ -34,4 +34,11 @@ public class FileController {
     public void delete(@PathVariable Long id) {
         fileService.delete(id);
     }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
+    @PutMapping("/user/{uuid}")
+    public void savePictureToUser(@PathVariable String uuid, MultipartFile file) {
+        fileService.setPicture(uuid, file);
+    }
 }

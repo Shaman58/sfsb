@@ -9,13 +9,16 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import ru.erp.sfsb.dto.FileDto;
+import ru.erp.sfsb.exception.KeycloakOtherException;
 import ru.erp.sfsb.mapper.FileMapper;
 import ru.erp.sfsb.model.File;
 import ru.erp.sfsb.repository.FileRepository;
 import ru.erp.sfsb.service.FileService;
 import ru.erp.sfsb.service.OrderService;
+import ru.erp.sfsb.service.UserService;
 
 import java.util.List;
+import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
 
@@ -29,13 +32,15 @@ public class FileServiceImpl extends AbstractService<FileDto, File, FileReposito
     private final FileRepository fileRepository;
     private final FileMapper mapper;
     private final OrderService orderService;
+    private final UserService userService;
 
-    public FileServiceImpl(FileMapper mapper, FileRepository repository, WebClient webClient, FileRepository fileRepository, FileMapper mapper1, OrderService orderService) {
+    public FileServiceImpl(FileMapper mapper, FileRepository repository, WebClient webClient, FileRepository fileRepository, OrderService orderService, UserService userService) {
         super(mapper, repository, "File");
         this.webClient = webClient;
         this.fileRepository = fileRepository;
-        this.mapper = mapper1;
+        this.mapper = mapper;
         this.orderService = orderService;
+        this.userService = userService;
     }
 
     @Override
@@ -92,6 +97,24 @@ public class FileServiceImpl extends AbstractService<FileDto, File, FileReposito
         var fileDto = save(file);
         order.getFiles().add(fileDto);
         orderService.save(order);
+    }
+
+    @Override
+    public void setPicture(String uuid, MultipartFile file) {
+        log.info("Set picture");
+        if (file == null) {
+            throw new KeycloakOtherException("Файл не должен быть пустой");
+        }
+
+        var link = userService.getAttributes(uuid).getOrDefault("picture", null).get(0);
+        if (link != null && !link.isEmpty()) {
+            log.info("Delete old picture");
+            deleteMultipart(link);
+        }
+
+        link = saveMultipart(file);
+
+        userService.setAttribute(uuid, Map.of("picture", List.of(link)));
     }
 
     private Mono<String> uploadFile(MultipartFile file) {

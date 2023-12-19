@@ -11,11 +11,9 @@ import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import ru.erp.sfsb.dto.UserDto;
 import ru.erp.sfsb.exception.KeycloakOtherException;
 import ru.erp.sfsb.exception.KeycloakUserConflictException;
-import ru.erp.sfsb.service.FileService;
 import ru.erp.sfsb.service.UserService;
 
 import java.util.List;
@@ -31,7 +29,6 @@ public class UserServiceImpl implements UserService {
     private String fileExternalUrl;
     private final UsersResource usersResource;
     private final RolesResource rolesResource;
-    private final FileService fileService;
 
     @Override
     public UserDto save(UserDto user) {
@@ -102,26 +99,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void setPicture(String uuid, MultipartFile file) {
-        log.info("Set picture");
-        log.info("Get user in KC DB");
-        if (file == null) {
-            throw new KeycloakOtherException("Файл не должен быть пустой");
-        }
-        var user = usersResource.get(uuid).toRepresentation();
-        if (user.getAttributes() != null && user.getAttributes().containsKey("picture")) {
-            log.info("Delete old picture");
-            var link = user.getAttributes().get("picture").get(0);
-            fileService.deleteMultipart(link);
-        }
-        log.info("Save file in FS");
-        var link = fileService.saveMultipart(file);
-        user.setAttributes(Map.of("picture", List.of(link)));
-        log.info("Save user in KC DB");
-        usersResource.get(uuid).update(user);
-    }
-
-    @Override
     public void delete(String uuid) {
         log.info("User deleting");
         var response = usersResource.delete(uuid).getStatus();
@@ -129,6 +106,21 @@ public class UserServiceImpl implements UserService {
         if (response != HttpStatus.NO_CONTENT.value()) {
             throw new KeycloakOtherException("Ошибка удаления пользователя!");
         }
+    }
+
+    @Override
+    public void setAttribute(String uuid, Map<String, List<String>> attributes) {
+        var userRepresentation = usersResource.get(uuid).toRepresentation();
+        userRepresentation.setAttributes(attributes);
+        log.info("Save attributes of user in KC DB");
+        usersResource.get(uuid).update(userRepresentation);
+    }
+
+    @Override
+    public Map<String, List<String>> getAttributes(String uuid) {
+        return usersResource.get(uuid).toRepresentation()
+                .getAttributes();
+
     }
 
     private List<String> getUserRoles(String uuid) {

@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import ru.erp.sfsb.dto.UserDto;
 import ru.erp.sfsb.service.UserService;
 
@@ -46,13 +45,6 @@ public class UserController {
     public UserDto update(@PathVariable String uuid, @RequestBody @Valid UserDto user) {
         log.debug(user.toString());
         return userService.update(uuid, user);
-    }
-
-    @ResponseStatus(HttpStatus.CREATED)
-    @ResponseBody
-    @PutMapping("/user/file/{uuid}")
-    public void setPicture(@PathVariable String uuid, MultipartFile file) {
-        userService.setPicture(uuid, file);
     }
 
     @ResponseStatus(HttpStatus.OK)

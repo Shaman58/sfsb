@@ -34,7 +34,7 @@ springAsyncConfig:
   waitForTasksToCompleteOnShutdown: true
 logging:
   level:
-    root: OFF
+    root: INFO
     org:
       springframework:
         security: DEBUG
