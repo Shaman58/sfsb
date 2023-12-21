@@ -23,9 +23,12 @@ services:
   pgadmin4:
     image: elestio/pgadmin:latest
     restart: always
+    volumes:
+      - ./servers.json:/pgadmin4/servers.json
+      - ./pgpass:/pgpass
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@mail.com
-      PGADMIN_DEFAULT_PASSWORD: password
+      PGADMIN_DEFAULT_PASSWORD: gFNQkM
       PGADMIN_LISTEN_PORT: 8080
     ports:
       - "8080:8080"

@@ -1,0 +1,2 @@
+alter table technologies
+rename column user_uuid to user;

@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import ru.erp.sfsb.dto.AbstractDto;
 import ru.erp.sfsb.model.AbstractEntity;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 public abstract class AbstractMapper<E extends AbstractEntity, D extends AbstractDto> implements Mapper<E, D> {
@@ -33,6 +35,13 @@ public abstract class AbstractMapper<E extends AbstractEntity, D extends Abstrac
         return Objects.isNull(entity)
                 ? null
                 : mapper.map(entity, dtoClass);
+    }
+
+    @Override
+    public List<D> toDto(Collection<E> list) {
+        return Objects.isNull(list)
+                ? null
+                : list.stream().map(item -> mapper.map(item, dtoClass)).toList();
     }
 
     Converter<E, D> toDtoConverter() {

@@ -15,7 +15,5 @@ public class TechnologyServiceImpl extends AbstractService<TechnologyDto, Techno
 
     public TechnologyServiceImpl(TechnologyMapper mapper, TechnologyRepository repository) {
         super(mapper, repository, "Technology");
-        this.mapper = mapper;
-        this.repository = repository;
     }
 }

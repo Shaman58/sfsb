@@ -38,6 +38,20 @@ public class MaterialController {
     }
 
     @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/price")
+    public List<MaterialDto> getAllPRICE() {
+        return materialService.getMaterialWithoutPrice();
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/priceexp")
+    public List<MaterialDto> getAllPRICEExp() {
+        return materialService.getMaterialWithExpiredDate();
+    }
+
+    @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping()
     public MaterialDto save(@RequestBody @Valid MaterialDto materialDto) {

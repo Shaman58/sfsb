@@ -19,14 +19,20 @@ public class OrderMapper extends AbstractMapper<Order, OrderDto> {
     @PostConstruct
     public void setupMapper() {
         mapper.createTypeMap(Order.class, OrderDto.class)
-                .addMappings(m -> m.skip(OrderDto::setUser)).setPostConverter(toDtoConverter());
+                .addMappings(m -> m.skip(OrderDto::setUser))
+                .setPostConverter(toDtoConverter());
         mapper.createTypeMap(OrderDto.class, Order.class)
-                .addMappings(m -> m.skip(Order::setUserUuid)).setPostConverter(toEntityConverter());
+                .addMappings(m -> m.skip(Order::setUserUuid))
+                .setPostConverter(toEntityConverter());
     }
 
     @Override
     void mapSpecificFields(Order source, OrderDto destination) {
-        destination.setUser(userService.get(source.getUserUuid()));
+        if (source.getUserUuid() == null) {
+            destination.setUser(null);
+        } else {
+            destination.setUser(userService.get(source.getUserUuid()));
+        }
     }
 
     @Override

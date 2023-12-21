@@ -12,7 +12,6 @@ import ru.erp.sfsb.service.Service;
 import java.util.List;
 
 import static java.lang.String.format;
-import static java.util.stream.Collectors.toList;
 
 @Slf4j
 public abstract class AbstractService
@@ -34,14 +33,14 @@ public abstract class AbstractService
     public List<D> getAll() {
         log.info("Looking all {}s in DB", entityName);
         var entities = repository.findAll();
-        return entities.stream().map(mapper::toDto).collect(toList());
+        return mapper.toDto(entities);
     }
 
     @Override
     public List<D> getAll(Pageable pageable) {
         log.info("Looking all {}s in DB", entityName);
         var entities = repository.findAll(pageable);
-        return entities.stream().map(mapper::toDto).collect(toList());
+        return mapper.toDto(entities.stream().toList());
     }
 
     @Override

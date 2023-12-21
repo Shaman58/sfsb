@@ -1,0 +1,371 @@
+{
+  "info": {
+    "_postman_id": "90516f56-e237-45ec-80e6-4ab0968b55f3",
+    "name": "grant type auth code",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "19906163"
+  },
+  "item": [
+    {
+      "name": "get auth code",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://auth.ra58.ru/realms/sfsb-realm/protocol/openid-connect/auth?response_type=code&client_id=sfsb-front-client&state=93675383-eeea-4286-8bdd-7002e591717c&redirect_uri=http://localhost:3000&scope=openid profile&code_challenge=SB8KX9eJ8mmCBGMQuqLSlvFDQqfTdAivz9ARskrV-RM&code_challenge_method=S256",
+          "protocol": "http",
+          "host": [
+            "auth",
+            "ra58",
+            "ru"
+          ],
+          "path": [
+            "realms",
+            "sfsb-realm",
+            "protocol",
+            "openid-connect",
+            "auth"
+          ],
+          "query": [
+            {
+              "key": "response_type",
+              "value": "code"
+            },
+            {
+              "key": "client_id",
+              "value": "sfsb-front-client"
+            },
+            {
+              "key": "state",
+              "value": "93675383-eeea-4286-8bdd-7002e591717c"
+            },
+            {
+              "key": "redirect_uri",
+              "value": "http://localhost:3000"
+            },
+            {
+              "key": "scope",
+              "value": "openid profile"
+            },
+            {
+              "key": "code_challenge",
+              "value": "SB8KX9eJ8mmCBGMQuqLSlvFDQqfTdAivz9ARskrV-RM"
+            },
+            {
+              "key": "code_challenge_method",
+              "value": "S256"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "get access code",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "grant_type",
+              "value": "authorization_code",
+              "type": "text"
+            },
+            {
+              "key": "client_id",
+              "value": "sfsb-front-client",
+              "type": "text"
+            },
+            {
+              "key": "code",
+              "value": "cb3760a6-20ed-419e-81ff-c0bb5dc40a3b.9f52f7c3-2f60-493d-a913-34476202cbbe.68ca0d03-faf7-416e-85e9-87ede9806926",
+              "type": "text"
+            },
+            {
+              "key": "redirect_uri",
+              "value": "http://localhost:3000",
+              "type": "text"
+            },
+            {
+              "key": "code_verifier",
+              "value": "0L_jDcSCajIRZAW0FZMTphZ12LU_xPKioBCqQz0ij_I",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://auth.ra58.ru/realms/sfsb-realm/protocol/openid-connect/token",
+          "protocol": "http",
+          "host": [
+            "auth",
+            "ra58",
+            "ru"
+          ],
+          "path": [
+            "realms",
+            "sfsb-realm",
+            "protocol",
+            "openid-connect",
+            "token"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "createuser",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJJWDk1Tmk3YW5UZ0o2dFR1RGFDanMyeTZYbjBsVHpiem8waU9qUDJ0ZXB3In0.eyJleHAiOjE3MDI2NTUwNDAsImlhdCI6MTcwMjYxOTA0MCwiYXV0aF90aW1lIjoxNzAyNjE5MDQwLCJqdGkiOiJlY2RmMzdiZC1hMjBjLTQ0NzMtYTViNS00NzdlOTAwOWMzNzAiLCJpc3MiOiJodHRwOi8vNS4zNS44Mi4zMi9yZWFsbXMvc2ZzYi1yZWFsbSIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiI1OGZmZGQ2NC00NWRmLTRiODgtYWNiNi01NTZiYmVlNmE0MGIiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJzZnNiLWZyb250LWNsaWVudCIsIm5vbmNlIjoiNDk2ZWNjYzctYmQ3Mi00ZWNhLWEzOWEtYTY5YTM1NDZlMzNjIiwic2Vzc2lvbl9zdGF0ZSI6ImQ0ZWFlYmEwLTE2MTUtNDI5Yi04Y2JmLTZhOWI2YzljOTdlMyIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovLzUuMzUuODIuNiIsImh0dHA6Ly9sb2NhbGhvc3Q6MzAwMCIsImh0dHA6Ly9yYTU4LnJ1Il0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJkZWZhdWx0LXJvbGVzLXNmc2ItcmVhbG0iLCJURUNITk9MT0dJU1QiLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCIsInNpZCI6ImQ0ZWFlYmEwLTE2MTUtNDI5Yi04Y2JmLTZhOWI2YzljOTdlMyIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwibmFtZSI6IkFsZXggU2htb25pbiIsInByZWZlcnJlZF91c2VybmFtZSI6InRlc3QiLCJnaXZlbl9uYW1lIjoiQWxleCIsImZhbWlseV9uYW1lIjoiU2htb25pbiIsImVtYWlsIjoic2htb25pbkBtYWlsLnJ1IiwicGljdHVyZSI6IjI4YmY4NDRmLTkxYzctNDE2YS04ZDRmLWM1ZThmOWNjZmE4Ni5qcGVnIn0.dMMJdnathS4-WImYwDrsVR14Mh4rEM08Sp95UYwVSEzgsYBbnguoFCMsmw7FYBzS1fQw06jNAiaBDiFwkq7j5nkEaq3cpZZPwFPg3735E_6pXV9KbNQcYYgZFifLaxi0xJFYSfIb5UrttxM2BYUaxGXhxFY90vwfV3ey5_rSuFLoCDIUqvVAWfT4gddMVC3zmggPZLyLPdr2YSiVyWwljzeGhQMPTdQ_iedWRkGJkgTJVWf6cVdTpqy5VEX2TUvDaXFNBfW7CGRQZmvkK9Ymw_zm4iVkg8J3uPPxxxkHjRNskyNfE6HBiM8U1CMdsH46m6cNCE-cKqZGuYug9a60RA",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"username\": \"user222\",\n    \"firstName\": \"Alex\",\n    \"lastName\": \"Shmonin\",\n    \"email\": \"2234@mail.ru\",\n    \"password\": \"111\",\n    \"roles\": [\n        \"TECHNOLOGIST\"\n    ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:9000/api/user",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9000",
+          "path": [
+            "api",
+            "user"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "updateuser",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJJWDk1Tmk3YW5UZ0o2dFR1RGFDanMyeTZYbjBsVHpiem8waU9qUDJ0ZXB3In0.eyJleHAiOjE3MDI2NTUwNDAsImlhdCI6MTcwMjYxOTA0MCwiYXV0aF90aW1lIjoxNzAyNjE5MDQwLCJqdGkiOiJlY2RmMzdiZC1hMjBjLTQ0NzMtYTViNS00NzdlOTAwOWMzNzAiLCJpc3MiOiJodHRwOi8vNS4zNS44Mi4zMi9yZWFsbXMvc2ZzYi1yZWFsbSIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiI1OGZmZGQ2NC00NWRmLTRiODgtYWNiNi01NTZiYmVlNmE0MGIiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJzZnNiLWZyb250LWNsaWVudCIsIm5vbmNlIjoiNDk2ZWNjYzctYmQ3Mi00ZWNhLWEzOWEtYTY5YTM1NDZlMzNjIiwic2Vzc2lvbl9zdGF0ZSI6ImQ0ZWFlYmEwLTE2MTUtNDI5Yi04Y2JmLTZhOWI2YzljOTdlMyIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovLzUuMzUuODIuNiIsImh0dHA6Ly9sb2NhbGhvc3Q6MzAwMCIsImh0dHA6Ly9yYTU4LnJ1Il0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJkZWZhdWx0LXJvbGVzLXNmc2ItcmVhbG0iLCJURUNITk9MT0dJU1QiLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCIsInNpZCI6ImQ0ZWFlYmEwLTE2MTUtNDI5Yi04Y2JmLTZhOWI2YzljOTdlMyIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwibmFtZSI6IkFsZXggU2htb25pbiIsInByZWZlcnJlZF91c2VybmFtZSI6InRlc3QiLCJnaXZlbl9uYW1lIjoiQWxleCIsImZhbWlseV9uYW1lIjoiU2htb25pbiIsImVtYWlsIjoic2htb25pbkBtYWlsLnJ1IiwicGljdHVyZSI6IjI4YmY4NDRmLTkxYzctNDE2YS04ZDRmLWM1ZThmOWNjZmE4Ni5qcGVnIn0.dMMJdnathS4-WImYwDrsVR14Mh4rEM08Sp95UYwVSEzgsYBbnguoFCMsmw7FYBzS1fQw06jNAiaBDiFwkq7j5nkEaq3cpZZPwFPg3735E_6pXV9KbNQcYYgZFifLaxi0xJFYSfIb5UrttxM2BYUaxGXhxFY90vwfV3ey5_rSuFLoCDIUqvVAWfT4gddMVC3zmggPZLyLPdr2YSiVyWwljzeGhQMPTdQ_iedWRkGJkgTJVWf6cVdTpqy5VEX2TUvDaXFNBfW7CGRQZmvkK9Ymw_zm4iVkg8J3uPPxxxkHjRNskyNfE6HBiM8U1CMdsH46m6cNCE-cKqZGuYug9a60RA",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n\"id\": \"2ec5bfce-a931-40bd-8ac3-0870a011f746\",\n    \"username\": \"user222\",\n    \"firstName\": \"333\",\n    \"lastName\": \"333\",\n    \"email\": \"333@mail.ru\",\n    \"password\": null,\n    \"roles\": [\n        \"default-roles-sfsb-realm\",\n        \"HR\"\n    ],\n    \"picture\": \"http://fs.ra58.ru:9000/api/file?filename=ad2ca740-1fd2-4817-ba0d-ace48290852e.jpeg\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://api.ra58.ru:9000/api/user/2ec5bfce-a931-40bd-8ac3-0870a011f746",
+          "protocol": "http",
+          "host": [
+            "api",
+            "ra58",
+            "ru"
+          ],
+          "port": "9000",
+          "path": [
+            "api",
+            "user",
+            "2ec5bfce-a931-40bd-8ac3-0870a011f746"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "setPicture",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJJWDk1Tmk3YW5UZ0o2dFR1RGFDanMyeTZYbjBsVHpiem8waU9qUDJ0ZXB3In0.eyJleHAiOjE3MDI2NTUwNDAsImlhdCI6MTcwMjYxOTA0MCwiYXV0aF90aW1lIjoxNzAyNjE5MDQwLCJqdGkiOiJlY2RmMzdiZC1hMjBjLTQ0NzMtYTViNS00NzdlOTAwOWMzNzAiLCJpc3MiOiJodHRwOi8vNS4zNS44Mi4zMi9yZWFsbXMvc2ZzYi1yZWFsbSIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiI1OGZmZGQ2NC00NWRmLTRiODgtYWNiNi01NTZiYmVlNmE0MGIiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJzZnNiLWZyb250LWNsaWVudCIsIm5vbmNlIjoiNDk2ZWNjYzctYmQ3Mi00ZWNhLWEzOWEtYTY5YTM1NDZlMzNjIiwic2Vzc2lvbl9zdGF0ZSI6ImQ0ZWFlYmEwLTE2MTUtNDI5Yi04Y2JmLTZhOWI2YzljOTdlMyIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovLzUuMzUuODIuNiIsImh0dHA6Ly9sb2NhbGhvc3Q6MzAwMCIsImh0dHA6Ly9yYTU4LnJ1Il0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJkZWZhdWx0LXJvbGVzLXNmc2ItcmVhbG0iLCJURUNITk9MT0dJU1QiLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCIsInNpZCI6ImQ0ZWFlYmEwLTE2MTUtNDI5Yi04Y2JmLTZhOWI2YzljOTdlMyIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwibmFtZSI6IkFsZXggU2htb25pbiIsInByZWZlcnJlZF91c2VybmFtZSI6InRlc3QiLCJnaXZlbl9uYW1lIjoiQWxleCIsImZhbWlseV9uYW1lIjoiU2htb25pbiIsImVtYWlsIjoic2htb25pbkBtYWlsLnJ1IiwicGljdHVyZSI6IjI4YmY4NDRmLTkxYzctNDE2YS04ZDRmLWM1ZThmOWNjZmE4Ni5qcGVnIn0.dMMJdnathS4-WImYwDrsVR14Mh4rEM08Sp95UYwVSEzgsYBbnguoFCMsmw7FYBzS1fQw06jNAiaBDiFwkq7j5nkEaq3cpZZPwFPg3735E_6pXV9KbNQcYYgZFifLaxi0xJFYSfIb5UrttxM2BYUaxGXhxFY90vwfV3ey5_rSuFLoCDIUqvVAWfT4gddMVC3zmggPZLyLPdr2YSiVyWwljzeGhQMPTdQ_iedWRkGJkgTJVWf6cVdTpqy5VEX2TUvDaXFNBfW7CGRQZmvkK9Ymw_zm4iVkg8J3uPPxxxkHjRNskyNfE6HBiM8U1CMdsH46m6cNCE-cKqZGuYug9a60RA",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": "/Users/shmonin/Downloads/88569288-c3fd-47b8-ac2d-4b693465bbd3.jpeg"
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://api.ra58.ru:9000/api/user/file/2ec5bfce-a931-40bd-8ac3-0870a011f746",
+          "protocol": "http",
+          "host": [
+            "api",
+            "ra58",
+            "ru"
+          ],
+          "port": "9000",
+          "path": [
+            "api",
+            "user",
+            "file",
+            "2ec5bfce-a931-40bd-8ac3-0870a011f746"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "getUsers",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJJWDk1Tmk3YW5UZ0o2dFR1RGFDanMyeTZYbjBsVHpiem8waU9qUDJ0ZXB3In0.eyJleHAiOjE3MDI2NTUwNDAsImlhdCI6MTcwMjYxOTA0MCwiYXV0aF90aW1lIjoxNzAyNjE5MDQwLCJqdGkiOiJlY2RmMzdiZC1hMjBjLTQ0NzMtYTViNS00NzdlOTAwOWMzNzAiLCJpc3MiOiJodHRwOi8vNS4zNS44Mi4zMi9yZWFsbXMvc2ZzYi1yZWFsbSIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiI1OGZmZGQ2NC00NWRmLTRiODgtYWNiNi01NTZiYmVlNmE0MGIiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJzZnNiLWZyb250LWNsaWVudCIsIm5vbmNlIjoiNDk2ZWNjYzctYmQ3Mi00ZWNhLWEzOWEtYTY5YTM1NDZlMzNjIiwic2Vzc2lvbl9zdGF0ZSI6ImQ0ZWFlYmEwLTE2MTUtNDI5Yi04Y2JmLTZhOWI2YzljOTdlMyIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovLzUuMzUuODIuNiIsImh0dHA6Ly9sb2NhbGhvc3Q6MzAwMCIsImh0dHA6Ly9yYTU4LnJ1Il0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJkZWZhdWx0LXJvbGVzLXNmc2ItcmVhbG0iLCJURUNITk9MT0dJU1QiLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCIsInNpZCI6ImQ0ZWFlYmEwLTE2MTUtNDI5Yi04Y2JmLTZhOWI2YzljOTdlMyIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwibmFtZSI6IkFsZXggU2htb25pbiIsInByZWZlcnJlZF91c2VybmFtZSI6InRlc3QiLCJnaXZlbl9uYW1lIjoiQWxleCIsImZhbWlseV9uYW1lIjoiU2htb25pbiIsImVtYWlsIjoic2htb25pbkBtYWlsLnJ1IiwicGljdHVyZSI6IjI4YmY4NDRmLTkxYzctNDE2YS04ZDRmLWM1ZThmOWNjZmE4Ni5qcGVnIn0.dMMJdnathS4-WImYwDrsVR14Mh4rEM08Sp95UYwVSEzgsYBbnguoFCMsmw7FYBzS1fQw06jNAiaBDiFwkq7j5nkEaq3cpZZPwFPg3735E_6pXV9KbNQcYYgZFifLaxi0xJFYSfIb5UrttxM2BYUaxGXhxFY90vwfV3ey5_rSuFLoCDIUqvVAWfT4gddMVC3zmggPZLyLPdr2YSiVyWwljzeGhQMPTdQ_iedWRkGJkgTJVWf6cVdTpqy5VEX2TUvDaXFNBfW7CGRQZmvkK9Ymw_zm4iVkg8J3uPPxxxkHjRNskyNfE6HBiM8U1CMdsH46m6cNCE-cKqZGuYug9a60RA",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"firstName\": \"name\",\n    \"lastName\": \"last\",\n    \"position\": \"pos\",\n    \"department\": {\n        \"id\": 1\n    }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:9000/api/user",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9000",
+          "path": [
+            "api",
+            "user"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "deleteuser",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJJWDk1Tmk3YW5UZ0o2dFR1RGFDanMyeTZYbjBsVHpiem8waU9qUDJ0ZXB3In0.eyJleHAiOjE3MDI1OTQzNzQsImlhdCI6MTcwMjU1ODM3NCwiYXV0aF90aW1lIjoxNzAyNTU4Mzc0LCJqdGkiOiI0NDllYjI5Yi0zMmE2LTQ2NTItODIyMy02YzFhYWU5MjUxNGIiLCJpc3MiOiJodHRwOi8vNS4zNS44Mi4zMi9yZWFsbXMvc2ZzYi1yZWFsbSIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiIxZDg2ZGMxOC1jZGFiLTQzYTgtYTA2My0wODFhMDlmZTA2NWYiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJzZnNiLWZyb250LWNsaWVudCIsIm5vbmNlIjoiN2VkMmFiNjYtMTg4NC00NjhiLThkYmUtZDg4YjVjM2IwMWZkIiwic2Vzc2lvbl9zdGF0ZSI6ImY5MjdjZTFhLWJmZDQtNDNmMC1iOTgwLTE2ZGI2ZGI5YjNmMCIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovLzUuMzUuODIuNiIsImh0dHA6Ly9sb2NhbGhvc3Q6MzAwMCIsImh0dHA6Ly9yYTU4LnJ1Il0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJkZWZhdWx0LXJvbGVzLXNmc2ItcmVhbG0iLCJvZmZsaW5lX2FjY2VzcyIsIkhSIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6Im9wZW5pZCBwcm9maWxlIGVtYWlsIiwic2lkIjoiZjkyN2NlMWEtYmZkNC00M2YwLWI5ODAtMTZkYjZkYjliM2YwIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJuYW1lIjoiMTIzIGxhc3ROYW1lIiwicHJlZmVycmVkX3VzZXJuYW1lIjoiMTIzIiwiZ2l2ZW5fbmFtZSI6IjEyMyIsImZhbWlseV9uYW1lIjoibGFzdE5hbWUiLCJlbWFpbCI6IjEyM0BlbWFpbC5ydSIsInBpY3R1cmUiOiJsaW5rIn0.s5nWBC5csHDMZE6qGD4-NijPHVXZDYy7iKJWxDI9Mi1B2EBmniL2agcQ2ZyvUSM7kBGnJTATfsuleshk1hoUpoBb8EdwHJwzT3PcK8ElW9eGMQPAbqRxLOG9_bEy8OOiOFEo92hZVO02uRwTUjmDcRM207LqnY32iXJOgQ5prP-wxSuIss3rRJkx2qc14eQtWFNHO4n11dijd2PnlPwE5cN9kmXCvHpB87pFyByRNAocas1JIEG0DwqHfhgeCInx_UmBF5PYLBjzSShO3DT54RU_EWLpZnTcUr-Iz3wJw9SZTptgkNtcNKokYLVye6dxYL63ijj8wiYKADphCQ5f_w",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"firstName\": \"name\",\n    \"lastName\": \"last\",\n    \"position\": \"pos\",\n    \"department\": {\n        \"id\": 1\n    }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://api.ra58.ru:9000/api/user/57bebdd8-956f-4b09-bf25-522bd40a1a60",
+          "protocol": "http",
+          "host": [
+            "api",
+            "ra58",
+            "ru"
+          ],
+          "port": "9000",
+          "path": [
+            "api",
+            "user",
+            "57bebdd8-956f-4b09-bf25-522bd40a1a60"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "getRoles",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJJWDk1Tmk3YW5UZ0o2dFR1RGFDanMyeTZYbjBsVHpiem8waU9qUDJ0ZXB3In0.eyJleHAiOjE3MDI1OTQzNzQsImlhdCI6MTcwMjU1ODM3NCwiYXV0aF90aW1lIjoxNzAyNTU4Mzc0LCJqdGkiOiI0NDllYjI5Yi0zMmE2LTQ2NTItODIyMy02YzFhYWU5MjUxNGIiLCJpc3MiOiJodHRwOi8vNS4zNS44Mi4zMi9yZWFsbXMvc2ZzYi1yZWFsbSIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiIxZDg2ZGMxOC1jZGFiLTQzYTgtYTA2My0wODFhMDlmZTA2NWYiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJzZnNiLWZyb250LWNsaWVudCIsIm5vbmNlIjoiN2VkMmFiNjYtMTg4NC00NjhiLThkYmUtZDg4YjVjM2IwMWZkIiwic2Vzc2lvbl9zdGF0ZSI6ImY5MjdjZTFhLWJmZDQtNDNmMC1iOTgwLTE2ZGI2ZGI5YjNmMCIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovLzUuMzUuODIuNiIsImh0dHA6Ly9sb2NhbGhvc3Q6MzAwMCIsImh0dHA6Ly9yYTU4LnJ1Il0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJkZWZhdWx0LXJvbGVzLXNmc2ItcmVhbG0iLCJvZmZsaW5lX2FjY2VzcyIsIkhSIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6Im9wZW5pZCBwcm9maWxlIGVtYWlsIiwic2lkIjoiZjkyN2NlMWEtYmZkNC00M2YwLWI5ODAtMTZkYjZkYjliM2YwIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJuYW1lIjoiMTIzIGxhc3ROYW1lIiwicHJlZmVycmVkX3VzZXJuYW1lIjoiMTIzIiwiZ2l2ZW5fbmFtZSI6IjEyMyIsImZhbWlseV9uYW1lIjoibGFzdE5hbWUiLCJlbWFpbCI6IjEyM0BlbWFpbC5ydSIsInBpY3R1cmUiOiJsaW5rIn0.s5nWBC5csHDMZE6qGD4-NijPHVXZDYy7iKJWxDI9Mi1B2EBmniL2agcQ2ZyvUSM7kBGnJTATfsuleshk1hoUpoBb8EdwHJwzT3PcK8ElW9eGMQPAbqRxLOG9_bEy8OOiOFEo92hZVO02uRwTUjmDcRM207LqnY32iXJOgQ5prP-wxSuIss3rRJkx2qc14eQtWFNHO4n11dijd2PnlPwE5cN9kmXCvHpB87pFyByRNAocas1JIEG0DwqHfhgeCInx_UmBF5PYLBjzSShO3DT54RU_EWLpZnTcUr-Iz3wJw9SZTptgkNtcNKokYLVye6dxYL63ijj8wiYKADphCQ5f_w",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"firstName\": \"name\",\n    \"lastName\": \"last\",\n    \"position\": \"pos\",\n    \"department\": {\n        \"id\": 1\n    }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://api.ra58.ru:9000/api/role",
+          "protocol": "http",
+          "host": [
+            "api",
+            "ra58",
+            "ru"
+          ],
+          "port": "9000",
+          "path": [
+            "api",
+            "role"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "jwk",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://auth.ra58.ru/realms/sfsb-realm/protocol/openid-connect/certs",
+          "protocol": "http",
+          "host": [
+            "auth",
+            "ra58",
+            "ru"
+          ],
+          "path": [
+            "realms",
+            "sfsb-realm",
+            "protocol",
+            "openid-connect",
+            "certs"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

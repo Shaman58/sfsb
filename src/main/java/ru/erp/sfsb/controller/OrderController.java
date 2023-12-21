@@ -33,7 +33,6 @@ public class OrderController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     public OrderDto get(@PathVariable Long id) {
-
         return orderService.get(id);
     }
 
