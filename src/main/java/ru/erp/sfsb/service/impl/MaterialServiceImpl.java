@@ -1,6 +1,7 @@
 package ru.erp.sfsb.service.impl;
 
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.javamoney.moneta.Money;
 import org.springframework.stereotype.Service;
 import ru.erp.sfsb.dto.MaterialDto;
@@ -15,6 +16,7 @@ import java.util.List;
 
 @Service
 @Transactional
+@Slf4j
 public class MaterialServiceImpl extends AbstractService<MaterialDto, Material, MaterialRepository, MaterialMapper>
         implements MaterialService {
 
@@ -35,5 +37,20 @@ public class MaterialServiceImpl extends AbstractService<MaterialDto, Material, 
         return repository.findMaterialByUpdatedBefore(LocalDateTime.now().minus(1, ChronoUnit.MONTHS)).stream()
                 .map(material -> mapper.toDto(material))
                 .toList();
+    }
+
+    @Override
+    public MaterialDto save(MaterialDto materialDto) {
+        log.info("Saving Material into DB");
+        materialDto.setPrice(Money.of(0, "RUB"));
+        return mapper.toDto(repository.save(mapper.toEntity(materialDto)));
+    }
+
+    @Override
+    public MaterialDto updatePrice(MaterialDto materialDto) {
+        log.info("Update price in material with id={}", materialDto.getId());
+        var material = get(materialDto.getId());
+        material.setPrice(materialDto.getPrice());
+        return save(materialDto);
     }
 }

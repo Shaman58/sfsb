@@ -1,6 +1,7 @@
 package ru.erp.sfsb.mapper;
 
 import jakarta.annotation.PostConstruct;
+import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -21,12 +22,10 @@ public class FileMapper extends AbstractMapper<File, FileDto> {
 
     @PostConstruct
     public void setupMapper() {
+        Converter<String, String> lincToFullLink = c -> String.format("%s?filename=%s", fileExternalUrl, c.getSource());
         mapper.createTypeMap(File.class, FileDto.class)
-                .addMappings(m -> m.skip(FileDto::setLink)).setPostConverter(toDtoConverter());
-    }
-
-    @Override
-    void mapSpecificFields(File source, FileDto destination) {
-        destination.setLink(String.format("%s?filename=%s", fileExternalUrl, source.getLink()));
+                .addMappings(
+                        m -> m.using(lincToFullLink).map(File::getLink, FileDto::setLink)
+                );
     }
 }

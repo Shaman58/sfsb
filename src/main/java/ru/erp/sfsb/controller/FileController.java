@@ -23,22 +23,16 @@ public class FileController {
         return fileService.getFilesByOrderId(orderId);
     }
 
+    @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/order/{id}")
-    public void saveFileToOrder(@PathVariable Long id, @RequestBody MultipartFile file) {
-        fileService.addFileToOrder(id, file);
+    public FileDto saveFileToOrder(@PathVariable Long id, @RequestBody MultipartFile file) {
+        return fileService.addFileToOrder(id, file);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         fileService.delete(id);
-    }
-
-    @ResponseStatus(HttpStatus.CREATED)
-    @ResponseBody
-    @PutMapping("/user/{uuid}")
-    public void savePictureToUser(@PathVariable String uuid, MultipartFile file) {
-        fileService.setPicture(uuid, file);
     }
 }

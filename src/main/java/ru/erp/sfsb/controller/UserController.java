@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.erp.sfsb.dto.UserDto;
 import ru.erp.sfsb.service.UserService;
 
@@ -52,5 +53,12 @@ public class UserController {
     @DeleteMapping("/user/{uuid}")
     public void delete(@PathVariable String uuid) {
         userService.delete(uuid);
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
+    @PostMapping("/user/{uuid}")
+    public void savePictureToUser(@PathVariable String uuid, MultipartFile file) {
+        userService.setPicture(uuid, file);
     }
 }

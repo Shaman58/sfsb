@@ -10,4 +10,6 @@ public interface MaterialService extends Service<MaterialDto> {
     List<MaterialDto> getMaterialWithoutPrice();
 
     List<MaterialDto> getMaterialWithExpiredDate();
+
+    MaterialDto updatePrice(MaterialDto materialDto);
 }

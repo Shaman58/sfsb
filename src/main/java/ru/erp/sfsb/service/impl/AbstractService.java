@@ -70,7 +70,7 @@ public abstract class AbstractService
         repository.deleteById(id);
     }
 
-    private void checkExistById(Long id) {
+    protected void checkExistById(Long id) {
         if (!repository.existsById(id)) {
             throw new EntityNotFoundException(String.format("Entity with id %d not found", id));
         }

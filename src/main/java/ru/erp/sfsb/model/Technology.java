@@ -50,4 +50,5 @@ public class Technology extends AbstractEntity {
     @SuppressWarnings("JpaAttributeTypeInspection")
     private MonetaryAmount outsourcedCosts;
     private String outsourcedCostsDescription;
+    private String blocked;
 }

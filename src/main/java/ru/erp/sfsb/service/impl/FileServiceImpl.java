@@ -2,23 +2,17 @@ package ru.erp.sfsb.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 import ru.erp.sfsb.dto.FileDto;
-import ru.erp.sfsb.exception.KeycloakOtherException;
 import ru.erp.sfsb.mapper.FileMapper;
 import ru.erp.sfsb.model.File;
 import ru.erp.sfsb.repository.FileRepository;
 import ru.erp.sfsb.service.FileService;
 import ru.erp.sfsb.service.OrderService;
-import ru.erp.sfsb.service.UserService;
+import ru.erp.sfsb.utils.FileServerUtil;
 
 import java.util.List;
-import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
 
@@ -28,61 +22,17 @@ import static java.util.stream.Collectors.toList;
 public class FileServiceImpl extends AbstractService<FileDto, File, FileRepository, FileMapper>
         implements FileService {
 
-    private final WebClient webClient;
+    private final FileServerUtil fileServerUtil;
     private final FileRepository fileRepository;
     private final FileMapper mapper;
     private final OrderService orderService;
-    private final UserService userService;
 
-    public FileServiceImpl(FileMapper mapper, FileRepository repository, WebClient webClient, FileRepository fileRepository, OrderService orderService, UserService userService) {
+    public FileServiceImpl(FileMapper mapper, FileRepository repository, FileServerUtil fileServerUtil, FileRepository fileRepository, OrderService orderService) {
         super(mapper, repository, "File");
-        this.webClient = webClient;
+        this.fileServerUtil = fileServerUtil;
         this.fileRepository = fileRepository;
         this.mapper = mapper;
         this.orderService = orderService;
-        this.userService = userService;
-    }
-
-    @Override
-    public FileDto save(MultipartFile file) {
-        log.info("Save file in DB");
-        var link = saveMultipart(file);
-        var filename = file.getOriginalFilename();
-        return save(new FileDto(filename, link));
-    }
-
-    @Override
-    public String saveMultipart(MultipartFile file) {
-        log.info("Save file in FS");
-        return uploadFile(file)
-                .blockOptional()
-                .orElseThrow();
-    }
-
-    @Override
-    public void delete(Long id) {
-        log.info("Deleting file with id {} in DB", id);
-        var filename = get(id).getFilename();
-        repository.removeById(id);
-        webClient.delete()
-                .uri(uriBuilder -> uriBuilder
-                        .queryParam("filename", filename)
-                        .build(filename))
-                .retrieve()
-                .bodyToMono(Void.class)
-                .block();
-    }
-
-    @Override
-    public void deleteMultipart(String filename) {
-        log.info("Deleting file with name {} in FS", filename);
-        webClient.delete()
-                .uri(uriBuilder -> uriBuilder
-                        .queryParam("filename", filename)
-                        .build(filename))
-                .retrieve()
-                .bodyToMono(Void.class)
-                .block();
     }
 
     @Override
@@ -92,36 +42,27 @@ public class FileServiceImpl extends AbstractService<FileDto, File, FileReposito
     }
 
     @Override
-    public void addFileToOrder(Long id, MultipartFile file) {
+    public FileDto save(MultipartFile file) {
+        log.info("Save file in DB");
+        var link = fileServerUtil.saveMultipart(file);
+        var filename = file.getOriginalFilename();
+        return save(new FileDto(filename, link));
+    }
+
+    @Override
+    public void delete(Long id) {
+        log.info("Deleting file with id {} in DB", id);
+        var filename = get(id).getFilename();
+        fileServerUtil.deleteMultipart(filename);
+        repository.removeById(id);
+    }
+
+    @Override
+    public FileDto addFileToOrder(Long id, MultipartFile file) {
         var order = orderService.get(id);
         var fileDto = save(file);
         order.getFiles().add(fileDto);
         orderService.save(order);
-    }
-
-    @Override
-    public void setPicture(String uuid, MultipartFile file) {
-        log.info("Set picture");
-        if (file == null) {
-            throw new KeycloakOtherException("Файл не должен быть пустой");
-        }
-
-        var link = userService.getAttributes(uuid).getOrDefault("picture", null).get(0);
-        if (link != null && !link.isEmpty()) {
-            log.info("Delete old picture");
-            deleteMultipart(link);
-        }
-
-        link = saveMultipart(file);
-
-        userService.setAttribute(uuid, Map.of("picture", List.of(link)));
-    }
-
-    private Mono<String> uploadFile(MultipartFile file) {
-        return webClient.post()
-                .contentType(MediaType.MULTIPART_FORM_DATA)
-                .body(BodyInserters.fromMultipartData("file", file.getResource()))
-                .retrieve()
-                .bodyToMono(String.class);
+        return fileDto;
     }
 }

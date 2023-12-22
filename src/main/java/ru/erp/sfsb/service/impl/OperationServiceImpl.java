@@ -60,10 +60,4 @@ public class OperationServiceImpl extends AbstractService<OperationDto, Operatio
         price.setId(2L);
         return mapper.toDto(repository.save(mapper.toEntity(price)));
     }
-
-    private void checkExistById(Long id) {
-        if (!repository.existsById(id)) {
-            throw new EntityNotFoundException(String.format("Entity with id=%d not found", id));
-        }
-    }
 }

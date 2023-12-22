@@ -80,4 +80,11 @@ public class ExceptionControllerAdvice {
     public ExceptionData handleException(KeycloakUserConflictException e) {
         return new ExceptionData(e.getMessage());
     }
+
+    @ResponseBody
+    @ExceptionHandler(EntityBlockException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ExceptionData handleException(EntityBlockException e) {
+        return new ExceptionData(e.getMessage());
+    }
 }

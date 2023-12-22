@@ -22,7 +22,7 @@ public class TechnologyMapper extends AbstractMapper<Technology, TechnologyDto> 
 
     @PostConstruct
     public void setupMapper() {
-        Converter<String, UserDto> uuidToUser = c -> userService.get(c.getSource());
+        Converter<String, UserDto> uuidToUser = c -> c.getSource() == null ? null : userService.get(c.getSource());
         mapper.createTypeMap(Technology.class, TechnologyDto.class)
                 .addMappings(
                         m -> m.using(uuidToUser).map(Technology::getUserUuid, TechnologyDto::setUser)
@@ -33,28 +33,4 @@ public class TechnologyMapper extends AbstractMapper<Technology, TechnologyDto> 
                         m -> m.using(userToUuid).map(TechnologyDto::getUser, Technology::setUserUuid)
                 );
     }
-
-//    @PostConstruct
-//    public void setupMapper() {
-//        mapper.createTypeMap(Technology.class, TechnologyDto.class)
-//                .addMappings(m -> m.skip(TechnologyDto::setUser))
-//                .setPostConverter(toDtoConverter());
-//        mapper.createTypeMap(TechnologyDto.class, Technology.class)
-//                .addMappings(m -> m.skip(Technology::setUserUuid))
-//                .setPostConverter(toEntityConverter());
-//    }
-
-//    @Override
-//    void mapSpecificFields(Technology source, TechnologyDto destination) {
-//        if (source.getUserUuid() == null) {
-//            destination.setUser(null);
-//        } else {
-//            destination.setUser(userService.get(source.getUserUuid()));
-//        }
-//    }
-//
-//    @Override
-//    void mapSpecificFields(TechnologyDto source, Technology destination) {
-//        destination.setUserUuid(source.getUser().getId());
-//    }
 }

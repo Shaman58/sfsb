@@ -11,10 +11,12 @@ import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import ru.erp.sfsb.dto.UserDto;
 import ru.erp.sfsb.exception.KeycloakOtherException;
 import ru.erp.sfsb.exception.KeycloakUserConflictException;
 import ru.erp.sfsb.service.UserService;
+import ru.erp.sfsb.utils.FileServerUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -29,6 +31,7 @@ public class UserServiceImpl implements UserService {
     private String fileExternalUrl;
     private final UsersResource usersResource;
     private final RolesResource rolesResource;
+    private final FileServerUtil fileServerUtil;
 
     @Override
     public UserDto save(UserDto user) {
@@ -121,6 +124,24 @@ public class UserServiceImpl implements UserService {
         return usersResource.get(uuid).toRepresentation()
                 .getAttributes();
 
+    }
+
+    @Override
+    public void setPicture(String uuid, MultipartFile file) {
+        log.info("Set picture");
+        if (file == null) {
+            throw new KeycloakOtherException("Файл не должен быть пустой");
+        }
+
+        var link = getAttributes(uuid).getOrDefault("picture", null).get(0);
+        if (link != null && !link.isEmpty()) {
+            log.info("Delete old picture");
+            fileServerUtil.deleteMultipart(link);
+        }
+
+        link = fileServerUtil.saveMultipart(file);
+
+        setAttribute(uuid, Map.of("picture", List.of(link)));
     }
 
     private List<String> getUserRoles(String uuid) {

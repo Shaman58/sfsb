@@ -39,15 +39,15 @@ public class MaterialController {
 
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/price")
-    public List<MaterialDto> getAllPRICE() {
+    @GetMapping("/no-cost")
+    public List<MaterialDto> getAllWithoutPrice() {
         return materialService.getMaterialWithoutPrice();
     }
 
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/priceexp")
-    public List<MaterialDto> getAllPRICEExp() {
+    @GetMapping("/date-expired")
+    public List<MaterialDto> getAllWithUpdateExpired() {
         return materialService.getMaterialWithExpiredDate();
     }
 
@@ -65,6 +65,15 @@ public class MaterialController {
                               @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         materialDto.setId(id);
         return materialService.update(materialDto);
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    @PutMapping("/{id}/price")
+    public MaterialDto updatePrice(@RequestBody @Valid MaterialDto materialDto,
+                              @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
+        materialDto.setId(id);
+        return materialService.updatePrice(materialDto);
     }
 
     @ResponseStatus(HttpStatus.OK)

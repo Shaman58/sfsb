@@ -12,7 +12,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.erp.sfsb.dto.TechnologyDto;
 import ru.erp.sfsb.service.TechnologyService;
-import ru.erp.sfsb.service.UserService;
 
 import java.util.List;
 
@@ -23,7 +22,6 @@ import java.util.List;
 public class TechnologyController {
 
     private final TechnologyService technologyService;
-    private final UserService userService;
 
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
@@ -46,11 +44,29 @@ public class TechnologyController {
     public TechnologyDto update(@RequestBody @Valid TechnologyDto technologyDto,
                                 @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id,
                                 @AuthenticationPrincipal Jwt jwt) {
-        var uuid = jwt.getClaim("sub").toString();
-        var user = userService.get(uuid);
         technologyDto.setId(id);
-        technologyDto.setUser(user);
-        technologyDto.setComputed(false);
-        return technologyService.update(technologyDto);
+        return technologyService.update(technologyDto, jwt);
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/{id}/block")
+    public void block(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id,
+                      @AuthenticationPrincipal Jwt jwt) {
+        technologyService.block(id, jwt);
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/{id}/unblock")
+    public void unblock(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id,
+                        @AuthenticationPrincipal Jwt jwt) {
+        technologyService.unblock(id, jwt);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/calculate")
+    public TechnologyDto setCalculated(@RequestParam Long itemId, @AuthenticationPrincipal Jwt jwt) {
+        return technologyService.setCalculated(itemId, jwt);
     }
 }
