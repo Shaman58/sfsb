@@ -2,6 +2,8 @@ package ru.erp.sfsb.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.erp.sfsb.dto.FileDto;
@@ -26,8 +28,9 @@ public class FileController {
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/order/{id}")
-    public FileDto saveFileToOrder(@PathVariable Long id, @RequestBody MultipartFile file) {
-        return fileService.addFileToOrder(id, file);
+    public FileDto saveFileToOrder(@PathVariable Long id, @RequestBody MultipartFile file,
+                                   @AuthenticationPrincipal Jwt jwt) {
+        return fileService.addFileToOrder(id, file, jwt);
     }
 
     @ResponseStatus(HttpStatus.OK)

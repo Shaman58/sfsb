@@ -15,4 +15,5 @@ public class FileDto extends AbstractDto {
     @NotBlank(message = "Отсутствует имя файла")
     private String filename;
     private String link;
+    private UserDto user;
 }

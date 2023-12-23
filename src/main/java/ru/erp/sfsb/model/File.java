@@ -17,4 +17,5 @@ public class File extends AbstractEntity {
 
     private String filename;
     private String link;
+    private String userUuid;
 }

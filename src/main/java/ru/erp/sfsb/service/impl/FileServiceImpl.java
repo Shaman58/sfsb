@@ -2,6 +2,7 @@ package ru.erp.sfsb.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.erp.sfsb.dto.FileDto;
@@ -10,6 +11,7 @@ import ru.erp.sfsb.model.File;
 import ru.erp.sfsb.repository.FileRepository;
 import ru.erp.sfsb.service.FileService;
 import ru.erp.sfsb.service.OrderService;
+import ru.erp.sfsb.service.UserService;
 import ru.erp.sfsb.utils.FileServerUtil;
 
 import java.util.List;
@@ -26,13 +28,15 @@ public class FileServiceImpl extends AbstractService<FileDto, File, FileReposito
     private final FileRepository fileRepository;
     private final FileMapper mapper;
     private final OrderService orderService;
+    private final UserService userService;
 
-    public FileServiceImpl(FileMapper mapper, FileRepository repository, FileServerUtil fileServerUtil, FileRepository fileRepository, OrderService orderService) {
+    public FileServiceImpl(FileMapper mapper, FileRepository repository, FileServerUtil fileServerUtil, FileRepository fileRepository, OrderService orderService, UserService userService) {
         super(mapper, repository, "File");
         this.fileServerUtil = fileServerUtil;
         this.fileRepository = fileRepository;
         this.mapper = mapper;
         this.orderService = orderService;
+        this.userService = userService;
     }
 
     @Override
@@ -42,11 +46,13 @@ public class FileServiceImpl extends AbstractService<FileDto, File, FileReposito
     }
 
     @Override
-    public FileDto save(MultipartFile file) {
+    public FileDto save(MultipartFile file, Jwt jwt) {
         log.info("Save file in DB");
         var link = fileServerUtil.saveMultipart(file);
         var filename = file.getOriginalFilename();
-        return save(new FileDto(filename, link));
+        var uuid = jwt.getClaim("sub").toString();
+        var user = userService.get(uuid);
+        return save(new FileDto(filename, link, user));
     }
 
     @Override
@@ -58,9 +64,9 @@ public class FileServiceImpl extends AbstractService<FileDto, File, FileReposito
     }
 
     @Override
-    public FileDto addFileToOrder(Long id, MultipartFile file) {
+    public FileDto addFileToOrder(Long id, MultipartFile file, Jwt jwt) {
         var order = orderService.get(id);
-        var fileDto = save(file);
+        var fileDto = save(file, jwt);
         order.getFiles().add(fileDto);
         orderService.save(order);
         return fileDto;
