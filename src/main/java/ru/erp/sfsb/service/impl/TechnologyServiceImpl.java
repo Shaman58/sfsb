@@ -63,10 +63,12 @@ public class TechnologyServiceImpl extends AbstractService<TechnologyDto, Techno
     }
 
     @Override
-    public TechnologyDto setCalculated(Long id, Jwt jwt) {
-        log.info("Set technology with id={} calculated", id);
+    public TechnologyDto setComputed(Long id, Jwt jwt, boolean isComputed) {
+        log.info("Set technology with id={} calculated {}", id, isComputed);
         var technology = get(id);
-        technology.setComputed(true);
+        var uuid = jwt.getClaim("sub").toString();
+        checkUpdate(technology, uuid);
+        technology.setComputed(isComputed);
         return update(technology, jwt);
     }
 

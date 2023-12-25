@@ -47,12 +47,13 @@ public class ReportService {
 
     public void generateKp(Long orderId, HttpServletResponse response) {
         log.info("Generating kp with order id {}", orderId);
+        var order = orderService.get(orderId);
+        calculateOrder(order);
         try {
             var inputStream = getClass().getResourceAsStream("/kp-template.docx");
             log.debug("inputStream");
             var doc = new DocxReportUtil(inputStream);
             log.debug("doc");
-            var order = orderService.get(orderId);
             var company = companyService.getCompany();
             log.debug("company");
             var employee = String.format("%s %s",
@@ -80,6 +81,9 @@ public class ReportService {
     }
 
     public void generateToolOrder(HttpServletResponse response, String fromEmployeeId, Long orderId, String body) {
+        log.info("Generate tool order report");
+        var order = orderService.get(orderId);
+        calculateOrder(order);
         try {
             var inputStream = getClass().getResourceAsStream("/tool-order-template.docx");
             var doc = new DocxReportUtil(inputStream);
@@ -90,7 +94,7 @@ public class ReportService {
                 body = "Прошу Вас, разрешить отделу снабжения приобрести следующие позиции:";
             }
             var footer = getFooterFromEmployee(fromEmployee);
-            doc.generateToolOrder(getAllToolsFromOrder(orderService.get(orderId)), headerData, body, footer);
+            doc.generateToolOrder(getAllToolsFromOrder(order), headerData, body, footer);
             response.setHeader("Content-Disposition", "attachment; filename=tool-order.docx");
             doc.save(response.getOutputStream());
         } catch (IOException e) {
@@ -98,24 +102,34 @@ public class ReportService {
         }
     }
 
-    public void calculateItem(Long itemId) {
-        var item = itemService.get(itemId);
-        if (item.isCustomerMaterial() || item.getTechnology().isAssembly()) {
-            item.setPrice(calculateItemPrice(item));
-        } else {
-            var materialPrice = getItemWorkpiecesPrice(item);
-            var itemPrice = calculateItemPrice(item);
-            item.setPrice(itemPrice.add(materialPrice));
+    private void calculateOrder(OrderDto order) {
+        log.info("Calculate order");
+        order.getItems().forEach(this::calculateItem);
+    }
+
+    private void calculateItem(ItemDto item) {
+        log.info("Calculate item {} {}", item.getTechnology().getDrawingName(), item.getTechnology().getDrawingNumber());
+        try {
+            if (item.isCustomerMaterial() || item.getTechnology().isAssembly()) {
+                item.setPrice(calculateItemPrice(item));
+            } else {
+                var materialPrice = getItemWorkpiecesPrice(item);
+                var itemPrice = calculateItemPrice(item);
+                item.setPrice(itemPrice.add(materialPrice));
+            }
+            itemService.update(item);
+        } catch (Exception e) {
+            throw new ReportGenerateException(String.format("Расчет не удался, проверьте данные позиции %s %s", item.getTechnology().getDrawingName(), item.getTechnology().getDrawingNumber()));
         }
-        item.getTechnology().setComputed(true);
-        itemService.update(item);
     }
 
     public void generateManufacturingReport(HttpServletResponse response, Long orderId) {
+        log.info("Generate manufacturing report");
+        var order = orderService.get(orderId);
+        calculateOrder(order);
         try {
             var xls = new XlsxReportUtil();
             log.debug("created xls");
-            var order = orderService.get(orderId);
             var data = getOrderManData(order);
             xls.fillXlsxDocument(data);
             log.debug("generate report");
@@ -128,10 +142,13 @@ public class ReportService {
     }
 
     public void generateOperationReport(HttpServletResponse response, Long orderId) {
+        log.info("Generate operation report");
+        var order = orderService.get(orderId);
+        calculateOrder(order);
         try {
             var xls = new XlsxReportUtil();
             log.debug("created xls");
-            var data = createOperationTable(orderService.get(orderId));
+            var data = createOperationTable(order);
             xls.fillXlsxDocument(data);
             log.debug("generate report");
             response.setHeader("Content-Disposition", "attachment; filename=manufacturing-report.xlsx");

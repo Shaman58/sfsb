@@ -54,12 +54,12 @@ public class UserServiceImpl implements UserService {
         var uuid = CreatedResponseUtil.getCreatedId(response);
         log.info("Add role to user in KC DB");
         usersResource.get(uuid).roles().realmLevel().add(getRoleRepresentations(user.getRoles()));
-        return repToUserDto(usersResource.get(uuid).toRepresentation());
+        return get(uuid);
     }
 
     @Override
     public UserDto update(String uuid, UserDto user) {
-        log.info("Get user in KC DB");
+        log.info("Update user in KC DB");
         var kcUser = new UserRepresentation();
         kcUser.setFirstName(user.getFirstName());
         kcUser.setLastName(user.getLastName());
@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
         usersResource.get(uuid).roles().realmLevel().remove(getRoleRepresentations(getRoles()));
         log.info("Add roles to user in KC DB");
         usersResource.get(uuid).roles().realmLevel().add(getRoleRepresentations(user.getRoles()));
-        return repToUserDto(usersResource.get(uuid).toRepresentation());
+        return get(uuid);
     }
 
     @Override
@@ -89,7 +89,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto get(String uuid) {
         log.info("Get user profile from KC DB");
-        return repToUserDto(usersResource.get(uuid).toRepresentation());
+        try {
+            return repToUserDto(usersResource.get(uuid).toRepresentation());
+        } catch (Exception e) {
+            throw new KeycloakOtherException(String.format("Сервер Keycloak недоступен или пользователь отсутсвует %s", e.getMessage()));
+        }
     }
 
     @Override

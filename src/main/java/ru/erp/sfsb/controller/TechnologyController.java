@@ -66,7 +66,7 @@ public class TechnologyController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/calculate")
-    public TechnologyDto setCalculated(@RequestParam Long itemId, @AuthenticationPrincipal Jwt jwt) {
-        return technologyService.setCalculated(itemId, jwt);
+    public TechnologyDto setCalculated(@RequestParam Long itemId, @AuthenticationPrincipal Jwt jwt, boolean isComputed) {
+        return technologyService.setComputed(itemId, jwt, isComputed);
     }
 }

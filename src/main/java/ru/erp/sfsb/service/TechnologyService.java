@@ -11,5 +11,5 @@ public interface TechnologyService extends Service<TechnologyDto> {
 
     void unblock(Long id, Jwt jwt);
 
-    TechnologyDto setCalculated(Long id, Jwt jwt);
+    TechnologyDto setComputed(Long id, Jwt jwt, boolean isComputed);
 }
