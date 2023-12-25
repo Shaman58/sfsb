@@ -31,11 +31,6 @@ public class DocController {
         reportService.generateToolOrder(response, feId, orderId, body);
     }
 
-//    @GetMapping("/calculate")
-//    public void calculateItem(@RequestParam Long itemId) {
-//        reportService.calculateItem(itemId);
-//    }
-
     @GetMapping("/manufacturing-report")
     public void getManufacturingReport(HttpServletResponse response,
                                        @RequestParam Long orderId) {

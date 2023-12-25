@@ -5,6 +5,8 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.erp.sfsb.dto.ItemDto;
@@ -23,8 +25,8 @@ public class ItemController {
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping()
-    public List<ItemDto> getAll() {
-        return itemService.getAll();
+    public List<ItemDto> getAll(@AuthenticationPrincipal Jwt jwt) {
+        return itemService.getAllByTechnologyUser(jwt);
     }
 
     @ResponseBody
