@@ -36,8 +36,8 @@ services:
       KC_FEATURES: preview
       KEYCLOAK_ADMIN: sfsb
       KEYCLOAK_ADMIN_PASSWORD: gFNQkM
-      KC_HTTPS_CERTIFICATE_FILE: /opt/keycloak/certs/localhostcert.pem
-      KC_HTTPS_CERTIFICATE_KEY_FILE: /opt/keycloak/certs/localhostkey.pem
+      KC_HTTPS_CERTIFICATE_FILE: /opt/keycloak/certs/cert.pem
+      KC_HTTPS_CERTIFICATE_KEY_FILE: /opt/keycloak/certs/key.pem
     ports:
       - "80:8080"
       - "443:8443"

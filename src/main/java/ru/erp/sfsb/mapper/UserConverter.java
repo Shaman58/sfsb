@@ -21,7 +21,7 @@ public class UserConverter {
 
     @Bean
     public Converter<UserDto, String> userToUuid() {
-        return c -> c.getSource().getId();
+        return c -> c.getSource() == null ? null : c.getSource().getId();
     }
 
     private UserDto getUser(String uuid) {
