@@ -43,9 +43,10 @@ public class TechnologyServiceImpl extends AbstractService<TechnologyDto, Techno
     public void block(Long id, Jwt jwt) {
         log.info("Block technology with id={}", id);
         var uuid = jwt.getClaim("sub").toString();
+        var user = userService.get(uuid);
         var technology = get(id);
         checkBlocked(technology, uuid);
-        technology.setBlocked(uuid);
+        technology.setBlocked(user);
         save(technology);
         log.info("Blocked");
     }
@@ -73,8 +74,8 @@ public class TechnologyServiceImpl extends AbstractService<TechnologyDto, Techno
     }
 
     private void checkUpdate(TechnologyDto technology, String uuid) {
-        var status = technology.getBlocked();
-        if (status == null) {
+        var blocked = technology.getBlocked();
+        if (blocked == null) {
             throw new EntityBlockException("Назначьте технологию себе в работу");
         }
         checkBlocked(technology, uuid);
@@ -82,10 +83,9 @@ public class TechnologyServiceImpl extends AbstractService<TechnologyDto, Techno
 
     private void checkBlocked(TechnologyDto technology, String uuid) {
         log.info("Checking block");
-        var status = technology.getBlocked();
-        if (status != null && !Objects.equals(status, uuid)) {
-            var user = userService.get(status);
-            throw new EntityBlockException(String.format("Эта технология в работе у пользователя %s %s", user.getFirstName(), user.getLastName()));
+        var blocked = technology.getBlocked();
+        if (blocked != null && !Objects.equals(blocked.getId(), uuid)) {
+            throw new EntityBlockException(String.format("Эта технология в работе у пользователя %s %s", blocked.getFirstName(), blocked.getLastName()));
         }
     }
 }

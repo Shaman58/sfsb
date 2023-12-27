@@ -20,10 +20,14 @@ public class TechnologyMapper extends AbstractMapper<Technology, TechnologyDto> 
         mapper.createTypeMap(Technology.class, TechnologyDto.class)
                 .addMappings(
                         m -> m.using(userConverter.uuidToUser()).map(Technology::getUserUuid, TechnologyDto::setUser)
+                ).addMappings(
+                        m -> m.using(userConverter.uuidToUser()).map(Technology::getBlocked, TechnologyDto::setBlocked)
                 );
         mapper.createTypeMap(TechnologyDto.class, Technology.class)
                 .addMappings(
                         m -> m.using(userConverter.userToUuid()).map(TechnologyDto::getUser, Technology::setUserUuid)
+                ).addMappings(
+                        m -> m.using(userConverter.userToUuid()).map(TechnologyDto::getBlocked, Technology::setBlocked)
                 );
     }
 }

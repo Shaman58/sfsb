@@ -33,5 +33,5 @@ public class TechnologyDto extends AbstractDto {
     private List<SetupDto> setups;
     private MonetaryAmount outsourcedCosts;
     private String outsourcedCostsDescription;
-    private String blocked;
+    private UserDto blocked;
 }
