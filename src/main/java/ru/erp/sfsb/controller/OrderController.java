@@ -31,6 +31,13 @@ public class OrderController {
 
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/find")
+    public List<OrderDto> getAllByQuery(@RequestBody String query) {
+        return orderService.getAllByQuery(query);
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     public OrderDto get(@PathVariable Long id) {
         return orderService.get(id);
