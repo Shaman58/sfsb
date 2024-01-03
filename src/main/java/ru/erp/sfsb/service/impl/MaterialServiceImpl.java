@@ -34,7 +34,7 @@ public class MaterialServiceImpl extends AbstractService<MaterialDto, Material, 
 
     @Override
     public List<MaterialDto> getMaterialWithExpiredDate() {
-        return repository.findMaterialByUpdatedBefore(LocalDateTime.now().minus(1, ChronoUnit.MONTHS)).stream()
+        return repository.findMaterialByUpdatedBeforeOrUpdatedEmpty(LocalDateTime.now().minus(1, ChronoUnit.MONTHS)).stream()
                 .map(material -> mapper.toDto(material))
                 .toList();
     }
@@ -51,6 +51,6 @@ public class MaterialServiceImpl extends AbstractService<MaterialDto, Material, 
         log.info("Update price in material with id={}", materialDto.getId());
         var material = get(materialDto.getId());
         material.setPrice(materialDto.getPrice());
-        return save(materialDto);
+        return update(materialDto);
     }
 }

@@ -10,5 +10,5 @@ import java.util.List;
 public interface MaterialRepository extends JpaRepository<Material, Long> {
     List<Material> findMaterialByPriceIsOrPriceBefore(MonetaryAmount isMonetaryAmount, MonetaryAmount beforeMonetaryAmount);
 
-    List<Material> findMaterialByUpdatedBefore(LocalDateTime dateTime);
+    List<Material> findMaterialByUpdatedBeforeOrUpdatedEmpty(LocalDateTime dateTime);
 }

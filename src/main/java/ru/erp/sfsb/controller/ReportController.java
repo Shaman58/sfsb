@@ -13,7 +13,7 @@ import ru.erp.sfsb.service.impl.ReportService;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/doc")
-public class DocController {
+public class ReportController {
 
     private final ReportService reportService;
 

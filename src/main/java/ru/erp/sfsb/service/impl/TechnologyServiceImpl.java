@@ -6,6 +6,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import ru.erp.sfsb.dto.TechnologyDto;
 import ru.erp.sfsb.exception.EntityBlockException;
+import ru.erp.sfsb.exception.ReportGenerateException;
 import ru.erp.sfsb.mapper.TechnologyMapper;
 import ru.erp.sfsb.model.Technology;
 import ru.erp.sfsb.repository.TechnologyRepository;
@@ -68,8 +69,18 @@ public class TechnologyServiceImpl extends AbstractService<TechnologyDto, Techno
         var technology = get(id);
         var uuid = jwt.getClaim("sub").toString();
         checkUpdate(technology, uuid);
+        isTechnologyCanBeeComputed(technology);
         technology.setComputed(isComputed);
         return update(technology, jwt);
+    }
+
+    private void isTechnologyCanBeeComputed(TechnologyDto technology) {
+        if (technology.getWorkpiece() == null) {
+            throw new ReportGenerateException("Нельзя пометить технологию без заготовки рассчитанной!");
+        }
+        if (technology.getSetups().size() == 0) {
+            throw new ReportGenerateException("Нельзя пометить технологию без установок рассчитанной!");
+        }
     }
 
     private void checkUpdate(TechnologyDto technology, String uuid) {
