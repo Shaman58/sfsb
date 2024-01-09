@@ -34,7 +34,7 @@ public class MaterialServiceImpl extends AbstractService<MaterialDto, Material, 
 
     @Override
     public List<MaterialDto> getMaterialWithExpiredDate() {
-        return repository.findMaterialByUpdatedBeforeOrUpdatedEmpty(LocalDateTime.now().minus(1, ChronoUnit.MONTHS)).stream()
+        return repository.findMaterialByUpdatedBeforeOrUpdatedIsNull(LocalDateTime.now().minus(1, ChronoUnit.MONTHS)).stream()
                 .map(material -> mapper.toDto(material))
                 .toList();
     }

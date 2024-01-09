@@ -69,7 +69,7 @@ public class ExceptionControllerAdvice {
 
     @ResponseBody
     @ExceptionHandler(ReportGenerateException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionData handleException(ReportGenerateException e) {
         return new ExceptionData(e.getMessage());
     }
@@ -83,7 +83,7 @@ public class ExceptionControllerAdvice {
 
     @ResponseBody
     @ExceptionHandler(EntityBlockException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionData handleException(EntityBlockException e) {
         return new ExceptionData(e.getMessage());
     }

@@ -137,8 +137,10 @@ public class UserServiceImpl implements UserService {
             throw new KeycloakOtherException("Файл не должен быть пустой");
         }
 
-        var link = getAttributes(uuid).getOrDefault("picture", null).get(0);
-        if (link != null && !link.isEmpty()) {
+        var attributes = getAttributes(uuid);
+        String link;
+        if (attributes != null) {
+            link = attributes.get("picture").get(0);
             log.info("Delete old picture");
             fileServerUtil.deleteMultipart(link);
         }
