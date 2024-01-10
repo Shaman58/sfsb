@@ -170,6 +170,8 @@ public class ReportService {
         ));
         operations.forEach(operation -> firstHeader.addAll(List.of(operation.getOperationName(), "", "", "", "", "")));
         operations.forEach(operation -> secondHeader.addAll(List.of("1 дет Маш-е", "1 дет МОР", "Общ.на 1дет", "Тмаш + МОР", "М.+н", "Нал.")));
+        firstHeader.add("");
+        secondHeader.add("Общее время");
         var data = new ArrayList<>(order
                 .getItems()
                 .stream()
@@ -185,12 +187,17 @@ public class ReportService {
 
     private List<String> getItemDataWithHeader(Map<String, List<Duration>> itemData, List<String> itemHead, List<OperationDto> operations) {
         List<String> result = new ArrayList<>(itemHead);
+        var totalTime = durationFormatter.getRusTimeFormat(itemData.values().stream()
+                .map(list -> list.get(4))
+                .reduce(Duration.ZERO, Duration::plus));
         var data = operations.stream()
                 .flatMap(operation -> itemData.get(operation.getOperationName()) == null
                         ? Stream.of("", "", "", "", "", "")
-                        : itemData.get(operation.getOperationName()).stream().map(durationFormatter::getRusTimeFormat))
+                        : itemData.get(operation.getOperationName()).stream()
+                        .map(durationFormatter::getRusTimeFormat))
                 .toList();
         result.addAll(data);
+        result.add(totalTime);
         return result;
     }
 
