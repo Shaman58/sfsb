@@ -175,17 +175,36 @@ public class ReportService {
         var data = new ArrayList<>(order
                 .getItems()
                 .stream()
-                .collect(toMap(this::getItemHeadData, this::getItemData))
+                .collect(toMap(this::getItemHeadLine, this::getItemData))
                 .entrySet()
                 .stream()
-                .map(entry -> getItemDataWithHeader(entry.getValue(), entry.getKey(), operations))
+                .map(entry -> getItemLine(entry.getValue(), entry.getKey(), operations))
                 .toList());
+        data.add(getTotalLine(data));
         data.add(0, firstHeader);
         data.add(1, secondHeader);
         return data;
     }
 
-    private List<String> getItemDataWithHeader(Map<String, List<Duration>> itemData, List<String> itemHead, List<OperationDto> operations) {
+    private List<String> getTotalLine(List<List<String>> lines) {
+        var total = sumTotalTime(lines);
+        var horSize = lines.get(0).size();
+        var line = new ArrayList<>(IntStream.range(0, horSize)
+                .mapToObj(i -> "")
+                .toList());
+        line.set(horSize - 1, total);
+        return line;
+    }
+
+    private String sumTotalTime(List<List<String>> lines) {
+        var horSize = lines.get(0).size();
+        var duration = lines.stream()
+                .map(line -> durationFormatter.getDurationFromString(line.get(horSize - 1)))
+                .reduce(Duration.ZERO, Duration::plus);
+        return durationFormatter.getRusTimeFormat(duration);
+    }
+
+    private List<String> getItemLine(Map<String, List<Duration>> itemData, List<String> itemHead, List<OperationDto> operations) {
         List<String> result = new ArrayList<>(itemHead);
         var totalTime = durationFormatter.getRusTimeFormat(itemData.values().stream()
                 .map(list -> list.get(4))
@@ -210,7 +229,7 @@ public class ReportService {
                         this::sumAllTimes));
     }
 
-    private List<String> getItemHeadData(ItemDto item) {
+    private List<String> getItemHeadLine(ItemDto item) {
         var cutters = new ArrayList<>(getAllToolsFromTechnologyByType(item.getTechnology(), CutterToolItemDto.class)
                 .stream()
                 .map(tool -> String.format("%s(%s)", tool.getTool().getToolName(), tool.getTool().getDescription()))
