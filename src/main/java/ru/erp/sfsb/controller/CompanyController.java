@@ -37,7 +37,7 @@ public class CompanyController {
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/manager/{id}")
-    public CompanyDto get(@PathVariable Long id) {
+    public CompanyDto get(@PathVariable(required = false) Long id) {
         return companyService.get(id);
     }
 
