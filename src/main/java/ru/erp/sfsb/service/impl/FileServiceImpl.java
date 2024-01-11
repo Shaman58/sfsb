@@ -9,6 +9,7 @@ import ru.erp.sfsb.dto.FileDto;
 import ru.erp.sfsb.mapper.FileMapper;
 import ru.erp.sfsb.model.File;
 import ru.erp.sfsb.repository.FileRepository;
+import ru.erp.sfsb.service.CompanyService;
 import ru.erp.sfsb.service.FileService;
 import ru.erp.sfsb.service.OrderService;
 import ru.erp.sfsb.service.UserService;
@@ -29,14 +30,16 @@ public class FileServiceImpl extends AbstractService<FileDto, File, FileReposito
     private final FileMapper mapper;
     private final OrderService orderService;
     private final UserService userService;
+    private final CompanyService companyService;
 
-    public FileServiceImpl(FileMapper mapper, FileRepository repository, FileServerUtil fileServerUtil, FileRepository fileRepository, OrderService orderService, UserService userService) {
+    public FileServiceImpl(FileMapper mapper, FileRepository repository, FileServerUtil fileServerUtil, FileRepository fileRepository, OrderService orderService, UserService userService, CompanyService companyService) {
         super(mapper, repository, "File");
         this.fileServerUtil = fileServerUtil;
         this.fileRepository = fileRepository;
         this.mapper = mapper;
         this.orderService = orderService;
         this.userService = userService;
+        this.companyService = companyService;
     }
 
     @Override
@@ -52,7 +55,23 @@ public class FileServiceImpl extends AbstractService<FileDto, File, FileReposito
         var filename = file.getOriginalFilename();
         var uuid = jwt.getClaim("sub").toString();
         var user = userService.get(uuid);
-        return save(new FileDto(filename, link, user));
+        var fileDto = new FileDto(filename, link, user);
+        return save(fileDto);
+    }
+
+    @Override
+    public FileDto update(Long id, MultipartFile file, Jwt jwt) {
+        log.info("Update file in DB");
+        var fileDto = get(id);
+        var link = fileServerUtil.saveMultipart(file);
+        fileServerUtil.deleteMultipart(fileDto.getLink());
+        var filename = file.getOriginalFilename();
+        var uuid = jwt.getClaim("sub").toString();
+        var user = userService.get(uuid);
+        fileDto.setUser(user);
+        fileDto.setLink(link);
+        fileDto.setFilename(filename);
+        return update(fileDto);
     }
 
     @Override
@@ -70,5 +89,18 @@ public class FileServiceImpl extends AbstractService<FileDto, File, FileReposito
         order.getFiles().add(fileDto);
         orderService.save(order);
         return fileDto;
+    }
+
+    @Override
+    public FileDto addFileToCompany(Long id, MultipartFile file, Jwt jwt) {
+        var company = companyService.get(id);
+        if (company.getLogo() == null) {
+            var fileDto = save(file, jwt);
+            company.setLogo(fileDto);
+            companyService.save(company);
+            return fileDto;
+        } else {
+            return update(company.getLogo().getId(), file, jwt);
+        }
     }
 }

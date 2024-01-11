@@ -33,6 +33,14 @@ public class FileController {
         return fileService.addFileToOrder(id, file, jwt);
     }
 
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/company/{id}")
+    public FileDto saveFileToCompany(@PathVariable Long id, @RequestBody MultipartFile file,
+                                     @AuthenticationPrincipal Jwt jwt) {
+        return fileService.addFileToCompany(id, file, jwt);
+    }
+
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {

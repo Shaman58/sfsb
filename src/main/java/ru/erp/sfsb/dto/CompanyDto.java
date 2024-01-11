@@ -6,4 +6,6 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class CompanyDto extends OrganizationDto {
+
+    private FileDto logo;
 }

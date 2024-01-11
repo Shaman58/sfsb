@@ -10,7 +10,11 @@ public interface FileService extends Service<FileDto> {
 
     FileDto save(MultipartFile file, Jwt jwt);
 
+    FileDto update(Long id, MultipartFile file, Jwt jwt);
+
     List<FileDto> getFilesByOrderId(Long orderId);
 
     FileDto addFileToOrder(Long id, MultipartFile file, Jwt jwt);
+
+    FileDto addFileToCompany(Long id, MultipartFile file, Jwt jwt);
 }
