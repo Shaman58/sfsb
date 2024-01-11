@@ -45,7 +45,7 @@ public class ReportService {
     private final DurationRuCustomFormatter durationFormatter;
     private final UserService userService;
 
-    public void generateKp(Long orderId, HttpServletResponse response) {
+    public void generateKp(Long orderId, Long companyId, HttpServletResponse response) {
         log.info("Generating kp with order id {}", orderId);
         var order = orderService.get(orderId);
         calculateOrder(order);
@@ -54,7 +54,7 @@ public class ReportService {
             log.debug("inputStream");
             var doc = new DocxReportUtil(inputStream);
             log.debug("doc");
-            var company = companyService.getCompany();
+            var company = companyService.get(companyId);
             log.debug("company");
             var employee = String.format("%s %s",
                     order.getUser().getFirstName(),
@@ -80,7 +80,7 @@ public class ReportService {
         }
     }
 
-    public void generateToolOrder(HttpServletResponse response, String fromEmployeeId, Long orderId, String body) {
+    public void generateToolOrder(HttpServletResponse response, String fromEmployeeId, Long orderId, String body, Long companyId) {
         log.info("Generate tool order report");
         var order = orderService.get(orderId);
         calculateOrder(order);
@@ -88,7 +88,7 @@ public class ReportService {
             var inputStream = getClass().getResourceAsStream("/tool-order-template.docx");
             var doc = new DocxReportUtil(inputStream);
             var fromEmployee = userService.get(fromEmployeeId);
-            var companyName = companyService.getCompany().getCompanyName();
+            var companyName = companyService.get(companyId).getCompanyName();
             var headerData = getHeaderFromEmployees(fromEmployee, companyName);
             if (Objects.equals(body, null)) {
                 body = "Прошу Вас, разрешить отделу снабжения приобрести следующие позиции:";

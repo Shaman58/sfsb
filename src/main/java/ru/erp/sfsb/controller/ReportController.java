@@ -19,16 +19,18 @@ public class ReportController {
 
     @GetMapping("/kp")
     public void getKp(HttpServletResponse response,
-                      @RequestParam Long orderId) {
-        reportService.generateKp(orderId, response);
+                      @RequestParam(value = "orderId") Long orderId,
+                      @RequestParam(value = "companyId", required = false, defaultValue = "1") Long companyId) {
+        reportService.generateKp(orderId, companyId, response);
     }
 
     @GetMapping("/tool-order")
     public void getToolOrder(HttpServletResponse response, @AuthenticationPrincipal Jwt jwt,
                              @RequestParam Long orderId,
-                             @RequestParam(required = false) String body) {
+                             @RequestParam(required = false) String body,
+                             @RequestParam(required = false, defaultValue = "1") Long companyId) {
         var feId = jwt.getClaim("sub").toString();
-        reportService.generateToolOrder(response, feId, orderId, body);
+        reportService.generateToolOrder(response, feId, orderId, body, companyId);
     }
 
     @GetMapping("/manufacturing-report")
