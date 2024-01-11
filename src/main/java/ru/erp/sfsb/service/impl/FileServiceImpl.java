@@ -67,7 +67,9 @@ public class FileServiceImpl extends AbstractService<FileDto, File, FileReposito
         fileServerUtil.deleteMultipart(fileDto.getLink());
         var filename = file.getOriginalFilename();
         var uuid = jwt.getClaim("sub").toString();
+        log.info("uuid={}", uuid);
         var user = userService.get(uuid);
+        log.info(user.toString());
         fileDto.setUser(user);
         fileDto.setLink(link);
         fileDto.setFilename(filename);

@@ -29,7 +29,9 @@ public class FileMapper extends AbstractMapper<File, FileDto> {
                 .addMappings(
                         m -> m.using(userConverter.uuidToUser()).map(File::getUserUuid, FileDto::setUser)
                 );
-//        mapper.createTypeMap(FileDto.class, File.class)
-//                .addMappings(m -> m.skip(File::setUserUuid));
+        mapper.createTypeMap(FileDto.class, File.class)
+                .addMappings(
+                        m -> m.using(userConverter.userToUuid()).map(FileDto::getUser, File::setUserUuid)
+                );
     }
 }
