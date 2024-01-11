@@ -28,7 +28,7 @@ public class CompanyServiceImpl extends AbstractService<CompanyDto, Company, Com
     }
 
     @Override
-    public CompanyDto update(CompanyDto companyDto) {
+    public CompanyDto updateCompany(CompanyDto companyDto) {
         log.info("Updating Company into DB");
         companyDto.setId(1L);
         return mapper.toDto(repository.save(mapper.toEntity(companyDto)));
