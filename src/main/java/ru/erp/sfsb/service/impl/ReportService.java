@@ -16,6 +16,7 @@ import ru.erp.sfsb.model.OperationTimeManagement;
 import ru.erp.sfsb.service.*;
 import ru.erp.sfsb.utils.DocxReportUtil;
 import ru.erp.sfsb.utils.DurationRuCustomFormatter;
+import ru.erp.sfsb.utils.FileServerUtil;
 import ru.erp.sfsb.utils.XlsxReportUtil;
 
 import javax.money.Monetary;
@@ -44,6 +45,7 @@ public class ReportService {
     private final Petrovich petrovich;
     private final DurationRuCustomFormatter durationFormatter;
     private final UserService userService;
+    private final FileServerUtil fileServerUtil;
 
     public void generateKp(Long orderId, Long companyId, HttpServletResponse response) {
         log.info("Generating kp with order id {}", orderId);
@@ -69,8 +71,15 @@ public class ReportService {
             log.debug("headerData1");
             headerData.put("[app-number]", String.valueOf(order.getApplicationNumber()));
             log.debug("headerData2");
+            byte[] image = null;
+            if (company.getLogo() != null) {
+                log.debug("logo is not null");
+                image = fileServerUtil.getFile(getLink(company.getLogo().getLink()))
+                        .blockOptional()
+                        .orElseThrow();
+            }
             log.debug("headerData3");
-            doc.generateKp(headerData, getItemList(order.getItems()), bodyData);
+            doc.generateKp(headerData, getItemList(order.getItems()), bodyData, image);
             log.debug("doc.generateKp");
             response.setHeader("Content-Disposition", "attachment; filename=kp.docx");
             log.debug("setHeader");
@@ -100,6 +109,13 @@ public class ReportService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String getLink(String fullLink) {
+        if (!fullLink.contains("=")) {
+            throw new EntityNullException("Logo is not available");
+        }
+        return fullLink.split("=")[1];
     }
 
     private void calculateOrder(OrderDto order) {

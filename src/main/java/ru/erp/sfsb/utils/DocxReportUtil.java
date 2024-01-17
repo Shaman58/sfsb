@@ -8,6 +8,7 @@ import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.*;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRow;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
@@ -28,11 +29,13 @@ public class DocxReportUtil {
         this.doc.write(fos);
     }
 
-    public void generateKp(Map<String, String> company, List<Map<String, String>> itemList, Map<String, String> bodyData) throws IOException, InvalidFormatException {
+    public void generateKp(Map<String, String> company, List<Map<String, String>> itemList, Map<String, String> bodyData, byte[] image)
+            throws IOException, InvalidFormatException {
         log.info("WordDocumentUtil-generateKp");
         writeCompanyHeader(company);
         log.info("WordDocumentUtil-writeCompanyHeader");
-        addImage("/logo.jpeg");
+        addImage(image);
+//        addImage("/logo.jpeg");
         log.info("WordDocumentUtil-addImage");
         fillRun(bodyData);
         log.info("WordDocumentUtil-fillRun");
@@ -119,15 +122,21 @@ public class DocxReportUtil {
         }
     }
 
-    private void addImage(String imagePath) throws IOException, InvalidFormatException {
-        log.info("addImage1");
-        var cell = this.doc.getTables().get(0).getRow(0).getCell(0);
-        XWPFParagraph paragraph = cell.getParagraphs().get(0);
-        XWPFRun run = paragraph.createRun();
-        var is = getClass().getResourceAsStream(imagePath);
-        log.info("addImage2");
-        run.addPicture(is, XWPFDocument.PICTURE_TYPE_PNG, "image.png", Units.toEMU(149), Units.toEMU(32));
-        log.info("addImage3");
+    private void addImage(byte[] file) {
+        if (file != null) {
+            log.info("addImage1");
+            var cell = this.doc.getTables().get(0).getRow(0).getCell(0);
+            XWPFParagraph paragraph = cell.getParagraphs().get(0);
+            XWPFRun run = paragraph.createRun();
+            try {
+                var is = new ByteArrayInputStream(file);
+                log.info("addImage2");
+                run.addPicture(is, XWPFDocument.PICTURE_TYPE_PNG, "image.png", Units.toEMU(149), Units.toEMU(32));
+                log.info("addImage3");
+            } catch (Exception e) {
+                log.info("image is not available!");
+            }
+        }
     }
 
     private void fillRun(Map<String, String> data) {

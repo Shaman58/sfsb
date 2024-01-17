@@ -2,12 +2,15 @@ package ru.erp.sfsb.utils;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import ru.erp.sfsb.exception.ReportGenerateException;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -40,5 +43,19 @@ public class FileServerUtil {
                 .body(BodyInserters.fromMultipartData("file", file.getResource()))
                 .retrieve()
                 .bodyToMono(String.class);
+    }
+
+    public Mono<byte[]> getFile(String uuid) {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .queryParam("filename", uuid)
+                        .build())
+                .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError, response ->
+                        Mono.error(new ReportGenerateException("File not found: " + uuid)))
+                .onStatus(HttpStatusCode::is5xxServerError, response ->
+                        Mono.error(new IllegalStateException("Server error retrieving file")))
+                .toEntity(byte[].class)
+                .mapNotNull(ResponseEntity::getBody);
     }
 }
