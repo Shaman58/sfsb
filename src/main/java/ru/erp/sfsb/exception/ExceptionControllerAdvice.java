@@ -87,4 +87,11 @@ public class ExceptionControllerAdvice {
     public ExceptionData handleException(EntityBlockException e) {
         return new ExceptionData(e.getMessage());
     }
+
+    @ResponseBody
+    @ExceptionHandler(FileReadException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ExceptionData handleException(FileReadException e) {
+        return new ExceptionData(e.getMessage());
+    }
 }

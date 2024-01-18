@@ -130,7 +130,6 @@ public class DocxReportUtil {
             XWPFRun run = paragraph.createRun();
             try {
                 var is = new ByteArrayInputStream(file);
-                log.info("addImage2");
                 run.addPicture(is, XWPFDocument.PICTURE_TYPE_PNG, "image.png", Units.toEMU(149), Units.toEMU(32));
                 log.info("addImage3");
             } catch (Exception e) {

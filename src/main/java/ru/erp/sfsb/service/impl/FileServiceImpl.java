@@ -6,6 +6,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.erp.sfsb.dto.FileDto;
+import ru.erp.sfsb.exception.FileReadException;
 import ru.erp.sfsb.mapper.FileMapper;
 import ru.erp.sfsb.model.File;
 import ru.erp.sfsb.repository.FileRepository;
@@ -15,6 +16,7 @@ import ru.erp.sfsb.service.OrderService;
 import ru.erp.sfsb.service.UserService;
 import ru.erp.sfsb.utils.FileServerUtil;
 
+import javax.imageio.ImageIO;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -95,6 +97,7 @@ public class FileServiceImpl extends AbstractService<FileDto, File, FileReposito
 
     @Override
     public FileDto addFileToCompany(Long id, MultipartFile file, Jwt jwt) {
+        pictureInfo(file);
         var company = companyService.get(id);
         if (company.getLogo() == null) {
             var fileDto = save(file, jwt);
@@ -103,6 +106,15 @@ public class FileServiceImpl extends AbstractService<FileDto, File, FileReposito
             return fileDto;
         } else {
             return update(company.getLogo().getId(), file, jwt);
+        }
+    }
+
+    private void pictureInfo(MultipartFile file) {
+        try {
+            var image = ImageIO.read((file.getInputStream()));
+            log.info("image size={}x{}", image.getWidth(), image.getHeight());
+        } catch (Exception e) {
+            throw new FileReadException("File read error");
         }
     }
 }
