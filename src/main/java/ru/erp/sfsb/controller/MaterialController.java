@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.erp.sfsb.dto.MaterialDto;
+import ru.erp.sfsb.model.Geometry;
 import ru.erp.sfsb.service.impl.MaterialServiceImpl;
 
 import java.util.List;
@@ -33,8 +34,10 @@ public class MaterialController {
     @GetMapping()
     public List<MaterialDto> getAll(
             @RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
-            @RequestParam(value = "limit", defaultValue = "9999") @Min(1) @Max(Integer.MAX_VALUE) Integer limit) {
-        return materialService.getAll(PageRequest.of(offset, limit));
+            @RequestParam(value = "limit", defaultValue = "9999") @Min(1) @Max(Integer.MAX_VALUE) Integer limit,
+            @RequestParam(value = "filter", defaultValue = "", required = false) String filter,
+            @RequestParam(value = "geometry", required = false) Geometry geometry) {
+        return materialService.getByFilter(filter, geometry, PageRequest.of(offset, limit));
     }
 
     @ResponseBody
@@ -71,7 +74,7 @@ public class MaterialController {
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}/price")
     public MaterialDto updatePrice(@RequestBody @Valid MaterialDto materialDto,
-                              @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
+                                   @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         materialDto.setId(id);
         return materialService.updatePrice(materialDto);
     }

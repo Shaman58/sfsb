@@ -33,8 +33,9 @@ public class SpecialToolController {
     @GetMapping()
     public List<SpecialToolDto> getAll(
             @RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
-            @RequestParam(value = "limit", defaultValue = "20") @Min(1) @Max(100) Integer limit) {
-        return specialToolService.getAll(PageRequest.of(offset, limit));
+            @RequestParam(value = "limit", defaultValue = "20") @Min(1) @Max(100) Integer limit,
+            @RequestParam(value = "filter", defaultValue = "", required = false) String filter) {
+        return specialToolService.getByFilter(filter, PageRequest.of(offset, limit));
     }
 
     @ResponseBody

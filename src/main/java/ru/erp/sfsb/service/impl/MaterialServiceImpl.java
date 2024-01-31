@@ -3,9 +3,12 @@ package ru.erp.sfsb.service.impl;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.javamoney.moneta.Money;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.erp.sfsb.dto.MaterialDto;
 import ru.erp.sfsb.mapper.MaterialMapper;
+import ru.erp.sfsb.model.Geometry;
 import ru.erp.sfsb.model.Material;
 import ru.erp.sfsb.repository.MaterialRepository;
 import ru.erp.sfsb.service.MaterialService;
@@ -52,5 +55,22 @@ public class MaterialServiceImpl extends AbstractService<MaterialDto, Material, 
         var material = get(materialDto.getId());
         material.setPrice(materialDto.getPrice());
         return update(materialDto);
+    }
+
+    @Override
+    public List<MaterialDto> getByFilter(String filter, Geometry geometry, Pageable pageable) {
+        log.info("Looking all Materials in DB by filter {}", filter);
+        Page<Material> page;
+        if (geometry != null) {
+            page = repository
+                    .getAllByMaterialNameContainingIgnoreCaseAndGeometryEqualsOrGost1ContainingIgnoreCaseAndGeometryEqualsOrGost2ContainingIgnoreCaseAndGeometryEquals(
+                            filter, geometry, filter, geometry, filter, geometry, pageable);
+        } else {
+            page = repository
+                    .getAllByMaterialNameContainingIgnoreCaseOrGost1ContainingIgnoreCaseOrGost2ContainingIgnoreCase(
+                            filter, filter, filter, pageable);
+        }
+//        return new PageImpl<>(mapper.toDto(page.getContent()), page.getPageable(), page.getTotalElements());
+        return mapper.toDto(page.getContent());
     }
 }

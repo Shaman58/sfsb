@@ -33,8 +33,9 @@ public class MeasureToolController {
     @GetMapping()
     public List<MeasureToolDto> getAll(
             @RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
-            @RequestParam(value = "limit", defaultValue = "20") @Min(1) @Max(100) Integer limit) {
-        return measureToolService.getAll(PageRequest.of(offset, limit));
+            @RequestParam(value = "limit", defaultValue = "20") @Min(1) @Max(100) Integer limit,
+            @RequestParam(value = "filter", defaultValue = "", required = false) String filter) {
+        return measureToolService.getByFilter(filter, PageRequest.of(offset, limit));
     }
 
     @ResponseBody

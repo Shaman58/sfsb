@@ -10,7 +10,7 @@
     </parent>
     <groupId>ru.erp</groupId>
     <artifactId>sfsb</artifactId>
-    <version>0.1.5</version>
+    <version>0.1.8</version>
     <name>sfsb</name>
     <description>ERP system for small business</description>
     <properties>

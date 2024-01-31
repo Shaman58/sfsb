@@ -35,7 +35,7 @@ services:
     labels:
       - "com.centurylinklabs.watchtower.enable=false"
   sfsb:
-    image: shaman58/sfsb:0.1.5
+    image: shaman58/sfsb:0.1.8
     env_file:
       - .env
     restart: always

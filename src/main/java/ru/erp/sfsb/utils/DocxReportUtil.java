@@ -35,7 +35,6 @@ public class DocxReportUtil {
         writeCompanyHeader(company);
         log.info("WordDocumentUtil-writeCompanyHeader");
         addImage(image);
-//        addImage("/logo.jpeg");
         log.info("WordDocumentUtil-addImage");
         fillRun(bodyData);
         log.info("WordDocumentUtil-fillRun");
