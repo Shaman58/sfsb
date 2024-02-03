@@ -33,8 +33,9 @@ public class ToolingController {
     @GetMapping()
     public List<ToolingDto> getAll(
             @RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
-            @RequestParam(value = "limit", defaultValue = "20") @Min(1) @Max(100) Integer limit) {
-        return toolingService.getAll(PageRequest.of(offset, limit));
+            @RequestParam(value = "limit", defaultValue = "20") @Min(1) @Max(100) Integer limit,
+            @RequestParam(value = "filter", defaultValue = "", required = false) String filter) {
+        return toolingService.getByFilter(filter, PageRequest.of(offset, limit));
     }
 
     @ResponseBody
