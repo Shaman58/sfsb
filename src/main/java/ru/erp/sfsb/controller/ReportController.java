@@ -4,10 +4,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import ru.erp.sfsb.dto.CommercialProposalDto;
 import ru.erp.sfsb.service.impl.ReportService;
 
 @RestController
@@ -21,7 +19,20 @@ public class ReportController {
     public void getKp(HttpServletResponse response,
                       @RequestParam(value = "orderId") Long orderId,
                       @RequestParam(value = "companyId", required = false, defaultValue = "1") Long companyId) {
-        reportService.generateKp(orderId, companyId, response);
+        reportService.generateCp(orderId, companyId, response);
+    }
+
+    @PostMapping("/kp/remote")
+    public void getKp(HttpServletResponse response,
+                      @RequestParam(value = "companyId") Long companyId,
+                      @RequestParam(value = "applicationNumber") Long applicationNumber,
+                      @RequestBody CommercialProposalDto commercialProposal) {
+        reportService.generateCp(
+                commercialProposal.getBodyData(),
+                commercialProposal.getItemList(),
+                companyId,
+                applicationNumber,
+                response);
     }
 
     @GetMapping("/tool-order")

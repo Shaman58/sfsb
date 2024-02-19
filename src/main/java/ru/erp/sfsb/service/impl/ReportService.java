@@ -47,7 +47,7 @@ public class ReportService {
     private final UserService userService;
     private final FileServerUtil fileServerUtil;
 
-    public void generateKp(Long orderId, Long companyId, HttpServletResponse response) {
+    public void generateCp(Long orderId, Long companyId, HttpServletResponse response) {
         log.info("Generating kp with order id {}", orderId);
         var order = orderService.get(orderId);
         calculateOrder(order);
@@ -71,15 +71,33 @@ public class ReportService {
             log.debug("headerData1");
             headerData.put("[app-number]", String.valueOf(order.getApplicationNumber()));
             log.debug("headerData2");
-            byte[] image = null;
-            if (company.getLogo() != null) {
-                log.debug("logo is not null");
-                image = fileServerUtil.getFile(getLink(company.getLogo().getLink()))
-                        .blockOptional()
-                        .orElseThrow();
-            }
+            byte[] image = getImage(company);
             log.debug("headerData3");
             doc.generateKp(headerData, getItemList(order.getItems()), bodyData, image);
+            log.debug("doc.generateKp");
+            response.setHeader("Content-Disposition", "attachment; filename=kp.docx");
+            log.debug("setHeader");
+            doc.save(response.getOutputStream());
+        } catch (IOException | InvalidFormatException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void generateCp(Map<String, String> bodyData, List<Map<String, String>> itemList, Long companyId, Long applicationNumber, HttpServletResponse response) {
+        try {
+            var inputStream = getClass().getResourceAsStream("/kp-template.docx");
+            log.debug("inputStream");
+            var doc = new DocxReportUtil(inputStream);
+            log.debug("doc");
+            var company = companyService.get(companyId);
+            log.debug("company");
+            var headerData = getCompanyMap(company);
+            log.debug("headerData1");
+            headerData.put("[app-number]", String.valueOf(applicationNumber));
+            log.debug("headerData2");
+            byte[] image = getImage(company);
+            log.debug("headerData3");
+            doc.generateKp(headerData, itemList, bodyData, image);
             log.debug("doc.generateKp");
             response.setHeader("Content-Disposition", "attachment; filename=kp.docx");
             log.debug("setHeader");
@@ -109,6 +127,17 @@ public class ReportService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private byte[] getImage(CompanyDto company) {
+        byte[] image = null;
+        if (company.getLogo() != null) {
+            log.debug("logo is not null");
+            image = fileServerUtil.getFile(getLink(company.getLogo().getLink()))
+                    .blockOptional()
+                    .orElseThrow();
+        }
+        return image;
     }
 
     private String getLink(String fullLink) {
