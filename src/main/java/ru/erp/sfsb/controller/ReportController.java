@@ -23,10 +23,11 @@ public class ReportController {
     }
 
     @PostMapping("/kp/remote")
-    public void getKp(HttpServletResponse response,
-                      @RequestParam(value = "companyId") Long companyId,
-                      @RequestParam(value = "applicationNumber") Long applicationNumber,
-                      @RequestBody CommercialProposalDto commercialProposal) {
+    public void getKp(
+            HttpServletResponse response,
+            @RequestParam(value = "companyId") Long companyId,
+            @RequestParam(value = "applicationNumber") Long applicationNumber,
+            @RequestBody CommercialProposalDto commercialProposal) {
         reportService.generateCp(
                 commercialProposal.getBodyData(),
                 commercialProposal.getItemList(),

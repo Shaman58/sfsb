@@ -9,6 +9,7 @@ import org.apache.poi.xwpf.usermodel.*;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRow;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
@@ -26,6 +27,10 @@ public class DocxReportUtil {
     }
 
     public void save(ServletOutputStream fos) throws IOException {
+        this.doc.write(fos);
+    }
+
+    public void save(ByteArrayOutputStream fos) throws IOException {
         this.doc.write(fos);
     }
 
