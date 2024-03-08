@@ -16,7 +16,7 @@ public class CpStoreServerUtil {
     private String cpStoreUrl;
     private final WebClient webClient;
 
-    private void uploadCp(CommercialProposalDto cp) {
+    public void uploadCp(CommercialProposalDto cp) {
         webClient.post()
                 .uri(cpStoreUrl)
                 .bodyValue(cp)

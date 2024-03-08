@@ -36,6 +36,13 @@ public class ReportController {
                 response);
     }
 
+    @GetMapping("/kp/remote")
+    public void sendKp(
+            @RequestParam(value = "companyId") Long companyId,
+            @RequestParam(value = "orderId") Long orderId) {
+        reportService.sendCpToStore(orderId, companyId);
+    }
+
     @GetMapping("/tool-order")
     public void getToolOrder(HttpServletResponse response, @AuthenticationPrincipal Jwt jwt,
                              @RequestParam Long orderId,

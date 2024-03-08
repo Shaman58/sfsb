@@ -14,10 +14,7 @@ import ru.erp.sfsb.exception.EntityNullException;
 import ru.erp.sfsb.exception.ReportGenerateException;
 import ru.erp.sfsb.model.OperationTimeManagement;
 import ru.erp.sfsb.service.*;
-import ru.erp.sfsb.utils.DocxReportUtil;
-import ru.erp.sfsb.utils.DurationRuCustomFormatter;
-import ru.erp.sfsb.utils.FileServerUtil;
-import ru.erp.sfsb.utils.XlsxReportUtil;
+import ru.erp.sfsb.utils.*;
 
 import javax.money.Monetary;
 import javax.money.MonetaryAmount;
@@ -46,6 +43,7 @@ public class ReportService {
     private final DurationRuCustomFormatter durationFormatter;
     private final UserService userService;
     private final FileServerUtil fileServerUtil;
+    private final CpStoreServerUtil cpStoreServerUtil;
 
     public void generateCp(Long orderId, Long companyId, HttpServletResponse response) {
         log.info("Generating kp with order id {}", orderId);
@@ -53,30 +51,20 @@ public class ReportService {
         calculateOrder(order);
         try {
             var inputStream = getClass().getResourceAsStream("/kp-template.docx");
-            log.debug("inputStream");
             var doc = new DocxReportUtil(inputStream);
-            log.debug("doc");
             var company = companyService.get(companyId);
-            log.debug("company");
             var employee = String.format("%s %s",
                     order.getUser().getFirstName(),
                     order.getUser().getLastName());
-            log.debug("employee");
             var bodyData = Map.of(
                     "[proposal]", order.getBusinessProposal(),
                     "[manager]", employee
             );
-            log.debug("bodyData");
             var headerData = getCompanyMap(company);
-            log.debug("headerData1");
             headerData.put("[app-number]", String.valueOf(order.getApplicationNumber()));
-            log.debug("headerData2");
             byte[] image = getImage(company);
-            log.debug("headerData3");
             doc.generateKp(headerData, getItemList(order.getItems()), bodyData, image);
-            log.debug("doc.generateKp");
             response.setHeader("Content-Disposition", "attachment; filename=kp.docx");
-            log.debug("setHeader");
             doc.save(response.getOutputStream());
         } catch (IOException | InvalidFormatException e) {
             throw new RuntimeException(e);
@@ -86,21 +74,13 @@ public class ReportService {
     public void generateCp(Map<String, String> bodyData, List<Map<String, String>> itemList, Long companyId, Long applicationNumber, HttpServletResponse response) {
         try {
             var inputStream = getClass().getResourceAsStream("/kp-template.docx");
-            log.debug("inputStream");
             var doc = new DocxReportUtil(inputStream);
-            log.debug("doc");
             var company = companyService.get(companyId);
-            log.debug("company");
             var headerData = getCompanyMap(company);
-            log.debug("headerData1");
             headerData.put("[app-number]", String.valueOf(applicationNumber));
-            log.debug("headerData2");
             byte[] image = getImage(company);
-            log.debug("headerData3");
             doc.generateKp(headerData, itemList, bodyData, image);
-            log.debug("doc.generateKp");
             response.setHeader("Content-Disposition", "attachment; filename=kp.docx");
-            log.debug("setHeader");
             doc.save(response.getOutputStream());
         } catch (IOException | InvalidFormatException e) {
             throw new RuntimeException(e);
@@ -127,6 +107,20 @@ public class ReportService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void sendCpToStore(Long orderId, Long companyId) {
+        var order = orderService.get(orderId);
+        var bodyData = Map.of(
+                "[proposal]", order.getBusinessProposal(),
+                "[manager]", order.getUser().getId(),
+                "[app-number]", String.valueOf(order.getApplicationNumber())
+        );
+        var items = getItemList(order.getItems());
+        var cp = new CommercialProposalDto();
+        cp.setItemList(items);
+        cp.setBodyData(bodyData);
+        cpStoreServerUtil.uploadCp(cp);
     }
 
     private byte[] getImage(CompanyDto company) {
@@ -174,13 +168,10 @@ public class ReportService {
         calculateOrder(order);
         try {
             var xls = new XlsxReportUtil();
-            log.debug("created xls");
             var data = getOrderManData(order);
             xls.fillXlsxDocument(data);
-            log.debug("generate report");
             response.setHeader("Content-Disposition", "attachment; filename=manufacturing-report.xlsx");
             xls.save(response.getOutputStream());
-            log.debug("saved report");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -192,13 +183,10 @@ public class ReportService {
         calculateOrder(order);
         try {
             var xls = new XlsxReportUtil();
-            log.debug("created xls");
             var data = createOperationTable(order);
             xls.fillXlsxDocument(data);
-            log.debug("generate report");
             response.setHeader("Content-Disposition", "attachment; filename=manufacturing-report.xlsx");
             xls.save(response.getOutputStream());
-            log.debug("saved report");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
