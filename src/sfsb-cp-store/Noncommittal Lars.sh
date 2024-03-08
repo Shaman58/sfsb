@@ -1,0 +1,1 @@
+sshpass -p 'T9*w*gCbgFJp' ssh root@5.35.84.165
