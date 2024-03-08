@@ -50,7 +50,7 @@ webclient:
     connect-timeout: 5000
     read-timeout: 5000
   cp-store:
-    url: ${CP-STORE-URL}}
+    url: ${CP-STORE-URL}
 keycloak:
   auth-server-url: ${KC_AUTH_SERVER_URL}
   realm: ${KC_REALM}
