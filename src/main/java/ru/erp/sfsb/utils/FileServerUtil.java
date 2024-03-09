@@ -2,7 +2,6 @@ package ru.erp.sfsb.utils;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +17,7 @@ import ru.erp.sfsb.exception.ReportGenerateException;
 @Component
 public class FileServerUtil {
 
-    @Value("${webclient.file-service.file-url}")
-    private String fileApiBaseUrl;
-    private final WebClient webClient;
+    private final WebClient fileApiWebClient;
 
     public String saveMultipart(MultipartFile file) {
         log.info("Save file in FS");
@@ -31,8 +28,8 @@ public class FileServerUtil {
 
     public void deleteMultipart(String filename) {
         log.info("Deleting file with name {} in FS", filename);
-        webClient.delete()
-                .uri(uriBuilder -> uriBuilder.path(fileApiBaseUrl)
+        fileApiWebClient.delete()
+                .uri(uriBuilder -> uriBuilder
                         .queryParam("filename", filename)
                         .build(filename))
                 .retrieve()
@@ -41,8 +38,8 @@ public class FileServerUtil {
     }
 
     private Mono<String> uploadFile(MultipartFile file) {
-        return webClient.post()
-                .uri(uriBuilder -> uriBuilder.path(fileApiBaseUrl).build())
+        log.info("Pushing file to FS");
+        return fileApiWebClient.post()
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .body(BodyInserters.fromMultipartData("file", file.getResource()))
                 .retrieve()
@@ -50,8 +47,9 @@ public class FileServerUtil {
     }
 
     public Mono<byte[]> getFile(String uuid) {
-        return webClient.get()
-                .uri(uriBuilder -> uriBuilder.path(fileApiBaseUrl)
+        log.info("Get {} file from FS", uuid);
+        return fileApiWebClient.get()
+                .uri(uriBuilder -> uriBuilder
                         .queryParam("filename", uuid)
                         .build())
                 .retrieve()

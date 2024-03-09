@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.springframework.stereotype.Service;
 import ru.erp.sfsb.dto.*;
+import ru.erp.sfsb.exception.EntityNotFoundException;
 import ru.erp.sfsb.exception.EntityNullException;
 import ru.erp.sfsb.exception.ReportGenerateException;
 import ru.erp.sfsb.model.OperationTimeManagement;
@@ -63,6 +64,7 @@ public class ReportService {
             var headerData = getCompanyMap(company);
             headerData.put("[app-number]", String.valueOf(order.getApplicationNumber()));
             byte[] image = getImage(company);
+            log.info("image was get");
             doc.generateKp(headerData, getItemList(order.getItems()), bodyData, image);
             response.setHeader("Content-Disposition", "attachment; filename=kp.docx");
             doc.save(response.getOutputStream());
@@ -109,7 +111,7 @@ public class ReportService {
         }
     }
 
-    public void sendCpToStore(Long orderId, Long companyId) {
+    public void sendCpToStore(Long orderId) {
         var order = orderService.get(orderId);
         var bodyData = Map.of(
                 "[proposal]", order.getBusinessProposal(),
@@ -125,11 +127,11 @@ public class ReportService {
 
     private byte[] getImage(CompanyDto company) {
         byte[] image = null;
-        if (company.getLogo() != null) {
+        if (company.getLogo() != null && company.getLogo().getLink() != null) {
             log.debug("logo is not null");
             image = fileServerUtil.getFile(getLink(company.getLogo().getLink()))
                     .blockOptional()
-                    .orElseThrow();
+                    .orElseThrow(() -> new EntityNotFoundException("logo is not found"));
         }
         return image;
     }
@@ -646,6 +648,7 @@ public class ReportService {
     }
 
     private Map<String, String> getOrderMap(List<ItemDto> items, Integer pos) {
+        log.info("getOrderMap");
         return Map.of(
                 "[no]", String.valueOf(pos + 1),
                 "[name]", items.get(pos).getTechnology().getDrawingName(),

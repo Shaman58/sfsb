@@ -38,9 +38,8 @@ public class ReportController {
 
     @GetMapping("/kp/remote")
     public void sendKp(
-            @RequestParam(value = "companyId") Long companyId,
             @RequestParam(value = "orderId") Long orderId) {
-        reportService.sendCpToStore(orderId, companyId);
+        reportService.sendCpToStore(orderId);
     }
 
     @GetMapping("/tool-order")
