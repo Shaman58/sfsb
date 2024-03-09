@@ -111,12 +111,13 @@ public class ReportService {
         }
     }
 
-    public void sendCpToStore(Long orderId) {
+    public void sendCpToStore(Long orderId, Long companyId) {
         var order = orderService.get(orderId);
         var bodyData = Map.of(
                 "[proposal]", order.getBusinessProposal(),
                 "[manager]", order.getUser().getId(),
-                "[app-number]", String.valueOf(order.getApplicationNumber())
+                "[app-number]", String.valueOf(order.getApplicationNumber()),
+                "[company-id]", String.valueOf(companyId)
         );
         var items = getItemList(order.getItems());
         var cp = new CommercialProposalDto();

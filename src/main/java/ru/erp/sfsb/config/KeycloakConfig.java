@@ -6,6 +6,7 @@ import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.RolesResource;
 import org.keycloak.admin.client.resource.UsersResource;
+import org.keycloak.representations.AccessTokenResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -31,6 +32,11 @@ public class KeycloakConfig {
                 .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
                 .clientSecret(clientSecret)
                 .build();
+    }
+
+    @Bean
+    public AccessTokenResponse accessTokenResponse(Keycloak keycloak) {
+        return keycloak.tokenManager().getAccessToken();
     }
 
     @Bean
