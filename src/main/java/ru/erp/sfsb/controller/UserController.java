@@ -28,6 +28,13 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
+    @GetMapping("/user/{uuid}")
+    public UserDto getUserByUuid(@PathVariable String uuid) {
+        return userService.get(uuid);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
     @GetMapping("/role")
     public List<String> getAllRoles() {
         return userService.getRoles();
