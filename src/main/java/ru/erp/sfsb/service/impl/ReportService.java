@@ -121,7 +121,7 @@ public class ReportService {
                 "[manager]", order.getUser().getId(),
                 "[app-number]", String.valueOf(order.getApplicationNumber()),
                 "[company-id]", String.valueOf(companyId),
-                "[customer-id]", String.valueOf(order.getCustomer())
+                "[customer-id]", String.valueOf(order.getCustomer().getId())
         );
         var items = getItemList(order.getItems());
         var cp = new CommercialProposalDto();
