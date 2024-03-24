@@ -26,12 +26,14 @@ public class ReportController {
     public void getKp(
             HttpServletResponse response,
             @RequestParam(value = "companyId") Long companyId,
+            @RequestParam(value = "customerId") Long customerId,
             @RequestParam(value = "applicationNumber") Long applicationNumber,
             @RequestBody CommercialProposalDto commercialProposal) {
         reportService.generateCp(
                 commercialProposal.getBodyData(),
                 commercialProposal.getItemList(),
                 companyId,
+                customerId,
                 applicationNumber,
                 response);
     }

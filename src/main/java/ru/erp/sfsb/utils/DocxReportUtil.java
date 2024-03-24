@@ -34,7 +34,7 @@ public class DocxReportUtil {
         this.doc.write(fos);
     }
 
-    public void generateKp(Map<String, String> company, List<Map<String, String>> itemList, Map<String, String> bodyData, byte[] image)
+    public void generateCp(Map<String, String> company, List<Map<String, String>> itemList, Map<String, String> bodyData, byte[] image)
             throws IOException, InvalidFormatException {
         log.info("WordDocumentUtil-generateKp");
         writeCompanyHeader(company);

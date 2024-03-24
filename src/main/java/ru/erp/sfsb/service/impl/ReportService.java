@@ -49,6 +49,8 @@ public class ReportService {
     public void generateCp(Long orderId, Long companyId, HttpServletResponse response) {
         log.info("Generating kp with order id {}", orderId);
         var order = orderService.get(orderId);
+
+
         calculateOrder(order);
         try {
             var inputStream = getClass().getResourceAsStream("/kp-template.docx");
@@ -65,7 +67,7 @@ public class ReportService {
             headerData.put("[app-number]", String.valueOf(order.getApplicationNumber()));
             byte[] image = getImage(company);
             log.info("image was get");
-            doc.generateKp(headerData, getItemList(order.getItems()), bodyData, image);
+            doc.generateCp(headerData, getItemList(order.getItems()), bodyData, image);
             response.setHeader("Content-Disposition", "attachment; filename=kp.docx");
             doc.save(response.getOutputStream());
         } catch (IOException | InvalidFormatException e) {
@@ -73,15 +75,16 @@ public class ReportService {
         }
     }
 
-    public void generateCp(Map<String, String> bodyData, List<Map<String, String>> itemList, Long companyId, Long applicationNumber, HttpServletResponse response) {
+    public void generateCp(Map<String, String> bodyData, List<Map<String, String>> itemList, Long companyId, Long customerId, Long applicationNumber, HttpServletResponse response) {
         try {
             var inputStream = getClass().getResourceAsStream("/kp-template.docx");
             var doc = new DocxReportUtil(inputStream);
             var company = companyService.get(companyId);
+            var customer = companyService.get(customerId);
             var headerData = getCompanyMap(company);
             headerData.put("[app-number]", String.valueOf(applicationNumber));
             byte[] image = getImage(company);
-            doc.generateKp(headerData, itemList, bodyData, image);
+            doc.generateCp(headerData, itemList, bodyData, image);
             response.setHeader("Content-Disposition", "attachment; filename=kp.docx");
             doc.save(response.getOutputStream());
         } catch (IOException | InvalidFormatException e) {
@@ -117,7 +120,8 @@ public class ReportService {
                 "[proposal]", order.getBusinessProposal(),
                 "[manager]", order.getUser().getId(),
                 "[app-number]", String.valueOf(order.getApplicationNumber()),
-                "[company-id]", String.valueOf(companyId)
+                "[company-id]", String.valueOf(companyId),
+                "[customer-id]", String.valueOf(order.getCustomer())
         );
         var items = getItemList(order.getItems());
         var cp = new CommercialProposalDto();

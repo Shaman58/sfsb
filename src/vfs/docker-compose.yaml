@@ -2,10 +2,15 @@ version: '3.9'
 
 services:
   sfsb-front:
-    image: shaman58/sfsb-front:0.1.4
+    image: voskanvl/sfsb-front:0.2.1
     restart: always
     ports:
       - "80:80"
+  sfsb-front-test:
+    image: voskanvl/sfsb-front:0.2.2
+    restart: always
+    ports:
+      - "3000:80"
   watchtower:
     image: containrrr/watchtower
     restart: always
