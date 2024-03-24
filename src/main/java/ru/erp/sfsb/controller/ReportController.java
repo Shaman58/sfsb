@@ -16,14 +16,14 @@ public class ReportController {
     private final ReportService reportService;
 
     @GetMapping("/kp")
-    public void getKp(HttpServletResponse response,
+    public void getCp(HttpServletResponse response,
                       @RequestParam(value = "orderId") Long orderId,
                       @RequestParam(value = "companyId", required = false, defaultValue = "1") Long companyId) {
         reportService.generateCp(orderId, companyId, response);
     }
 
     @PostMapping("/kp/remote")
-    public void getKp(
+    public void getCp(
             HttpServletResponse response,
             @RequestParam(value = "companyId") Long companyId,
             @RequestParam(value = "customerId") Long customerId,
@@ -39,7 +39,7 @@ public class ReportController {
     }
 
     @GetMapping("/kp/remote")
-    public void sendKp(
+    public void sendCp(
             @RequestParam(value = "orderId") Long orderId,
             @RequestParam(value = "companyId") Long companyId) {
         reportService.sendCpToStore(orderId, companyId);
