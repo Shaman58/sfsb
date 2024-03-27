@@ -40,6 +40,7 @@ public class ReportService {
     private final ItemService itemService;
     private final OperationService operationService;
     private final CompanyService companyService;
+    private final CustomerService customerService;
     private final Petrovich petrovich;
     private final DurationRuCustomFormatter durationFormatter;
     private final UserService userService;
@@ -80,7 +81,7 @@ public class ReportService {
             var inputStream = getClass().getResourceAsStream("/kp-template.docx");
             var doc = new DocxReportUtil(inputStream);
             var company = companyService.get(companyId);
-            var customer = companyService.get(customerId);
+            var customer = customerService.get(customerId);
             var headerData = getCompanyMap(company);
             headerData.put("[app-number]", String.valueOf(applicationNumber));
             byte[] image = getImage(company);
