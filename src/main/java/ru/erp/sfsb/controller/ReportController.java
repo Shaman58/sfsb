@@ -2,12 +2,14 @@ package ru.erp.sfsb.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import ru.erp.sfsb.dto.CommercialProposalDto;
 import ru.erp.sfsb.service.impl.ReportService;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/doc")
@@ -28,7 +30,9 @@ public class ReportController {
             @RequestParam(value = "companyId") Long companyId,
             @RequestParam(value = "customerId") Long customerId,
             @RequestParam(value = "applicationNumber") Long applicationNumber,
-            @RequestBody CommercialProposalDto commercialProposal) {
+            @RequestBody CommercialProposalDto commercialProposal,
+            @RequestHeader(name = "Authorization") String token) {
+        log.info("{}", token);
         reportService.generateCp(
                 commercialProposal.getBodyData(),
                 commercialProposal.getItemList(),

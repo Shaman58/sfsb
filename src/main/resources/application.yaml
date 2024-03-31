@@ -35,7 +35,7 @@ springAsyncConfig:
 logging:
   level:
     root: OFF
-    org.springframework: INFO
+    org.springframework: DEBUG
     org.hibernate: INFO
     ru.erp.sfsb: DEBUG
   file:
@@ -57,7 +57,4 @@ keycloak:
   credentials:
     secret: ${KC_AUTH_SECRET}
   use-resource-role-mappings: true
-cors:
-  url: ${CORS_URL}
-  ip: ${CORS_IP}
-  cp: ${CORS_CP}
+cors: ${CORS_URL}, ${CORS_CP}, http://localhost:3000, http://localhost:9000

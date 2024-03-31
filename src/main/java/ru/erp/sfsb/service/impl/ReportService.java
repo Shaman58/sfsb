@@ -50,8 +50,7 @@ public class ReportService {
     public void generateCp(Long orderId, Long companyId, HttpServletResponse response) {
         log.info("Generating kp with order id {}", orderId);
         var order = orderService.get(orderId);
-
-
+        
         calculateOrder(order);
         try {
             var inputStream = getClass().getResourceAsStream("/kp-template.docx");
@@ -77,6 +76,7 @@ public class ReportService {
     }
 
     public void generateCp(Map<String, String> bodyData, List<Map<String, String>> itemList, Long companyId, Long customerId, Long applicationNumber, HttpServletResponse response) {
+        log.info("ReportService {}, {}, {}", companyId, customerId, applicationNumber);
         try {
             var inputStream = getClass().getResourceAsStream("/kp-template.docx");
             var doc = new DocxReportUtil(inputStream);
