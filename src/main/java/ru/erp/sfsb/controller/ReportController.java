@@ -30,9 +30,7 @@ public class ReportController {
             @RequestParam(value = "companyId") Long companyId,
             @RequestParam(value = "customerId") Long customerId,
             @RequestParam(value = "applicationNumber") Long applicationNumber,
-            @RequestBody CommercialProposalDto commercialProposal,
-            @RequestHeader(name = "Authorization") String token) {
-        log.info("{}", token);
+            @RequestBody CommercialProposalDto commercialProposal) {
         reportService.generateCp(
                 commercialProposal.getBodyData(),
                 commercialProposal.getItemList(),

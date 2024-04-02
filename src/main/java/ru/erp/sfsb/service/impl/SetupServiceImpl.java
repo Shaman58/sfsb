@@ -8,12 +8,14 @@ import ru.erp.sfsb.model.Setup;
 import ru.erp.sfsb.repository.SetupRepository;
 import ru.erp.sfsb.service.SetupService;
 
+import static ru.erp.sfsb.LogTag.SETUP_SERVICE;
+
 @Service
 @Transactional
 public class SetupServiceImpl extends AbstractService<SetupDto, Setup, SetupRepository, SetupMapper>
         implements SetupService {
 
     public SetupServiceImpl(SetupMapper mapper, SetupRepository repository) {
-        super(mapper, repository, "Setup");
+        super(mapper, repository, "Setup", SETUP_SERVICE);
     }
 }

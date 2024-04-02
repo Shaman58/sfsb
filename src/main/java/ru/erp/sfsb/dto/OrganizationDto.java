@@ -17,7 +17,7 @@ public abstract class OrganizationDto extends AbstractDto {
     private String inn;
     @Pattern(regexp = "^[0-9]{9}$")
     private String kpp;
-    @Pattern(regexp = "^[0-9]{8}$")
+    @Pattern(regexp = "^[0-9]{13}$")
     private String ogrn;
     private String paymentAccount;
     private String bank;

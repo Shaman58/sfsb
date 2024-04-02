@@ -22,20 +22,6 @@ public class CompanyController {
 
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping()
-    public CompanyDto getCompany() {
-        return companyService.getCompany();
-    }
-
-    @ResponseBody
-    @ResponseStatus(HttpStatus.OK)
-    @PutMapping()
-    public CompanyDto updateCompany(@RequestBody @Valid CompanyDto companyDto) {
-        return companyService.updateCompany(companyDto);
-    }
-
-    @ResponseBody
-    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/manager/{id}")
     public CompanyDto get(@PathVariable(required = false) Long id) {
         return companyService.get(id);

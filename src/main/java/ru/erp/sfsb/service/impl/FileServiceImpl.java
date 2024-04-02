@@ -20,6 +20,7 @@ import javax.imageio.ImageIO;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
+import static ru.erp.sfsb.LogTag.FILE_SERVICE;
 
 @Service
 @Transactional
@@ -35,7 +36,7 @@ public class FileServiceImpl extends AbstractService<FileDto, File, FileReposito
     private final CompanyService companyService;
 
     public FileServiceImpl(FileMapper mapper, FileRepository repository, FileServerUtil fileServerUtil, FileRepository fileRepository, OrderService orderService, UserService userService, CompanyService companyService) {
-        super(mapper, repository, "File");
+        super(mapper, repository, "File", FILE_SERVICE);
         this.fileServerUtil = fileServerUtil;
         this.fileRepository = fileRepository;
         this.mapper = mapper;
@@ -46,13 +47,13 @@ public class FileServiceImpl extends AbstractService<FileDto, File, FileReposito
 
     @Override
     public List<FileDto> getFilesByOrderId(Long orderId) {
-        log.info("Looking all files by order id in DB");
+        log.info("[{}] Поиск всех файлов по заказу с id={} in БД", getLogTag(), orderId);
         return fileRepository.getFilesByOrderId(orderId).stream().map(mapper::toDto).collect(toList());
     }
 
     @Override
     public FileDto save(MultipartFile file, Jwt jwt) {
-        log.info("Save file in DB");
+        log.info("[{}] Сохранение файла в хранилише", getLogTag());
         var link = fileServerUtil.saveMultipart(file);
         var filename = file.getOriginalFilename();
         var uuid = jwt.getClaim("sub").toString();
@@ -63,13 +64,12 @@ public class FileServiceImpl extends AbstractService<FileDto, File, FileReposito
 
     @Override
     public FileDto update(Long id, MultipartFile file, Jwt jwt) {
-        log.info("Update file in DB");
+        log.info("[{}] Обновление файла с id={} в хранилище", getLogTag(), id);
         var fileDto = get(id);
         var link = fileServerUtil.saveMultipart(file);
         fileServerUtil.deleteMultipart(fileDto.getLink());
         var filename = file.getOriginalFilename();
         var uuid = jwt.getClaim("sub").toString();
-        log.info("uuid={}", uuid);
         var user = userService.get(uuid);
         log.info(user.toString());
         fileDto.setUser(user);
@@ -80,15 +80,16 @@ public class FileServiceImpl extends AbstractService<FileDto, File, FileReposito
 
     @Override
     public void delete(Long id) {
-        log.info("Deleting file with id {} in DB", id);
+        log.info("[{}] Удаление файла с id={} из хранилища", getLogTag(), id);
         var filename = get(id).getFilename();
         fileServerUtil.deleteMultipart(filename);
         repository.removeById(id);
     }
 
     @Override
-    public FileDto addFileToOrder(Long id, MultipartFile file, Jwt jwt) {
-        var order = orderService.get(id);
+    public FileDto addFileToOrder(Long orderId, MultipartFile file, Jwt jwt) {
+        log.info("[{}] Добавление файла к заявке с id={} ", getLogTag(), orderId);
+        var order = orderService.get(orderId);
         var fileDto = save(file, jwt);
         order.getFiles().add(fileDto);
         orderService.save(order);
@@ -96,9 +97,10 @@ public class FileServiceImpl extends AbstractService<FileDto, File, FileReposito
     }
 
     @Override
-    public FileDto addFileToCompany(Long id, MultipartFile file, Jwt jwt) {
+    public FileDto addFileToCompany(Long companyId, MultipartFile file, Jwt jwt) {
+        log.info("[{}] Добавление файла к компании с id={} ", getLogTag(), companyId);
         pictureInfo(file);
-        var company = companyService.get(id);
+        var company = companyService.get(companyId);
         if (company.getLogo() == null) {
             var fileDto = save(file, jwt);
             company.setLogo(fileDto);
@@ -112,9 +114,10 @@ public class FileServiceImpl extends AbstractService<FileDto, File, FileReposito
     private void pictureInfo(MultipartFile file) {
         try {
             var image = ImageIO.read((file.getInputStream()));
-            log.info("image size={}x{}", image.getWidth(), image.getHeight());
+            log.info("[{}] Размер изображения={}x{}", getLogTag(), image.getWidth(), image.getHeight());
         } catch (Exception e) {
-            throw new FileReadException("File read error");
+            throw new FileReadException(
+                    String.format("[%s] Ошибка доступа к файлу", getLogTag()));
         }
     }
 }

@@ -12,6 +12,8 @@ import ru.erp.sfsb.service.ItemService;
 
 import java.util.List;
 
+import static ru.erp.sfsb.LogTag.ITEM_SERVICE;
+
 @Service
 @Slf4j
 @Transactional
@@ -19,13 +21,13 @@ public class ItemServiceImpl extends AbstractService<ItemDto, Item, ItemReposito
         implements ItemService {
 
     public ItemServiceImpl(ItemMapper mapper, ItemRepository repository) {
-        super(mapper, repository, "Item");
+        super(mapper, repository, "Item", ITEM_SERVICE);
         this.repository = repository;
     }
 
     @Override
     public List<ItemDto> getAllByTechnologyUser(Jwt jwt) {
-        log.info("Looking items by user uuid of technology in DB");
+        log.info("[{}] Поиск всех позиций по профилю пользователя в БД", getLogTag());
         var uuid = jwt.getClaim("sub").toString();
         var entities = repository.getAllByTechnologyUser(uuid);
         return mapper.toDto(entities);

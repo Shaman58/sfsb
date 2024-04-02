@@ -13,6 +13,8 @@ import ru.erp.sfsb.service.OrderService;
 
 import java.util.List;
 
+import static ru.erp.sfsb.LogTag.ORDER_SERVICE;
+
 @Service
 @Transactional
 @Slf4j
@@ -20,12 +22,12 @@ public class OrderServiceImpl extends AbstractService<OrderDto, Order, OrderRepo
         implements OrderService {
 
     public OrderServiceImpl(OrderMapper mapper, OrderRepository repository) {
-        super(mapper, repository, "Order");
+        super(mapper, repository, "Order", ORDER_SERVICE);
     }
 
     @Override
     public List<OrderDto> getAllByQuery(String query, Pageable pageable) {
-        log.info("Looking all orders with query in DB");
+        log.info("[{}] Поиск всех сущностей типа {} по запросу {} в БД", getLogTag(), getEntityName(), query);
         var orders = repository.getOrdersByQueryString(query, pageable.getPageSize(), pageable.getPageNumber());
         var ordersDto = mapper.toDto(orders);
         ordersDto.forEach(order ->

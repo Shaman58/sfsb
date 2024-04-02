@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import ru.erp.sfsb.LogTag;
 import ru.erp.sfsb.dto.UserDto;
 import ru.erp.sfsb.exception.KeycloakOtherException;
 import ru.erp.sfsb.exception.KeycloakUserConflictException;
@@ -32,12 +33,14 @@ public class UserServiceImpl implements UserService {
     private final UsersResource usersResource;
     private final RolesResource rolesResource;
     private final FileServerUtil fileServerUtil;
+    private final static LogTag LOG_TAG = LogTag.USER_SERVICE;
 
     @Override
     public UserDto save(UserDto user) {
-        log.info("Create user in KC DB");
+        log.info("[{}] Создание пользователя в KeyCloak БД", LOG_TAG);
         if (user.getPassword() == null || user.getPassword().length() == 0) {
-            throw new KeycloakOtherException("При создании пользователя пароль должен быть задан");
+            throw new KeycloakOtherException(
+                    String.format("[%s] При создании пользователя пароль должен быть задан", LOG_TAG));
         }
         var credentials = createCredentials(user.getPassword());
         var kcUser = new UserRepresentation();
@@ -49,37 +52,34 @@ public class UserServiceImpl implements UserService {
         kcUser.setEnabled(true);
         kcUser.setEmailVerified(false);
         var response = usersResource.create(kcUser);
-        log.info("response = {}", response.getStatusInfo());
-        exceptionThrow(response.getStatus());
+        log.info("[{}] Ответ от KeyCloak = {}", LOG_TAG, response.getStatusInfo());
+        throwException(response.getStatus());
         var uuid = CreatedResponseUtil.getCreatedId(response);
-        log.info("Add role to user in KC DB");
+        log.info("[{}] Добавление роли пользователю", LOG_TAG);
         usersResource.get(uuid).roles().realmLevel().add(getRoleRepresentations(user.getRoles()));
         return get(uuid);
     }
 
     @Override
     public UserDto update(String uuid, UserDto user) {
-        log.info("Update user in KC DB");
+        log.info("[{}] Обновление пользователя в KeyCloak БД", LOG_TAG);
         var kcUser = new UserRepresentation();
         kcUser.setFirstName(user.getFirstName());
         kcUser.setLastName(user.getLastName());
         kcUser.setEmail(user.getEmail());
-        log.info("Save user in KC DB");
         usersResource.get(uuid).update(kcUser);
         if (user.getPassword() != null && user.getPassword().length() != 0) {
-            log.info("Reset password user in KC DB");
+            log.info("[{}] Обновление пароля пользователя", LOG_TAG);
             usersResource.get(uuid).resetPassword(createCredentials(user.getPassword()));
         }
-        log.info("Remove roles of user in KC DB");
         usersResource.get(uuid).roles().realmLevel().remove(getRoleRepresentations(getRoles()));
-        log.info("Add roles to user in KC DB");
         usersResource.get(uuid).roles().realmLevel().add(getRoleRepresentations(user.getRoles()));
         return get(uuid);
     }
 
     @Override
     public List<UserDto> getAll() {
-        log.info("Get all user profiles from KC DB");
+        log.info("[{}] Получение всех профилей пользователей из KeyCloak БД", LOG_TAG);
         return usersResource.list()
                 .stream()
                 .map(this::repToUserDto)
@@ -88,17 +88,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto get(String uuid) {
-        log.info("Get user profile from KC DB");
+        log.info("[{}] Получение профиля пользователя c uuid={} из KeyCloak БД", LOG_TAG, uuid);
         try {
             return repToUserDto(usersResource.get(uuid).toRepresentation());
         } catch (Exception e) {
-            throw new KeycloakOtherException(String.format("Сервер Keycloak недоступен или пользователь отсутсвует %s", e.getMessage()));
+            throw new KeycloakOtherException(
+                    String.format("[%s] Сервер Keycloak недоступен или пользователь c uuid=%s отсутсвует", LOG_TAG, uuid));
         }
     }
 
     @Override
     public List<String> getRoles() {
-        log.info("Get all roles from KC DB");
+        log.info("[{}] Получение всех ролей из KeyCloak БД", LOG_TAG);
         return rolesResource.list().stream()
                 .filter(role -> !role.getDescription().startsWith("$"))
                 .map(RoleRepresentation::getName)
@@ -107,11 +108,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(String uuid) {
-        log.info("User deleting");
+        log.info("[{}] Удаление профиля с uuid={} из KeyCloak БД", LOG_TAG, uuid);
         var response = usersResource.delete(uuid).getStatus();
         System.out.println(response);
         if (response != HttpStatus.NO_CONTENT.value()) {
-            throw new KeycloakOtherException("Ошибка удаления пользователя!");
+            throw new KeycloakOtherException(
+                    String.format("[%s] Ошибка удаления пользователя!", LOG_TAG));
         }
     }
 
@@ -119,12 +121,13 @@ public class UserServiceImpl implements UserService {
     public void setAttribute(String uuid, Map<String, List<String>> attributes) {
         var userRepresentation = usersResource.get(uuid).toRepresentation();
         userRepresentation.setAttributes(attributes);
-        log.info("Save attributes of user in KC DB");
+        log.info("[{}] Сохранение атрибутов профиля пользователя в KeyCloak БД", LOG_TAG);
         usersResource.get(uuid).update(userRepresentation);
     }
 
     @Override
     public Map<String, List<String>> getAttributes(String uuid) {
+        log.info("[{}] Получение атрибутов профиля пользователя из KeyCloak БД", LOG_TAG);
         return usersResource.get(uuid).toRepresentation()
                 .getAttributes();
 
@@ -132,19 +135,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void setPicture(String uuid, MultipartFile file) {
-        log.info("Set picture");
+        log.info("[{}] Сохранение аватара в профиль пользователя KeyCloak БД", LOG_TAG);
         if (file == null) {
-            throw new KeycloakOtherException("Файл не должен быть пустой");
+            throw new KeycloakOtherException(
+                    String.format("[%s] Файл не должен быть пустой", LOG_TAG));
         }
-
         var attributes = getAttributes(uuid);
         String link;
         if (attributes != null) {
             link = attributes.get("picture").get(0);
-            log.info("Delete old picture");
             fileServerUtil.deleteMultipart(link);
         }
-
         link = fileServerUtil.saveMultipart(file);
 
         setAttribute(uuid, Map.of("picture", List.of(link)));
@@ -164,12 +165,14 @@ public class UserServiceImpl implements UserService {
                 .toList();
     }
 
-    private void exceptionThrow(int status) {
+    private void throwException(int status) {
         if (status != 201) {
             if (status == 409) {
-                throw new KeycloakUserConflictException("Пользователь с такими данными уже существует");
+                throw new KeycloakUserConflictException(
+                        String.format("[%s] Пользователь с такими данными уже существует", LOG_TAG));
             }
-            throw new KeycloakOtherException("Ошибка создания пользователя");
+            throw new KeycloakOtherException(
+                    String.format("[%s] Ошибка создания пользователя", LOG_TAG));
         }
     }
 

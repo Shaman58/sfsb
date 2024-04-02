@@ -12,6 +12,8 @@ import ru.erp.sfsb.service.CutterToolService;
 
 import java.util.List;
 
+import static ru.erp.sfsb.LogTag.CUTTER_TOOL_SERVICE;
+
 @Service
 @Slf4j
 @Transactional
@@ -19,12 +21,12 @@ public class CutterToolServiceImpl extends AbstractService<CutterToolDto, Cutter
         implements CutterToolService {
 
     public CutterToolServiceImpl(CutterToolMapper mapper, CutterToolRepository repository) {
-        super(mapper, repository, "Cutter tool");
+        super(mapper, repository, "Cutter tool", CUTTER_TOOL_SERVICE);
     }
 
     @Override
     public List<CutterToolDto> getByFilter(String filter, Pageable pageable) {
-        log.info("Looking all Cutter tools in DB by filter {}", filter);
+        log.info("[{}] Поиск сушностей типа {} по фильтру {} в БД", getLogTag(), getEntityName(), filter);
         return mapper.toDto(repository
                 .getAllByToolNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(filter, filter, pageable));
     }

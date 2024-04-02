@@ -8,12 +8,14 @@ import ru.erp.sfsb.model.Customer;
 import ru.erp.sfsb.repository.CustomerRepository;
 import ru.erp.sfsb.service.CustomerService;
 
+import static ru.erp.sfsb.LogTag.CUSTOMER_SERVICE;
+
 @Service
 @Transactional
 public class CustomerServiceImpl extends AbstractService<CustomerDto, Customer, CustomerRepository, CustomerMapper>
         implements CustomerService {
 
     public CustomerServiceImpl(CustomerMapper mapper, CustomerRepository repository) {
-        super(mapper, repository, "Customer");
+        super(mapper, repository, "Customer", CUSTOMER_SERVICE);
     }
 }

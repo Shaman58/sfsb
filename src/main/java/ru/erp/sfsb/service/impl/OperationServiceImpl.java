@@ -4,7 +4,6 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.erp.sfsb.dto.OperationDto;
-import ru.erp.sfsb.exception.EntityNotFoundException;
 import ru.erp.sfsb.mapper.OperationMapper;
 import ru.erp.sfsb.model.Operation;
 import ru.erp.sfsb.repository.OperationRepository;
@@ -13,6 +12,7 @@ import ru.erp.sfsb.service.OperationService;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
+import static ru.erp.sfsb.LogTag.OPERATION_SERVICE;
 
 @Service
 @Slf4j
@@ -21,26 +21,26 @@ public class OperationServiceImpl extends AbstractService<OperationDto, Operatio
         implements OperationService {
 
     public OperationServiceImpl(OperationMapper mapper, OperationRepository repository) {
-        super(mapper, repository, "Operation");
+        super(mapper, repository, "Operation", OPERATION_SERVICE);
     }
 
     @Override
     public List<OperationDto> getAll() {
-        log.info("Looking all operations in DB");
+        log.info("[{}] Поиск всех сущностей типа Operation в БД", getLogTag());
         var entities = repository.findAllByIdGreaterThan2();
         return entities.stream().map(mapper::toDto).collect(toList());
     }
 
     @Override
     public OperationDto getSetupPrice() {
-        log.info("Looking setup price in DB");
+        log.info("[{}] Поиск цены наладки in БД", getLogTag());
         return mapper.toDto(repository.findById(1L).orElseThrow(
-                () -> new EntityNotFoundException("There is no setup price in DB")));
+                () -> getEntityWithIdNotFoundException(1L)));
     }
 
     @Override
     public OperationDto updateSetupPrice(OperationDto price) {
-        log.info("Saving setup price into DB");
+        log.info("[{}] Сохранить цену наладки в БД", getLogTag());
         checkExistById(1L);
         price.setId(1L);
         return mapper.toDto(repository.save(mapper.toEntity(price)));
@@ -48,14 +48,14 @@ public class OperationServiceImpl extends AbstractService<OperationDto, Operatio
 
     @Override
     public OperationDto getTechnologyPrice() {
-        log.info("Looking technology price in DB");
+        log.info("[{}] Поиск цены технолога in БД", getLogTag());
         return mapper.toDto(repository.findById(2L).orElseThrow(
-                () -> new EntityNotFoundException("There is no technology price in DB")));
+                () -> getEntityWithIdNotFoundException(2L)));
     }
 
     @Override
     public OperationDto updateTechnologyPrice(OperationDto price) {
-        log.info("Saving technology price into DB");
+        log.info("[{}] Сохранить цену технолога в БД", getLogTag());
         checkExistById(2L);
         price.setId(2L);
         return mapper.toDto(repository.save(mapper.toEntity(price)));

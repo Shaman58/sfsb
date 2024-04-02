@@ -12,6 +12,9 @@ import ru.erp.sfsb.service.ToolingService;
 
 import java.util.List;
 
+import static ru.erp.sfsb.LogTag.MEASURE_TOOL_SERVICE;
+import static ru.erp.sfsb.LogTag.TOOLING_SERVICE;
+
 @Service
 @Slf4j
 @Transactional
@@ -19,12 +22,12 @@ public class ToolingServiceImpl extends AbstractService<ToolingDto, Tooling, Too
         implements ToolingService {
 
     public ToolingServiceImpl(ToolingMapper mapper, ToolingRepository repository) {
-        super(mapper, repository, "Tooling");
+        super(mapper, repository, "Tooling", TOOLING_SERVICE);
     }
 
     @Override
     public List<ToolingDto> getByFilter(String filter, Pageable pageable) {
-        log.info("Looking all Toolings in DB by filter {}", filter);
+        log.info("[{}] Поиск всех сущностей типа {} в БД по фильтру {}", getLogTag(), getEntityName(), filter);
         return mapper.toDto(repository
                 .getAllByToolNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(filter, filter, pageable));
     }

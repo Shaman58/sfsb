@@ -7,9 +7,9 @@ import org.apache.poi.util.DocumentFormatException;
 import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.*;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRow;
+import ru.erp.sfsb.LogTag;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
@@ -21,34 +21,32 @@ import java.util.Map;
 public class DocxReportUtil {
 
     private final XWPFDocument doc;
+    private final static LogTag LOG_TAG = LogTag.DOCX_REPORT_UTIL;
 
     public DocxReportUtil(InputStream is) throws IOException {
         this.doc = new XWPFDocument(is);
     }
 
     public void save(ServletOutputStream fos) throws IOException {
-        this.doc.write(fos);
-    }
-
-    public void save(ByteArrayOutputStream fos) throws IOException {
+        log.info("[{}] Сохранение WordDocument", LOG_TAG);
         this.doc.write(fos);
     }
 
     public void generateCp(Map<String, String> company, List<Map<String, String>> itemList, Map<String, String> bodyData, byte[] image)
             throws IOException, InvalidFormatException {
-        log.info("WordDocumentUtil-generateKp");
+        log.info("[{}] Генерация отчета по заявке", LOG_TAG);
+        this.writeCompanyHeader(company);
+        this.addItemsTable(itemList, 1);
+        this.fillText(bodyData.get("body"), "body");
+        this.addImage(image);
         writeCompanyHeader(company);
-        log.info("WordDocumentUtil-writeCompanyHeader");
         addImage(image);
-        log.info("WordDocumentUtil-addImage");
         fillRun(bodyData);
-        log.info("WordDocumentUtil-fillRun");
         addItemsTable(itemList, 1);
-        log.info("WordDocumentUtil-addItemsTable");
     }
 
     public void generateToolOrder(List<Map<String, String>> tools, String header, String body, String footer) {
-        log.info("WordDocumentUtil-generateToolOrder");
+        log.info("[{}] Генерация отчета по инструментам", LOG_TAG);
         fillText(header, "[header]");
         fillText(body, "[body]");
         addItemsTable(tools, 0);
@@ -71,7 +69,8 @@ public class DocxReportUtil {
     private void addItemsTable(List<Map<String, String>> itemList, int tableNumber) {
         XWPFTable table = this.doc.getTables().get(tableNumber);
         var targetRowIndex = getTargetRowIndex(table, itemList.get(0).entrySet().stream().findFirst()
-                .orElseThrow(() -> new DocumentFormatException("Item list is empty"))
+                .orElseThrow(() -> new DocumentFormatException(
+                        String.format("[%s} Список инструментов не найден", LOG_TAG)))
                 .getKey());
         for (Map<String, String> item : itemList) {
             var row = new XWPFTableRow((CTRow) table.getRows().get(targetRowIndex).getCtRow().copy(), table);
@@ -95,7 +94,7 @@ public class DocxReportUtil {
                 }
             }
         }
-        throw new DocumentFormatException(String.format("%s is not found", text));
+        throw new DocumentFormatException(String.format("[%s] Метка %s не найдена", LOG_TAG, text));
     }
 
     private XWPFRun getTargetRun(String text) {
@@ -106,7 +105,7 @@ public class DocxReportUtil {
                 }
             }
         }
-        throw new DocumentFormatException(String.format("%s is not found", text));
+        throw new DocumentFormatException(String.format("[%s] Метка %s не найдена", LOG_TAG, text));
     }
 
     private void writeCompanyHeader(Map<String, String> companyMap) {
@@ -128,16 +127,14 @@ public class DocxReportUtil {
 
     private void addImage(byte[] file) {
         if (file != null) {
-            log.info("addImage1");
             var cell = this.doc.getTables().get(0).getRow(0).getCell(0);
             XWPFParagraph paragraph = cell.getParagraphs().get(0);
             XWPFRun run = paragraph.createRun();
             try {
                 var is = new ByteArrayInputStream(file);
                 run.addPicture(is, XWPFDocument.PICTURE_TYPE_PNG, "image.png", Units.toEMU(149), Units.toEMU(32));
-                log.info("addImage3");
             } catch (Exception e) {
-                log.info("image is not available!");
+                log.info("[{}] Изображение не загружено!", LOG_TAG);
             }
         }
     }

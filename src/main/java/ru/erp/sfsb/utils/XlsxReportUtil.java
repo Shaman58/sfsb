@@ -8,6 +8,7 @@ import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import ru.erp.sfsb.LogTag;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,16 +20,19 @@ public class XlsxReportUtil {
 
     private final XSSFWorkbook xls;
     private static final int MIN_LENGTH = 15;
+    private final static LogTag LOG_TAG = LogTag.XLSX_REPORT_UTIL;
 
     public XlsxReportUtil() throws IOException {
         this.xls = new XSSFWorkbook();
     }
 
     public void save(ServletOutputStream fos) throws IOException {
+        log.info("[{}] Сохранение Workbook файла", LOG_TAG);
         this.xls.write(fos);
     }
 
     public void fillXlsxDocument(List<List<String>> data) {
+        log.info("[{}] Заполнение документа", LOG_TAG);
         var sheet = xls.createSheet("Manufacturing Report");
         var cellStyle = getCellStyleBorder();
 

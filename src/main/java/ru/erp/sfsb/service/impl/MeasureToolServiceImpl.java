@@ -12,18 +12,20 @@ import ru.erp.sfsb.service.MeasureToolService;
 
 import java.util.List;
 
+import static ru.erp.sfsb.LogTag.MEASURE_TOOL_SERVICE;
+
 @Service
 @Slf4j
 @Transactional
 public class MeasureToolServiceImpl extends AbstractService<MeasureToolDto, MeasureTool, MeasureToolRepository, MeasureToolMapper> implements MeasureToolService {
 
     public MeasureToolServiceImpl(MeasureToolMapper mapper, MeasureToolRepository repository) {
-        super(mapper, repository, "Measure tool");
+        super(mapper, repository, "Measure tool", MEASURE_TOOL_SERVICE);
     }
 
     @Override
     public List<MeasureToolDto> getByFilter(String filter, Pageable pageable) {
-        log.info("Looking all Measure tools in DB by filter {}", filter);
+        log.info("[{}] Поиск всех сущностей типа {} в БД по фильтру {}", getLogTag(), getEntityName(), filter);
         return mapper.toDto(repository
                 .getAllByToolNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(filter, filter, pageable));
     }

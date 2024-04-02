@@ -15,6 +15,8 @@ import ru.erp.sfsb.service.UserService;
 
 import java.util.Objects;
 
+import static ru.erp.sfsb.LogTag.TECHNOLOGY_SERVICE;
+
 @Service
 @Transactional
 @Slf4j
@@ -24,13 +26,13 @@ public class TechnologyServiceImpl extends AbstractService<TechnologyDto, Techno
     private final UserService userService;
 
     public TechnologyServiceImpl(TechnologyMapper mapper, TechnologyRepository repository, UserService userService) {
-        super(mapper, repository, "Technology");
+        super(mapper, repository, "Technology", TECHNOLOGY_SERVICE);
         this.userService = userService;
     }
 
     @Override
     public TechnologyDto update(TechnologyDto dto, Jwt jwt) {
-        log.info("Saving Technology into DB");
+        log.info("[{}] Обновление сущности типа {} в БД", getLogTag(), getEntityName());
         var uuid = jwt.getClaim("sub").toString();
         var technology = get(dto.getId());
         checkUpdate(get(dto.getId()), uuid);
@@ -42,30 +44,28 @@ public class TechnologyServiceImpl extends AbstractService<TechnologyDto, Techno
 
     @Override
     public void block(Long id, Jwt jwt) {
-        log.info("Block technology with id={}", id);
+        log.info("[{}] Блокирование технологии с id={}", getLogTag(), id);
         var uuid = jwt.getClaim("sub").toString();
         var technology = get(id);
         checkBlocked(technology, uuid);
         technology.setBlocked(uuid);
         save(technology);
-        log.info("Blocked");
     }
 
     @Override
     public void unblock(Long id, Jwt jwt) {
-        log.info("Unblock technology with id={}", id);
+        log.info("[{}] Разблокирование технологии с id={}", getLogTag(), id);
         var uuid = jwt.getClaim("sub").toString();
         checkExistById(id);
         var technology = get(id);
         checkBlocked(technology, uuid);
         technology.setBlocked(null);
         save(technology);
-        log.info("Unblocked");
     }
 
     @Override
     public TechnologyDto setComputed(Long id, Jwt jwt, boolean isComputed) {
-        log.info("Set technology with id={} calculated {}", id, isComputed);
+        log.info("[{}] Установка флага isComputed у сушности типа {} c id={} {}", getEntityName(), getLogTag(), id, isComputed);
         var technology = get(id);
         var uuid = jwt.getClaim("sub").toString();
         checkUpdate(technology, uuid);
@@ -76,17 +76,20 @@ public class TechnologyServiceImpl extends AbstractService<TechnologyDto, Techno
 
     private void isTechnologyCanBeeComputed(TechnologyDto technology) {
         if (technology.getWorkpiece() == null) {
-            throw new ReportGenerateException("Нельзя пометить технологию без заготовки рассчитанной!");
+            throw new ReportGenerateException(
+                    String.format("[%s] Нельзя пометить технологию без заготовки рассчитанной!", getLogTag()));
         }
         if (technology.getSetups().size() == 0) {
-            throw new ReportGenerateException("Нельзя пометить технологию без установок рассчитанной!");
+            throw new ReportGenerateException(
+                    String.format("[%s] Нельзя пометить технологию без установок рассчитанной!", getLogTag()));
         }
     }
 
     private void checkUpdate(TechnologyDto technology, String uuid) {
         var status = technology.getBlocked();
         if (status == null) {
-            throw new EntityBlockException("Назначьте технологию себе в работу");
+            throw new EntityBlockException(
+                    String.format("[%s] Назначьте технологию себе в работу", getLogTag()));
         }
         checkBlocked(technology, uuid);
     }
@@ -96,7 +99,8 @@ public class TechnologyServiceImpl extends AbstractService<TechnologyDto, Techno
         var status = technology.getBlocked();
         if (status != null && !Objects.equals(status, uuid)) {
             var user = userService.get(status);
-            throw new EntityBlockException(String.format("Эта технология в работе у пользователя %s %s", user.getFirstName(), user.getLastName()));
+            throw new EntityBlockException(
+                    String.format("[%s] Эта технология в работе у пользователя %s %s", getLogTag(), user.getFirstName(), user.getLastName()));
         }
     }
 }

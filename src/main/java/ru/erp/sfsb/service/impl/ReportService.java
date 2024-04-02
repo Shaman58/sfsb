@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.springframework.stereotype.Service;
+import ru.erp.sfsb.LogTag;
 import ru.erp.sfsb.dto.*;
 import ru.erp.sfsb.exception.EntityNotFoundException;
 import ru.erp.sfsb.exception.EntityNullException;
@@ -45,12 +46,13 @@ public class ReportService {
     private final DurationRuCustomFormatter durationFormatter;
     private final UserService userService;
     private final FileServerUtil fileServerUtil;
-    private final CpStoreServerUtil cpStoreServerUtil;
+    private final CpStoreUtil cpStoreUtil;
+    private final static LogTag LOG_TAG = LogTag.REPORT_SERVICE;
 
     public void generateCp(Long orderId, Long companyId, HttpServletResponse response) {
-        log.info("Generating kp with order id {}", orderId);
+        log.info("[{}] Генерация компреда по ордеру с id {}", LOG_TAG, orderId);
         var order = orderService.get(orderId);
-        
+
         calculateOrder(order);
         try {
             var inputStream = getClass().getResourceAsStream("/kp-template.docx");
@@ -66,7 +68,6 @@ public class ReportService {
             var headerData = getCompanyMap(company);
             headerData.put("[app-number]", String.valueOf(order.getApplicationNumber()));
             byte[] image = getImage(company);
-            log.info("image was get");
             doc.generateCp(headerData, getItemList(order.getItems()), bodyData, image);
             response.setHeader("Content-Disposition", "attachment; filename=kp.docx");
             doc.save(response.getOutputStream());
@@ -76,7 +77,7 @@ public class ReportService {
     }
 
     public void generateCp(Map<String, String> bodyData, List<Map<String, String>> itemList, Long companyId, Long customerId, Long applicationNumber, HttpServletResponse response) {
-        log.info("ReportService {}, {}, {}", companyId, customerId, applicationNumber);
+        log.info("[{}] Генерация компреда по ордеру с cp-store", LOG_TAG);
         try {
             var inputStream = getClass().getResourceAsStream("/kp-template.docx");
             var doc = new DocxReportUtil(inputStream);
@@ -94,7 +95,7 @@ public class ReportService {
     }
 
     public void generateToolOrder(HttpServletResponse response, String fromEmployeeId, Long orderId, String body, Long companyId) {
-        log.info("Generate tool order report");
+        log.info("[{}] Генерация заказ наряда на инструмент по orderId {}", LOG_TAG, orderId);
         var order = orderService.get(orderId);
         calculateOrder(order);
         try {
@@ -116,6 +117,7 @@ public class ReportService {
     }
 
     public void sendCpToStore(Long orderId, Long companyId) {
+        log.info("[{}] Отправка компреда по ордеру с id {} в cp-store", LOG_TAG, orderId);
         var order = orderService.get(orderId);
         var bodyData = Map.of(
                 "[proposal]", order.getBusinessProposal(),
@@ -128,34 +130,36 @@ public class ReportService {
         var cp = new CommercialProposalDto();
         cp.setItemList(items);
         cp.setBodyData(bodyData);
-        cpStoreServerUtil.uploadCp(cp);
+        cpStoreUtil.uploadCp(cp);
     }
 
     private byte[] getImage(CompanyDto company) {
         byte[] image = null;
         if (company.getLogo() != null && company.getLogo().getLink() != null) {
-            log.debug("logo is not null");
             image = fileServerUtil.getFile(getLink(company.getLogo().getLink()))
                     .blockOptional()
-                    .orElseThrow(() -> new EntityNotFoundException("logo is not found"));
+                    .orElseThrow(() -> new EntityNotFoundException(
+                            String.format("[%s] Файл с идентификатором %s не найден", LOG_TAG, company.getLogo().getLink())));
         }
         return image;
     }
 
     private String getLink(String fullLink) {
         if (!fullLink.contains("=")) {
-            throw new EntityNullException("Logo is not available");
+            throw new EntityNullException(
+                    String.format("[%s] Ссылка должна содержать ключ=значение", LOG_TAG));
         }
         return fullLink.split("=")[1];
     }
 
     private void calculateOrder(OrderDto order) {
-        log.info("Calculate order");
+        log.info("[{}] Расчет стоимости заказа {}", LOG_TAG, order.getId());
         order.getItems().forEach(this::calculateItem);
     }
 
     private void calculateItem(ItemDto item) {
-        log.info("Calculate item {} {}", item.getTechnology().getDrawingName(), item.getTechnology().getDrawingNumber());
+        log.info("[{}] Расчет стоимости позиции {} {}", LOG_TAG, item.getTechnology().getDrawingName(),
+                item.getTechnology().getDrawingNumber());
         try {
             if (item.isCustomerMaterial() || item.getTechnology().isAssembly()) {
                 item.setPrice(calculateItemPrice(item));
@@ -166,12 +170,13 @@ public class ReportService {
             }
             itemService.update(item);
         } catch (Exception e) {
-            throw new ReportGenerateException(String.format("Расчет не удался, проверьте данные позиции %s %s", item.getTechnology().getDrawingName(), item.getTechnology().getDrawingNumber()));
+            throw new ReportGenerateException(
+                    String.format("[%s] Расчет не удался, проверьте данные позиции %s %s", LOG_TAG, item.getTechnology().getDrawingName(), item.getTechnology().getDrawingNumber()));
         }
     }
 
     public void generateManufacturingReport(HttpServletResponse response, Long orderId) {
-        log.info("Generate manufacturing report");
+        log.info("[{}] Генерация производственного отчета по ордеру с id {}", LOG_TAG, orderId);
         var order = orderService.get(orderId);
         calculateOrder(order);
         try {
@@ -186,7 +191,7 @@ public class ReportService {
     }
 
     public void generateOperationReport(HttpServletResponse response, Long orderId) {
-        log.info("Generate operation report");
+        log.info("[{}] Генерация операционного отчета по ордеру с id {}", LOG_TAG, orderId);
         var order = orderService.get(orderId);
         calculateOrder(order);
         try {
@@ -414,8 +419,8 @@ public class ReportService {
         var cutters = getToolList(getUniqueToolItems(getAllToolsFromOrderByType(order, CutterToolItemDto.class)));
         cutters.addAll(measurers);
         if (cutters.size() == 0) {
-            log.debug("This order has no any tools!");
-            throw new ReportGenerateException("В заявке отсутствуют инструменты");
+            throw new ReportGenerateException(
+                    String.format("[%s] В заявке отсутствуют инструменты", LOG_TAG));
         }
         return cutters;
     }
@@ -482,7 +487,8 @@ public class ReportService {
                 .getSetups().stream()
                 .map(setup -> calculateSetup(setup, item.getQuantity(), item.getTechnology().getQuantityOfPartsFromWorkpiece()))
                 .reduce(MonetaryAmount::add)
-                .orElseThrow(() -> new EntityNullException(String.format("Price of Item with id=%s is missed", item.getId())))
+                .orElseThrow(() -> new EntityNullException(
+                        String.format("[%s] Нет информации о стоимости инструмента с id=%s", LOG_TAG, item.getId())))
                 .add(operationService.getTechnologyPrice().getPaymentPerHour()
                         .divide(60 * 60 * 1000)
                         .multiply(item.getTechnology().getTechnologistTime().toMillis()))
@@ -498,8 +504,8 @@ public class ReportService {
             case FULL -> calculateSetupPrice_FULL(setup, itemQuantity, quantityOfPartsFromWorkpiece);
             case PROCESS_TIME_ONLY -> calculateSetupPrice_PROCESS_TIME_ONLY(setup, itemQuantity);
             case COMPUTED -> calculateSetupPrice_COMPUTED(setup, itemQuantity, quantityOfPartsFromWorkpiece);
-            case NONE ->
-                    throw new ReportGenerateException("Setup " + setup.getId() + " can not be NONE OperationTimeManagement");
+            case NONE -> throw new ReportGenerateException(
+                    String.format("[%s] Установка с id=%s не может иметь значение NONE в поле OperationTimeManagement", LOG_TAG, setup.getId()));
         };
         log.debug(setup.getSetupNumber() + " " + timePrice);
         return timePrice;
@@ -560,13 +566,9 @@ public class ReportService {
                 .divide(60 * 60 * 1000)
                 .multiply(setup.getSetupTime().toMillis());
         var additionalPrice = getAdditionalsMonetary(setup.getAdditionalTools());
-        log.debug("additional " + additionalPrice);
         var cuttersPrice = getToolsMonetary(setup.getCutterToolItems());
-        log.debug("cutter " + cuttersPrice);
         var measurersPrice = getToolsMonetary(setup.getMeasureToolItems());
-        log.debug("measure " + measurersPrice);
         var specialsPrice = getToolsMonetary(setup.getSpecialToolItems());
-        log.debug("spec " + specialsPrice);
         return productionPrice
                 .add(setupPrice)
                 .add(additionalPrice)
@@ -654,7 +656,6 @@ public class ReportService {
     }
 
     private Map<String, String> getOrderMap(List<ItemDto> items, Integer pos) {
-        log.info("getOrderMap");
         return Map.of(
                 "[no]", String.valueOf(pos + 1),
                 "[name]", items.get(pos).getTechnology().getDrawingName(),
@@ -676,7 +677,7 @@ public class ReportService {
     }
 
     private double getWorkpieceWeight(WorkpieceDto workpiece) {
-        var weight = switch (workpiece.getMaterial().getGeometry()) {
+        return switch (workpiece.getMaterial().getGeometry()) {
             case BLANK, LIST, SQUARE, TAPE ->
                     (((double) workpiece.getGeom1() * (double) workpiece.getGeom2() * (double) workpiece.getGeom3())) * (double) workpiece.getMaterial().getDensity() / 1000000000;
             case TUBE ->
@@ -687,7 +688,5 @@ public class ReportService {
                     2 * Math.sqrt(3) * pow((double) workpiece.getGeom1(), 2) * (double) workpiece.getGeom2() * (double) workpiece.getMaterial().getDensity() / 1000000000;
             case PROFILE, OTHER -> 0;
         };
-        log.debug("weight " + weight);
-        return weight;
     }
 }
