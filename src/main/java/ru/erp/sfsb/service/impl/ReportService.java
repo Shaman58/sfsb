@@ -7,23 +7,33 @@ import com.github.petrovich4j.Petrovich;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.springframework.stereotype.Service;
 import ru.erp.sfsb.LogTag;
 import ru.erp.sfsb.dto.*;
-import ru.erp.sfsb.exception.EntityNotFoundException;
+import ru.erp.sfsb.dto.request.OrderRequestData;
 import ru.erp.sfsb.exception.EntityNullException;
 import ru.erp.sfsb.exception.ReportGenerateException;
 import ru.erp.sfsb.model.OperationTimeManagement;
-import ru.erp.sfsb.service.*;
-import ru.erp.sfsb.utils.*;
+import ru.erp.sfsb.service.CompanyService;
+import ru.erp.sfsb.service.OperationService;
+import ru.erp.sfsb.service.OrderService;
+import ru.erp.sfsb.service.UserService;
+import ru.erp.sfsb.utils.CpStoreUtil;
+import ru.erp.sfsb.utils.DocxReportUtil;
+import ru.erp.sfsb.utils.DurationRuCustomFormatter;
+import ru.erp.sfsb.utils.XlsxReportUtil;
 
 import javax.money.Monetary;
 import javax.money.MonetaryAmount;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -38,66 +48,24 @@ import static java.util.stream.Collectors.toMap;
 public class ReportService {
 
     private final OrderService orderService;
-    private final ItemService itemService;
     private final OperationService operationService;
     private final CompanyService companyService;
-    private final CustomerService customerService;
     private final Petrovich petrovich;
     private final DurationRuCustomFormatter durationFormatter;
     private final UserService userService;
-    private final FileServerUtil fileServerUtil;
     private final CpStoreUtil cpStoreUtil;
     private final static LogTag LOG_TAG = LogTag.REPORT_SERVICE;
 
-    public void generateCp(Long orderId, Long companyId, HttpServletResponse response) {
+    public OrderRequestData generateCpData(Long orderId, Long companyId) {
         log.info("[{}] Генерация компреда по ордеру с id {}", LOG_TAG, orderId);
         var order = orderService.get(orderId);
-
-        calculateOrder(order);
-        try {
-            var inputStream = getClass().getResourceAsStream("/kp-template.docx");
-            var doc = new DocxReportUtil(inputStream);
-            var company = companyService.get(companyId);
-            var employee = String.format("%s %s",
-                    order.getUser().getFirstName(),
-                    order.getUser().getLastName());
-            var bodyData = Map.of(
-                    "[proposal]", order.getBusinessProposal(),
-                    "[manager]", employee
-            );
-            var headerData = getCompanyMap(company);
-            headerData.put("[app-number]", String.valueOf(order.getApplicationNumber()));
-            byte[] image = getImage(company);
-            doc.generateCp(headerData, getItemList(order.getItems()), bodyData, image);
-            response.setHeader("Content-Disposition", "attachment; filename=kp.docx");
-            doc.save(response.getOutputStream());
-        } catch (IOException | InvalidFormatException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void generateCp(Map<String, String> bodyData, List<Map<String, String>> itemList, Long companyId, Long customerId, Long applicationNumber, HttpServletResponse response) {
-        log.info("[{}] Генерация компреда по ордеру с cp-store", LOG_TAG);
-        try {
-            var inputStream = getClass().getResourceAsStream("/kp-template.docx");
-            var doc = new DocxReportUtil(inputStream);
-            var company = companyService.get(companyId);
-            var customer = customerService.get(customerId);
-            var headerData = getCompanyMap(company);
-            headerData.put("[app-number]", String.valueOf(applicationNumber));
-            byte[] image = getImage(company);
-            doc.generateCp(headerData, itemList, bodyData, image);
-            response.setHeader("Content-Disposition", "attachment; filename=kp.docx");
-            doc.save(response.getOutputStream());
-        } catch (IOException | InvalidFormatException e) {
-            throw new RuntimeException(e);
-        }
+        checkComputed(order);
+        return calculateOrderData(order, companyId);
     }
 
     public void generateToolOrder(HttpServletResponse response, String fromEmployeeId, Long orderId, String body, Long companyId) {
         log.info("[{}] Генерация заказ наряда на инструмент по orderId {}", LOG_TAG, orderId);
         var order = orderService.get(orderId);
-        calculateOrder(order);
         try {
             var inputStream = getClass().getResourceAsStream("/tool-order-template.docx");
             var doc = new DocxReportUtil(inputStream);
@@ -119,66 +87,14 @@ public class ReportService {
     public void sendCpToStore(Long orderId, Long companyId) {
         log.info("[{}] Отправка компреда по ордеру с id {} в cp-store", LOG_TAG, orderId);
         var order = orderService.get(orderId);
-        var bodyData = Map.of(
-                "[proposal]", order.getBusinessProposal(),
-                "[manager]", order.getUser().getId(),
-                "[app-number]", String.valueOf(order.getApplicationNumber()),
-                "[company-id]", String.valueOf(companyId),
-                "[customer-id]", String.valueOf(order.getCustomer().getId())
-        );
-        var items = getItemList(order.getItems());
-        var cp = new CommercialProposalDto();
-        cp.setItemList(items);
-        cp.setBodyData(bodyData);
-        cpStoreUtil.uploadCp(cp);
-    }
-
-    private byte[] getImage(CompanyDto company) {
-        byte[] image = null;
-        if (company.getLogo() != null && company.getLogo().getLink() != null) {
-            image = fileServerUtil.getFile(getLink(company.getLogo().getLink()))
-                    .blockOptional()
-                    .orElseThrow(() -> new EntityNotFoundException(
-                            String.format("[%s] Файл с идентификатором %s не найден", LOG_TAG, company.getLogo().getLink())));
-        }
-        return image;
-    }
-
-    private String getLink(String fullLink) {
-        if (!fullLink.contains("=")) {
-            throw new EntityNullException(
-                    String.format("[%s] Ссылка должна содержать ключ=значение", LOG_TAG));
-        }
-        return fullLink.split("=")[1];
-    }
-
-    private void calculateOrder(OrderDto order) {
-        log.info("[{}] Расчет стоимости заказа {}", LOG_TAG, order.getId());
-        order.getItems().forEach(this::calculateItem);
-    }
-
-    private void calculateItem(ItemDto item) {
-        log.info("[{}] Расчет стоимости позиции {} {}", LOG_TAG, item.getTechnology().getDrawingName(),
-                item.getTechnology().getDrawingNumber());
-        try {
-            if (item.isCustomerMaterial() || item.getTechnology().isAssembly()) {
-                item.setPrice(calculateItemPrice(item));
-            } else {
-                var materialPrice = getItemWorkpiecesPrice(item);
-                var itemPrice = calculateItemPrice(item);
-                item.setPrice(itemPrice.add(materialPrice));
-            }
-            itemService.update(item);
-        } catch (Exception e) {
-            throw new ReportGenerateException(
-                    String.format("[%s] Расчет не удался, проверьте данные позиции %s %s", LOG_TAG, item.getTechnology().getDrawingName(), item.getTechnology().getDrawingNumber()));
-        }
+        checkComputed(order);
+        var orderDto = calculateOrderData(order, companyId);
+        cpStoreUtil.uploadCp(orderDto);
     }
 
     public void generateManufacturingReport(HttpServletResponse response, Long orderId) {
         log.info("[{}] Генерация производственного отчета по ордеру с id {}", LOG_TAG, orderId);
         var order = orderService.get(orderId);
-        calculateOrder(order);
         try {
             var xls = new XlsxReportUtil();
             var data = getOrderManData(order);
@@ -193,7 +109,6 @@ public class ReportService {
     public void generateOperationReport(HttpServletResponse response, Long orderId) {
         log.info("[{}] Генерация операционного отчета по ордеру с id {}", LOG_TAG, orderId);
         var order = orderService.get(orderId);
-        calculateOrder(order);
         try {
             var xls = new XlsxReportUtil();
             var data = createOperationTable(order);
@@ -202,6 +117,57 @@ public class ReportService {
             xls.save(response.getOutputStream());
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void checkComputed(OrderDto order) {
+        var items = order.getItems().stream()
+                .filter(item -> !item.getTechnology().isComputed())
+                .map(item ->
+                        String.format("%s %s", item.getTechnology().getDrawingNumber(), item.getTechnology().getDrawingName()))
+                .toList();
+        if (items.size() > 0) {
+            throw new ReportGenerateException(
+                    String.format("[%s] Технологии %s не рассчитаны!", LOG_TAG, items));
+        }
+    }
+
+    private OrderRequestData calculateOrderData(OrderDto order, Long companyId) {
+        log.info("[{}] Расчет стоимости заказа {}", LOG_TAG, order.getId());
+        var items = order.getItems().stream()
+                .map(this::calculateItemData)
+                .toList();
+        return new OrderRequestData(
+                order.getApplicationNumber(),
+                order.getUser().getId(),
+                order.getBusinessProposal(),
+                companyId,
+                order.getCustomer().getId(),
+                items
+        );
+    }
+
+    private OrderRequestData.ItemRequestData calculateItemData(ItemDto item) {
+        log.info("[{}] Расчет стоимости позиции {} {}", LOG_TAG, item.getTechnology().getDrawingName(),
+                item.getTechnology().getDrawingNumber());
+        try {
+            MonetaryAmount computed;
+            if (item.isCustomerMaterial() || item.getTechnology().isAssembly()) {
+                computed = calculateItemPrice(item);
+            } else {
+                var materialPrice = getItemWorkpiecesPrice(item);
+                var itemPrice = calculateItemPrice(item);
+                computed = itemPrice.add(materialPrice);
+            }
+            return new OrderRequestData.ItemRequestData(
+                    item.getTechnology().getDrawingName(),
+                    item.getTechnology().getDrawingNumber(),
+                    item.getQuantity(),
+                    computed.divide(item.getQuantity())
+                            .getNumber().numberValue(BigDecimal.class).setScale(2, RoundingMode.HALF_UP));
+        } catch (Exception e) {
+            throw new ReportGenerateException(
+                    String.format("[%s] Расчет не удался, проверьте данные позиции %s %s", LOG_TAG, item.getTechnology().getDrawingName(), item.getTechnology().getDrawingNumber()));
         }
     }
 
@@ -631,39 +597,6 @@ public class ReportService {
         } else {
             return String.format("%s.", names[0].charAt(0));
         }
-    }
-
-    private Map<String, String> getCompanyMap(CompanyDto company) {
-        var map = new HashMap<String, String>();
-        map.put("[company_name]", company.getCompanyName());
-        map.put("[address]", company.getAddress());
-        map.put("[phone]", "тел: " + company.getPhoneNumber());
-        map.put("[email]", "e-mail: " + company.getEmail());
-        map.put("[inn]", "ИНН: " + company.getInn());
-        map.put("[kpp]", "КПП: " + company.getKpp());
-        map.put("[ogrn]", "ОГРН: " + company.getOgrn());
-        map.put("[payment_account]", "р/с: " + company.getPaymentAccount());
-        map.put("[bank]", company.getBank());
-        map.put("[correspondent_account]", "корсчет: " + company.getCorrespondentAccount());
-        map.put("[bik]", "БИК: " + company.getBik());
-        map.put("[kpp-inn-ogrn]", company.getKpp() + " "
-                + company.getInn() + " " + company.getOgrn());
-        return map;
-    }
-
-    private List<Map<String, String>> getItemList(List<ItemDto> items) {
-        return IntStream.range(0, items.size()).mapToObj(i -> getOrderMap(items, i)).collect(toList());
-    }
-
-    private Map<String, String> getOrderMap(List<ItemDto> items, Integer pos) {
-        return Map.of(
-                "[no]", String.valueOf(pos + 1),
-                "[name]", items.get(pos).getTechnology().getDrawingName(),
-                "[decimal]", String.valueOf(items.get(pos).getTechnology().getDrawingNumber()),
-                "[amount]", String.valueOf(items.get(pos).getQuantity()),
-                "[item-price]", items.get(pos).getPrice().divide(items.get(pos).getQuantity()).toString(),
-                "[total-price]", items.get(pos).getPrice().toString()
-        );
     }
 
     private MonetaryAmount getItemWorkpiecesPrice(ItemDto item) {

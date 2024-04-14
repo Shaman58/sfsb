@@ -37,7 +37,7 @@ public class DocxReportUtil {
         log.info("[{}] Генерация отчета по заявке", LOG_TAG);
         this.writeCompanyHeader(company);
         this.addItemsTable(itemList, 1);
-        this.fillText(bodyData.get("body"), "body");
+        this.fillText(bodyData.get("proposal"), "proposal");
         this.addImage(image);
         writeCompanyHeader(company);
         addImage(image);

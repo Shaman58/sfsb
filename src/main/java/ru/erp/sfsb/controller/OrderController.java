@@ -6,12 +6,9 @@ import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import ru.erp.sfsb.dto.OrderDto;
 import ru.erp.sfsb.service.OrderService;
-import ru.erp.sfsb.service.UserService;
 
 import java.util.List;
 
@@ -21,7 +18,6 @@ import java.util.List;
 public class OrderController {
 
     private final OrderService orderService;
-    private final UserService userService;
 
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
@@ -50,11 +46,7 @@ public class OrderController {
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping()
-    public OrderDto save(@RequestBody @Valid OrderDto orderDto,
-                         @AuthenticationPrincipal Jwt jwt) {
-        var uuid = jwt.getClaim("sub").toString();
-        var user = userService.get(uuid);
-        orderDto.setUser(user);
+    public OrderDto save(@RequestBody @Valid OrderDto orderDto) {
         return orderService.save(orderDto);
     }
 
@@ -62,12 +54,8 @@ public class OrderController {
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
     public OrderDto update(@RequestBody @Valid OrderDto orderDto,
-                           @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id,
-                           @AuthenticationPrincipal Jwt jwt) {
-        var uuid = jwt.getClaim("sub").toString();
-        var user = userService.get(uuid);
+                           @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         orderDto.setId(id);
-        orderDto.setUser(user);
         return orderService.update(orderDto);
     }
 

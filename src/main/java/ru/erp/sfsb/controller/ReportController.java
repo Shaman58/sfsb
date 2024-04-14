@@ -3,10 +3,11 @@ package ru.erp.sfsb.controller;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
-import ru.erp.sfsb.dto.CommercialProposalDto;
+import ru.erp.sfsb.dto.request.OrderRequestData;
 import ru.erp.sfsb.service.impl.ReportService;
 
 @Slf4j
@@ -17,30 +18,15 @@ public class ReportController {
 
     private final ReportService reportService;
 
-    @GetMapping("/kp")
-    public void getCp(HttpServletResponse response,
-                      @RequestParam(value = "orderId") Long orderId,
-                      @RequestParam(value = "companyId", required = false, defaultValue = "1") Long companyId) {
-        reportService.generateCp(orderId, companyId, response);
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/cp")
+    public OrderRequestData getCp(@RequestParam(value = "orderId") Long orderId,
+                                  @RequestParam(value = "companyId", required = false, defaultValue = "1") Long companyId) {
+        return reportService.generateCpData(orderId, companyId);
     }
 
-    @PostMapping("/kp/remote")
-    public void getCp(
-            HttpServletResponse response,
-            @RequestParam(value = "companyId") Long companyId,
-            @RequestParam(value = "customerId") Long customerId,
-            @RequestParam(value = "applicationNumber") Long applicationNumber,
-            @RequestBody CommercialProposalDto commercialProposal) {
-        reportService.generateCp(
-                commercialProposal.getBodyData(),
-                commercialProposal.getItemList(),
-                companyId,
-                customerId,
-                applicationNumber,
-                response);
-    }
-
-    @GetMapping("/kp/remote")
+    @GetMapping("/cp/remote")
     public void sendCp(
             @RequestParam(value = "orderId") Long orderId,
             @RequestParam(value = "companyId") Long companyId) {

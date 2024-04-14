@@ -3,13 +3,17 @@ package ru.erp.sfsb.service.impl;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import ru.erp.sfsb.dto.ItemDto;
 import ru.erp.sfsb.dto.OrderDto;
+import ru.erp.sfsb.dto.UserDto;
 import ru.erp.sfsb.mapper.OrderMapper;
 import ru.erp.sfsb.model.Order;
 import ru.erp.sfsb.repository.OrderRepository;
 import ru.erp.sfsb.service.OrderService;
+import ru.erp.sfsb.service.UserService;
 
 import java.util.List;
 
@@ -21,8 +25,11 @@ import static ru.erp.sfsb.LogTag.ORDER_SERVICE;
 public class OrderServiceImpl extends AbstractService<OrderDto, Order, OrderRepository, OrderMapper>
         implements OrderService {
 
-    public OrderServiceImpl(OrderMapper mapper, OrderRepository repository) {
+    private final UserService userService;
+
+    public OrderServiceImpl(OrderMapper mapper, OrderRepository repository, UserService userService) {
         super(mapper, repository, "Order", ORDER_SERVICE);
+        this.userService = userService;
     }
 
     @Override
@@ -33,6 +40,21 @@ public class OrderServiceImpl extends AbstractService<OrderDto, Order, OrderRepo
         ordersDto.forEach(order ->
                 order.setItems(filteredItems(order.getItems(), query)));
         return ordersDto;
+    }
+
+    @Override
+    public OrderDto save(OrderDto order) {
+        log.info("[{}] Сохранение сущности типа {} в БД", getLogTag(), getEntityName());
+        order.setUser(getAuthUser());
+        return mapper.toDto(repository.save(mapper.toEntity(order)));
+    }
+
+    @Override
+    public OrderDto update(OrderDto order) {
+        log.info("[{}] Обновление сущности типа {} в БД", getLogTag(), getEntityName());
+        checkExistById(order.getId());
+        order.setUser(getAuthUser());
+        return mapper.toDto(repository.save(mapper.toEntity(order)));
     }
 
     private List<ItemDto> filteredItems(List<ItemDto> items, String query) {
@@ -46,5 +68,12 @@ public class OrderServiceImpl extends AbstractService<OrderDto, Order, OrderRepo
             return items;
         }
         return filtered;
+    }
+
+    private UserDto getAuthUser() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var jwt = (Jwt) authentication.getPrincipal();
+        var uuid = jwt.getClaim("sub").toString();
+        return userService.get(uuid);
     }
 }

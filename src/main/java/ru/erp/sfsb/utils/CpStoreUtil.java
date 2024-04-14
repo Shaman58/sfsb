@@ -2,10 +2,13 @@ package ru.erp.sfsb.utils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 import ru.erp.sfsb.LogTag;
-import ru.erp.sfsb.dto.CommercialProposalDto;
+import ru.erp.sfsb.dto.request.OrderRequestData;
+import ru.erp.sfsb.exception.ReportGenerateException;
 
 @Slf4j
 @Component
@@ -20,12 +23,16 @@ public class CpStoreUtil {
         this.tokenSupplier = tokenSupplier;
     }
 
-    public void uploadCp(CommercialProposalDto cp) {
-        log.info("[{}] Выполняется выгрузка файла", LOG_TAG);
+    public void uploadCp(OrderRequestData order) {
+        log.info("[{}] Выполняется выгрузка КП", LOG_TAG);
         cpStoreWebClient.post()
                 .header("Authorization", "bearer " + tokenSupplier.getToken())
-                .bodyValue(cp)
+                .bodyValue(order)
                 .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError, response ->
+                        Mono.error(new ReportGenerateException(String.format("[%s] Сервер недоступен", LOG_TAG))))
+                .onStatus(HttpStatusCode::is5xxServerError, response ->
+                        Mono.error(new IllegalStateException(String.format("[%s] Ошибка сервера", LOG_TAG))))
                 .bodyToMono(String.class)
                 .subscribe(log::info);
     }
