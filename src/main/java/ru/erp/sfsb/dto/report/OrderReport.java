@@ -1,4 +1,4 @@
-package ru.erp.sfsb.dto.request;
+package ru.erp.sfsb.dto.report;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,18 +8,18 @@ import java.util.List;
 
 @AllArgsConstructor
 @Data
-public class OrderRequestData {
+public class OrderReport {
 
     private int applicationNumber;
     private String createdBy;
     private String businessProposal;
     private Long companyId;
     private Long customerId;
-    private List<ItemRequestData> items;
+    private List<ItemData> items;
 
     @AllArgsConstructor
     @Data
-    public static class ItemRequestData {
+    public static class ItemData {
         private String name;
         private String decimal;
         private int amount;

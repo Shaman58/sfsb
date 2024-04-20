@@ -23,8 +23,7 @@ public abstract class OrganizationDto extends AbstractDto {
     private String bank;
     private String bik;
     private String correspondentAccount;
-    @Pattern(regexp = "^\\+?[78][-(]?\\d{3}\\)?-?\\d{3}-?\\d{2}-?\\d{2}$")
     private String phoneNumber;
-    @Pattern(regexp = "^\\w+([.-]?\\w+)*@\\w+([.-]?\\w+)*(\\.\\w{2,3})+$")
+    @Pattern(regexp = "^\\w+([.-]?\\w+)*@\\w+([.-]?\\w+)*(\\.\\w{2,4})+$")
     private String email;
 }

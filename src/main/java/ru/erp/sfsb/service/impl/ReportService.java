@@ -4,14 +4,16 @@ import com.github.petrovich4j.Case;
 import com.github.petrovich4j.Gender;
 import com.github.petrovich4j.NameType;
 import com.github.petrovich4j.Petrovich;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import ru.erp.sfsb.LogTag;
 import ru.erp.sfsb.dto.*;
-import ru.erp.sfsb.dto.request.OrderRequestData;
+import ru.erp.sfsb.dto.report.OrderReport;
+import ru.erp.sfsb.dto.report.ToolsReport;
 import ru.erp.sfsb.exception.EntityNullException;
+import ru.erp.sfsb.exception.FileReadException;
 import ru.erp.sfsb.exception.ReportGenerateException;
 import ru.erp.sfsb.model.OperationTimeManagement;
 import ru.erp.sfsb.service.CompanyService;
@@ -19,7 +21,6 @@ import ru.erp.sfsb.service.OperationService;
 import ru.erp.sfsb.service.OrderService;
 import ru.erp.sfsb.service.UserService;
 import ru.erp.sfsb.utils.CpStoreUtil;
-import ru.erp.sfsb.utils.DocxReportUtil;
 import ru.erp.sfsb.utils.DurationRuCustomFormatter;
 import ru.erp.sfsb.utils.XlsxReportUtil;
 
@@ -28,7 +29,10 @@ import javax.money.MonetaryAmount;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,32 +60,30 @@ public class ReportService {
     private final CpStoreUtil cpStoreUtil;
     private final static LogTag LOG_TAG = LogTag.REPORT_SERVICE;
 
-    public OrderRequestData generateCpData(Long orderId, Long companyId) {
+    public OrderReport generateCpData(Long orderId, Long companyId) {
         log.info("[{}] Генерация компреда по ордеру с id {}", LOG_TAG, orderId);
         var order = orderService.get(orderId);
         checkComputed(order);
         return calculateOrderData(order, companyId);
     }
 
-    public void generateToolOrder(HttpServletResponse response, String fromEmployeeId, Long orderId, String body, Long companyId) {
+    public ToolsReport generateToolOrder(String fromEmployeeId, Long orderId, String body, Long companyId) {
         log.info("[{}] Генерация заказ наряда на инструмент по orderId {}", LOG_TAG, orderId);
         var order = orderService.get(orderId);
-        try {
-            var inputStream = getClass().getResourceAsStream("/tool-order-template.docx");
-            var doc = new DocxReportUtil(inputStream);
-            var fromEmployee = userService.get(fromEmployeeId);
-            var companyName = companyService.get(companyId).getCompanyName();
-            var headerData = getHeaderFromEmployees(fromEmployee, companyName);
-            if (Objects.equals(body, null)) {
-                body = "Прошу Вас, разрешить отделу снабжения приобрести следующие позиции:";
-            }
-            var footer = getFooterFromEmployee(fromEmployee);
-            doc.generateToolOrder(getAllToolsFromOrder(order), headerData, body, footer);
-            response.setHeader("Content-Disposition", "attachment; filename=tool-order.docx");
-            doc.save(response.getOutputStream());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+
+        var fromEmployee = userService.get(fromEmployeeId);
+        var companyName = companyService.get(companyId).getCompanyName();
+        var headerData = getHeaderFromEmployees(fromEmployee, companyName);
+        if (Objects.equals(body, null)) {
+            body = "Прошу Вас, разрешить отделу снабжения приобрести следующие позиции:";
         }
+        var footer = getFooterFromEmployee(fromEmployee);
+        return new ToolsReport(
+                headerData,
+                body,
+                footer,
+                getAllToolsFromOrder(order)
+        );
     }
 
     public void sendCpToStore(Long orderId, Long companyId) {
@@ -92,32 +94,37 @@ public class ReportService {
         cpStoreUtil.uploadCp(orderDto);
     }
 
-    public void generateManufacturingReport(HttpServletResponse response, Long orderId) {
-        log.info("[{}] Генерация производственного отчета по ордеру с id {}", LOG_TAG, orderId);
+    public ResponseEntity<byte[]> generateOperationReport(Long orderId) {
+        log.info("[{}] Генерация операционного отчета по ордеру с id {}", LOG_TAG, orderId);
         var order = orderService.get(orderId);
         try {
-            var xls = new XlsxReportUtil();
-            var data = getOrderManData(order);
-            xls.fillXlsxDocument(data);
-            response.setHeader("Content-Disposition", "attachment; filename=manufacturing-report.xlsx");
-            xls.save(response.getOutputStream());
+            var data = createOperationTable(order);
+            return getResponseEntity(order, data, "операционный отчет");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void generateOperationReport(HttpServletResponse response, Long orderId) {
-        log.info("[{}] Генерация операционного отчета по ордеру с id {}", LOG_TAG, orderId);
+    public ResponseEntity<byte[]> generateManufacturingReport(Long orderId) {
+        log.info("[{}] Генерация производственного отчета по ордеру с id {}", LOG_TAG, orderId);
         var order = orderService.get(orderId);
         try {
-            var xls = new XlsxReportUtil();
-            var data = createOperationTable(order);
-            xls.fillXlsxDocument(data);
-            response.setHeader("Content-Disposition", "attachment; filename=manufacturing-report.xlsx");
-            xls.save(response.getOutputStream());
+            var data = getOrderManData(order);
+            return getResponseEntity(order, data, "производственного отчет");
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new FileReadException("Не удалось скачать файл. Ошибка записи файла в ответ");
         }
+    }
+
+    private ResponseEntity<byte[]> getResponseEntity(OrderDto order, List<List<String>> data, String reportName) throws IOException {
+        var bytes = XlsxReportUtil.saveToFile(data);
+        var date = ZonedDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"));
+        var filename = String.format("%s №%s от %s.xlsx", reportName, order.getApplicationNumber(), date);
+        var headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDisposition(
+                ContentDisposition.builder("attachment").filename(filename, StandardCharsets.UTF_8).build());
+        return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
     }
 
     private void checkComputed(OrderDto order) {
@@ -132,12 +139,12 @@ public class ReportService {
         }
     }
 
-    private OrderRequestData calculateOrderData(OrderDto order, Long companyId) {
+    private OrderReport calculateOrderData(OrderDto order, Long companyId) {
         log.info("[{}] Расчет стоимости заказа {}", LOG_TAG, order.getId());
         var items = order.getItems().stream()
                 .map(this::calculateItemData)
                 .toList();
-        return new OrderRequestData(
+        return new OrderReport(
                 order.getApplicationNumber(),
                 order.getUser().getId(),
                 order.getBusinessProposal(),
@@ -147,7 +154,7 @@ public class ReportService {
         );
     }
 
-    private OrderRequestData.ItemRequestData calculateItemData(ItemDto item) {
+    private OrderReport.ItemData calculateItemData(ItemDto item) {
         log.info("[{}] Расчет стоимости позиции {} {}", LOG_TAG, item.getTechnology().getDrawingName(),
                 item.getTechnology().getDrawingNumber());
         try {
@@ -159,7 +166,7 @@ public class ReportService {
                 var itemPrice = calculateItemPrice(item);
                 computed = itemPrice.add(materialPrice);
             }
-            return new OrderRequestData.ItemRequestData(
+            return new OrderReport.ItemData(
                     item.getTechnology().getDrawingName(),
                     item.getTechnology().getDrawingNumber(),
                     item.getQuantity(),
@@ -380,7 +387,7 @@ public class ReportService {
         );
     }
 
-    private List<Map<String, String>> getAllToolsFromOrder(OrderDto order) {
+    private List<ToolsReport.ToolData> getAllToolsFromOrder(OrderDto order) {
         var measurers = getToolList(getUniqueToolItems(getAllToolsFromOrderByType(order, MeasureToolItemDto.class)));
         var cutters = getToolList(getUniqueToolItems(getAllToolsFromOrderByType(order, CutterToolItemDto.class)));
         cutters.addAll(measurers);
@@ -391,17 +398,16 @@ public class ReportService {
         return cutters;
     }
 
-    private List<Map<String, String>> getToolList(List<? extends ToolItemDto> tools) {
-        return IntStream.range(0, tools.size()).mapToObj(i -> getToolMap(tools, i)).collect(toList());
+    private List<ToolsReport.ToolData> getToolList(List<? extends ToolItemDto> tools) {
+        return tools.stream().map(this::getToolMap).collect(toList());
     }
 
-    private Map<String, String> getToolMap(List<? extends ToolItemDto> tools, Integer pos) {
-        return Map.of(
-                "[no]", String.valueOf(pos + 1),
-                "[name]", tools.get(pos).getTool().getToolName(),
-                "[description]", tools.get(pos).getTool().getDescription(),
-                "[amount]", String.valueOf(tools.get(pos).getAmount()),
-                "[tool-price]", tools.get(pos).getPrice().toString()
+    private ToolsReport.ToolData getToolMap(ToolItemDto tool) {
+        return new ToolsReport.ToolData(
+                tool.getTool().getToolName(),
+                tool.getTool().getDescription(),
+                tool.getAmount(),
+                tool.getPrice().getNumber().numberValue(BigDecimal.class).setScale(2, RoundingMode.HALF_UP)
         );
     }
 

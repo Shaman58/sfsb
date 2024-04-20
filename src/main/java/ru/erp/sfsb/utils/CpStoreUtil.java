@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import ru.erp.sfsb.LogTag;
-import ru.erp.sfsb.dto.request.OrderRequestData;
+import ru.erp.sfsb.dto.report.OrderReport;
 import ru.erp.sfsb.exception.ReportGenerateException;
 
 @Slf4j
@@ -23,7 +23,7 @@ public class CpStoreUtil {
         this.tokenSupplier = tokenSupplier;
     }
 
-    public void uploadCp(OrderRequestData order) {
+    public void uploadCp(OrderReport order) {
         log.info("[{}] Выполняется выгрузка КП", LOG_TAG);
         cpStoreWebClient.post()
                 .header("Authorization", "bearer " + tokenSupplier.getToken())
