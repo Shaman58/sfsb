@@ -118,7 +118,7 @@ public class ReportService {
 
     private ResponseEntity<byte[]> getResponseEntity(OrderDto order, List<List<String>> data, String reportName) throws IOException {
         var bytes = XlsxReportUtil.saveToFile(data);
-        var date = ZonedDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"));
+        var date = ZonedDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH-mm"));
         var filename = String.format("%s №%s от %s.xlsx", reportName, order.getApplicationNumber(), date);
         var headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
