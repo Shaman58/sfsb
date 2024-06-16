@@ -48,7 +48,7 @@ public abstract class AbstractService
 
     @Override
     public D get(Long id) {
-        log.info("[{}] Поиск сушности типа {} с id={} в БД", logTag, entityName, id);
+        log.info("[{}] Поиск сущности типа {} с id={} в БД", logTag, entityName, id);
         return mapper.toDto((repository.findById(id).orElseThrow(
                 () -> getEntityWithIdNotFoundException(id))));
     }
