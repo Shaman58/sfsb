@@ -31,6 +31,8 @@ public abstract class AbstractEntity implements Serializable {
     @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime updated;
+    @Column(name = "deleted")
+    private boolean deleted;
 
     @PrePersist
     private void toCreate() {

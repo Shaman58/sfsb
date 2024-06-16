@@ -9,7 +9,7 @@ import ru.erp.sfsb.exception.EntityBlockException;
 import ru.erp.sfsb.exception.ReportGenerateException;
 import ru.erp.sfsb.mapper.TechnologyMapper;
 import ru.erp.sfsb.model.Technology;
-import ru.erp.sfsb.repository.TechnologyRepository;
+import ru.erp.sfsb.repository.repos.TechnologyEntityRepository;
 import ru.erp.sfsb.service.TechnologyService;
 import ru.erp.sfsb.service.UserService;
 
@@ -20,12 +20,12 @@ import static ru.erp.sfsb.LogTag.TECHNOLOGY_SERVICE;
 @Service
 @Transactional
 @Slf4j
-public class TechnologyServiceImpl extends AbstractService<TechnologyDto, Technology, TechnologyRepository, TechnologyMapper>
+public class TechnologyServiceImpl extends AbstractService<TechnologyDto, Technology, TechnologyEntityRepository, TechnologyMapper>
         implements TechnologyService {
 
     private final UserService userService;
 
-    public TechnologyServiceImpl(TechnologyMapper mapper, TechnologyRepository repository, UserService userService) {
+    public TechnologyServiceImpl(TechnologyMapper mapper, TechnologyEntityRepository repository, UserService userService) {
         super(mapper, repository, "Technology", TECHNOLOGY_SERVICE);
         this.userService = userService;
     }

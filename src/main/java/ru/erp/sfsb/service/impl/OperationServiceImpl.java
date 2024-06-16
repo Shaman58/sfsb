@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.erp.sfsb.dto.OperationDto;
 import ru.erp.sfsb.mapper.OperationMapper;
 import ru.erp.sfsb.model.Operation;
-import ru.erp.sfsb.repository.OperationRepository;
+import ru.erp.sfsb.repository.repos.OperationEntityRepository;
 import ru.erp.sfsb.service.OperationService;
 
 import java.util.List;
@@ -17,10 +17,10 @@ import static ru.erp.sfsb.LogTag.OPERATION_SERVICE;
 @Service
 @Slf4j
 @Transactional
-public class OperationServiceImpl extends AbstractService<OperationDto, Operation, OperationRepository, OperationMapper>
+public class OperationServiceImpl extends AbstractService<OperationDto, Operation, OperationEntityRepository, OperationMapper>
         implements OperationService {
 
-    public OperationServiceImpl(OperationMapper mapper, OperationRepository repository) {
+    public OperationServiceImpl(OperationMapper mapper, OperationEntityRepository repository) {
         super(mapper, repository, "Operation", OPERATION_SERVICE);
     }
 

@@ -9,7 +9,7 @@ import ru.erp.sfsb.dto.FileDto;
 import ru.erp.sfsb.exception.FileReadException;
 import ru.erp.sfsb.mapper.FileMapper;
 import ru.erp.sfsb.model.File;
-import ru.erp.sfsb.repository.FileRepository;
+import ru.erp.sfsb.repository.repos.FileEntityRepository;
 import ru.erp.sfsb.service.CompanyService;
 import ru.erp.sfsb.service.FileService;
 import ru.erp.sfsb.service.OrderService;
@@ -25,17 +25,17 @@ import static ru.erp.sfsb.LogTag.FILE_SERVICE;
 @Service
 @Transactional
 @Slf4j
-public class FileServiceImpl extends AbstractService<FileDto, File, FileRepository, FileMapper>
+public class FileServiceImpl extends AbstractService<FileDto, File, FileEntityRepository, FileMapper>
         implements FileService {
 
     private final FileServerUtil fileServerUtil;
-    private final FileRepository fileRepository;
+    private final FileEntityRepository fileRepository;
     private final FileMapper mapper;
     private final OrderService orderService;
     private final UserService userService;
     private final CompanyService companyService;
 
-    public FileServiceImpl(FileMapper mapper, FileRepository repository, FileServerUtil fileServerUtil, FileRepository fileRepository, OrderService orderService, UserService userService, CompanyService companyService) {
+    public FileServiceImpl(FileMapper mapper, FileEntityRepository repository, FileServerUtil fileServerUtil, FileEntityRepository fileRepository, OrderService orderService, UserService userService, CompanyService companyService) {
         super(mapper, repository, "File", FILE_SERVICE);
         this.fileServerUtil = fileServerUtil;
         this.fileRepository = fileRepository;

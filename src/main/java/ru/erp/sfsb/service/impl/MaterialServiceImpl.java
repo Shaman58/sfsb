@@ -10,7 +10,7 @@ import ru.erp.sfsb.dto.MaterialDto;
 import ru.erp.sfsb.mapper.MaterialMapper;
 import ru.erp.sfsb.model.Geometry;
 import ru.erp.sfsb.model.Material;
-import ru.erp.sfsb.repository.MaterialRepository;
+import ru.erp.sfsb.repository.repos.MaterialEntityRepository;
 import ru.erp.sfsb.service.MaterialService;
 
 import java.time.LocalDateTime;
@@ -22,10 +22,10 @@ import static ru.erp.sfsb.LogTag.MATERIAL_SERVICE;
 @Service
 @Transactional
 @Slf4j
-public class MaterialServiceImpl extends AbstractService<MaterialDto, Material, MaterialRepository, MaterialMapper>
+public class MaterialServiceImpl extends AbstractService<MaterialDto, Material, MaterialEntityRepository, MaterialMapper>
         implements MaterialService {
 
-    public MaterialServiceImpl(MaterialMapper mapper, MaterialRepository repository) {
+    public MaterialServiceImpl(MaterialMapper mapper, MaterialEntityRepository repository) {
         super(mapper, repository, "Material", MATERIAL_SERVICE);
     }
 
@@ -33,7 +33,7 @@ public class MaterialServiceImpl extends AbstractService<MaterialDto, Material, 
     public List<MaterialDto> getMaterialWithoutPrice() {
         log.info("[{}] Поиск всех сущностей типа {} без цены в БД", getLogTag(), getEntityName());
         var money = Money.of(0, "RUB");
-        return repository.findMaterialByPriceIsOrPriceBefore(money, money).stream()
+        return repository.findMaterialByPriceIsAndDeletedIsFalseOrPriceBeforeAndDeletedIsFalse(money, money).stream()
                 .map(material -> mapper.toDto(material))
                 .toList();
     }
@@ -41,7 +41,7 @@ public class MaterialServiceImpl extends AbstractService<MaterialDto, Material, 
     @Override
     public List<MaterialDto> getMaterialWithExpiredDate() {
         log.info("[{}] Поиск всех сущностей типа {} с истекшей датой в БД", getLogTag(), getEntityName());
-        return repository.findMaterialByUpdatedBeforeOrUpdatedIsNull(LocalDateTime.now().minus(1, ChronoUnit.MONTHS)).stream()
+        return repository.findMaterialByUpdatedBeforeAndDeletedIsFalseOrUpdatedIsNullAndDeletedIsFalse(LocalDateTime.now().minus(1, ChronoUnit.MONTHS)).stream()
                 .map(material -> mapper.toDto(material))
                 .toList();
     }
@@ -67,11 +67,11 @@ public class MaterialServiceImpl extends AbstractService<MaterialDto, Material, 
         Page<Material> page;
         if (geometry != null) {
             page = repository
-                    .getAllByMaterialNameContainingIgnoreCaseAndGeometryEqualsOrGost1ContainingIgnoreCaseAndGeometryEqualsOrGost2ContainingIgnoreCaseAndGeometryEquals(
+                    .getAllByMaterialNameContainingIgnoreCaseAndGeometryEqualsAndDeletedIsFalseOrGost1ContainingIgnoreCaseAndGeometryEqualsAndDeletedIsFalseOrGost2ContainingIgnoreCaseAndGeometryEqualsAndDeletedIsFalse(
                             filter, geometry, filter, geometry, filter, geometry, pageable);
         } else {
             page = repository
-                    .getAllByMaterialNameContainingIgnoreCaseOrGost1ContainingIgnoreCaseOrGost2ContainingIgnoreCase(
+                    .getAllByMaterialNameContainingIgnoreCaseAndDeletedIsFalseOrGost1ContainingIgnoreCaseAndDeletedIsFalseOrGost2ContainingIgnoreCaseAndDeletedIsFalse(
                             filter, filter, filter, pageable);
         }
 //        return new PageImpl<>(mapper.toDto(page.getContent()), page.getPageable(), page.getTotalElements());

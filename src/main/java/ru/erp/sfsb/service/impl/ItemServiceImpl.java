@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.erp.sfsb.dto.ItemDto;
 import ru.erp.sfsb.mapper.ItemMapper;
 import ru.erp.sfsb.model.Item;
-import ru.erp.sfsb.repository.ItemRepository;
+import ru.erp.sfsb.repository.repos.ItemEntityRepository;
 import ru.erp.sfsb.service.ItemService;
 
 import java.util.List;
@@ -17,10 +17,10 @@ import static ru.erp.sfsb.LogTag.ITEM_SERVICE;
 @Service
 @Slf4j
 @Transactional
-public class ItemServiceImpl extends AbstractService<ItemDto, Item, ItemRepository, ItemMapper>
+public class ItemServiceImpl extends AbstractService<ItemDto, Item, ItemEntityRepository, ItemMapper>
         implements ItemService {
 
-    public ItemServiceImpl(ItemMapper mapper, ItemRepository repository) {
+    public ItemServiceImpl(ItemMapper mapper, ItemEntityRepository repository) {
         super(mapper, repository, "Item", ITEM_SERVICE);
         this.repository = repository;
     }

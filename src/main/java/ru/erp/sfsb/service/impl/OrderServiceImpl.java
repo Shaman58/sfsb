@@ -11,7 +11,7 @@ import ru.erp.sfsb.dto.OrderDto;
 import ru.erp.sfsb.dto.UserDto;
 import ru.erp.sfsb.mapper.OrderMapper;
 import ru.erp.sfsb.model.Order;
-import ru.erp.sfsb.repository.OrderRepository;
+import ru.erp.sfsb.repository.repos.OrderEntityRepository;
 import ru.erp.sfsb.service.OrderService;
 import ru.erp.sfsb.service.UserService;
 
@@ -22,12 +22,12 @@ import static ru.erp.sfsb.LogTag.ORDER_SERVICE;
 @Service
 @Transactional
 @Slf4j
-public class OrderServiceImpl extends AbstractService<OrderDto, Order, OrderRepository, OrderMapper>
+public class OrderServiceImpl extends AbstractService<OrderDto, Order, OrderEntityRepository, OrderMapper>
         implements OrderService {
 
     private final UserService userService;
 
-    public OrderServiceImpl(OrderMapper mapper, OrderRepository repository, UserService userService) {
+    public OrderServiceImpl(OrderMapper mapper, OrderEntityRepository repository, UserService userService) {
         super(mapper, repository, "Order", ORDER_SERVICE);
         this.userService = userService;
     }

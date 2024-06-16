@@ -3,12 +3,12 @@ package ru.erp.sfsb.service.impl;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
 import ru.erp.sfsb.LogTag;
 import ru.erp.sfsb.dto.AbstractDto;
 import ru.erp.sfsb.exception.EntityNotFoundException;
 import ru.erp.sfsb.mapper.Mapper;
 import ru.erp.sfsb.model.AbstractEntity;
+import ru.erp.sfsb.repository.EntityRepository;
 import ru.erp.sfsb.service.Service;
 
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.List;
 @Slf4j
 @Getter
 public abstract class AbstractService
-        <D extends AbstractDto, E extends AbstractEntity, R extends JpaRepository<E, Long>, M extends Mapper<E, D>>
+        <D extends AbstractDto, E extends AbstractEntity, R extends EntityRepository<E>, M extends Mapper<E, D>>
         implements Service<D> {
 
     M mapper;
@@ -35,14 +35,14 @@ public abstract class AbstractService
     @Override
     public List<D> getAll() {
         log.info("[{}] Поиск всех сущностей типа {} в БД", logTag, entityName);
-        var entities = repository.findAll();
+        var entities = repository.findAllByDeletedIsFalse();
         return mapper.toDto(entities);
     }
 
     @Override
     public List<D> getAll(Pageable pageable) {
         log.info("[{}] Поиск всех сущностей типа {} в БД постранично", logTag, entityName);
-        var entities = repository.findAll(pageable);
+        var entities = repository.findAllByDeletedIsFalse(pageable);
         return mapper.toDto(entities.stream().toList());
     }
 
@@ -70,7 +70,11 @@ public abstract class AbstractService
     public void delete(Long id) {
         log.info("[{}] Удаление сущности типа {} с id={} из БД", logTag, entityName, id);
         checkExistById(id);
-        repository.deleteById(id);
+        repository.setDeletedById(id);
+//        E entity = repository.findById(id).orElseThrow(
+//                () -> getEntityWithIdNotFoundException(id));
+//        entity.setDeleted(true);
+//        repository.save(entity);
     }
 
     protected void checkExistById(Long id) {

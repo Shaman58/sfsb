@@ -1,0 +1,26 @@
+ALTER TABLE additionals
+    ADD deleted boolean;
+ALTER TABLE companies
+    ADD deleted boolean;
+ALTER TABLE files
+    ADD deleted boolean;
+ALTER TABLE items
+    ADD deleted boolean;
+ALTER TABLE material_density_templates
+    ADD deleted boolean;
+ALTER TABLE materials
+    ADD deleted boolean;
+ALTER TABLE operations
+    ADD deleted boolean;
+ALTER TABLE orders
+    ADD deleted boolean;
+ALTER TABLE setups
+    ADD deleted boolean;
+ALTER TABLE technologies
+    ADD deleted boolean;
+ALTER TABLE tools
+    ADD deleted boolean;
+ALTER TABLE workpieces
+    ADD deleted boolean;
+ALTER TABLE tool_items
+    ADD deleted boolean;
