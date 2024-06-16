@@ -71,10 +71,6 @@ public abstract class AbstractService
         log.info("[{}] Удаление сущности типа {} с id={} из БД", logTag, entityName, id);
         checkExistById(id);
         repository.setDeletedById(id);
-//        E entity = repository.findById(id).orElseThrow(
-//                () -> getEntityWithIdNotFoundException(id));
-//        entity.setDeleted(true);
-//        repository.save(entity);
     }
 
     protected void checkExistById(Long id) {

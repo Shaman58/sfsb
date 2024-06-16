@@ -20,7 +20,8 @@ public interface OrderEntityRepository extends EntityRepository<Order> {
                          o.business_proposal,
                          o.description,
                          o.customer_id,
-                         o.user_uuid
+                         o.user_uuid,
+                         o.deleted
                   FROM orders o
                            INNER JOIN items i ON i.order_id = o.id AND i.deleted = false
                            INNER JOIN technologies t ON i.technology_id = t.id AND t.deleted = false
@@ -35,7 +36,8 @@ public interface OrderEntityRepository extends EntityRepository<Order> {
                          o.business_proposal,
                          o.description,
                          o.customer_id,
-                         o.user_uuid
+                         o.user_uuid,
+                         o.deleted
                   FROM orders o
                   WHERE CAST(o.application_number AS text) ILIKE CONCAT('%', :query, '%') AND o.deleted = false) AS combined_results
             ORDER BY application_number
