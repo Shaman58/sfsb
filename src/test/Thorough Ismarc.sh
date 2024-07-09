@@ -1,0 +1,1 @@
+sshpass -p 'p*ko%0UsjCs2' ssh root@31.129.97.108

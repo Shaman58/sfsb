@@ -1,0 +1,1 @@
+sshpass -p '5maPBu3YW%p*' ssh root@193.168.46.18
