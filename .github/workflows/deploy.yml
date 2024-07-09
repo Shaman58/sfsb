@@ -19,8 +19,9 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
           script: |
-            cd /home/action_test/release/actions-test
+            cd /home/sfsb_test/sfsb
             git pull
             ./mvnw package
+            cd /home/sfsb_test/sfsb/src/test
             docker-compose build    
             docker-compose up -d
