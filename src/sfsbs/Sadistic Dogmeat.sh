@@ -1,1 +1,1 @@
-sshpass -p 'WbQS%VE7X3A0' ssh root@193.168.49.253
+sshpass -p '%HKu%r5fTt3R' ssh root@193.168.49.253
