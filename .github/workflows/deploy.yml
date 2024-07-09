@@ -1,0 +1,26 @@
+name: sfsb test deploy
+
+on:
+  push:
+    branches: [ "deploy/test" ]
+  pull_request:
+    branches: [ "deploy/test" ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: deploy release
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd /home/action_test/release/actions-test
+            git pull
+            ./mvnw package
+            docker-compose build    
+            docker-compose up -d

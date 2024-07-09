@@ -1,0 +1,31 @@
+version: '3.9'
+
+services:
+
+  db:
+    image: postgres
+    restart: always
+    volumes:
+      - ./db-data:/data/db
+    environment:
+      POSTGRES_USER: sfsb
+      POSTGRES_PASSWORD: gFNQkM
+      POSTGRES_DB: sfsb
+      PGDATA: "/data/db"
+    healthcheck:
+      test: pg_isready -d sfsb -U sfsb
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+  sfsb:
+    image: shaman58/sfsb:0.2.1
+    env_file:
+      - .env
+    restart: always
+    ports:
+      - "9000:9000"
+    depends_on:
+      db:
+        condition: service_healthy
