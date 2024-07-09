@@ -14,9 +14,9 @@ jobs:
       - name: deploy release
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.HOST }}
+          host: ${{ secrets.TEST_HOST }}
           username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
+          password: ${{ secrets.TEST_PASSWORD }}
           port: ${{ secrets.PORT }}
           script: |
             cd /home/sfsb_test/sfsb
