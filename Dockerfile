@@ -6,5 +6,5 @@
 
 FROM amazoncorretto:18-alpine
 WORKDIR opt/app
-COPY /target/sfsb-0.2.3.jar .
-CMD ["java","-jar","sfsb-0.2.3.jar"]
+COPY /target/sfsb-0.2.3-SNAPSHOT.jar .
+CMD ["java","-jar","sfsb-0.2.3-SNAPSHOT.jar"]
