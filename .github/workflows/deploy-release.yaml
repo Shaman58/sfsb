@@ -1,10 +1,10 @@
-name: sfsb test deploy
+name: sfsb prod deploy
 
 on:
   push:
-    branches: [ "release" ]
+    branches: [ "deploy/prod" ]
   merge:
-    branches: [ "release" ]
+    branches: [ "deploy/prod" ]
 
 jobs:
 
@@ -19,9 +19,8 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
           script: |
-            cd /home/sfsb_test/sfsb
+            cd /home/sfsb-github-actions/sfsb
             git pull
-            ./mvnw package
-            cd /home/sfsb_test/sfsb/src/test
+            ./mvnw package            
             docker-compose build    
             docker-compose up -d
