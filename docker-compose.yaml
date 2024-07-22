@@ -37,7 +37,7 @@ services:
       context: .
       dockerfile: Dockerfile
     env_file:
-      - src/main/resources/.env
+      - /src/main/resources/.env
     restart: always
     ports:
       - "9000:9000"
