@@ -9,6 +9,8 @@ import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -61,6 +63,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @CacheEvict(value = "users",allEntries = true)
     public UserDto update(String uuid, UserDto user) {
         log.info("[{}] Обновление пользователя в KeyCloak БД", LOG_TAG);
         var kcUser = new UserRepresentation();
@@ -87,6 +90,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable("users")
     public UserDto get(String uuid) {
         log.info("[{}] Получение профиля пользователя c uuid={} из KeyCloak БД", LOG_TAG, uuid);
         try {
@@ -107,6 +111,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @CacheEvict(value = "users",allEntries = true)
     public void delete(String uuid) {
         log.info("[{}] Удаление профиля с uuid={} из KeyCloak БД", LOG_TAG, uuid);
         var response = usersResource.delete(uuid).getStatus();
