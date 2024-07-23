@@ -57,6 +57,16 @@ public class OrderServiceImpl extends AbstractService<OrderDto, Order, OrderEnti
         return mapper.toDto(repository.save(mapper.toEntity(order)));
     }
 
+    @Override
+    @Transactional
+    public void delete(Long id) {
+        log.info("[{}] Удаление сущности типа {} с id={} из БД", getLogTag(), getEntityName(), id);
+        Order order = repository.findById(id).orElseThrow(() -> getEntityWithIdNotFoundException(id));
+        order.getFiles().forEach(file -> file.setDeleted(true));
+        repository.save(order);
+        repository.setDeletedById(id);
+    }
+
     private List<ItemDto> filteredItems(List<ItemDto> items, String query) {
         var filtered = items.stream().filter(
                 item -> (

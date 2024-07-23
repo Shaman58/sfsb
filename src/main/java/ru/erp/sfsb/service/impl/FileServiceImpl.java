@@ -88,7 +88,7 @@ public class FileServiceImpl extends AbstractService<FileDto, File, FileEntityRe
 
     @Override
     public FileDto addFileToOrder(Long orderId, MultipartFile file, Jwt jwt) {
-        log.info("[{}] Добавление файла к заявке с id={} ", getLogTag(), orderId);
+        log.info("[{}] Добавление файла к заявке с id={}", getLogTag(), orderId);
         var order = orderService.get(orderId);
         var fileDto = save(file, jwt);
         order.getFiles().add(fileDto);
@@ -98,7 +98,7 @@ public class FileServiceImpl extends AbstractService<FileDto, File, FileEntityRe
 
     @Override
     public FileDto addFileToCompany(Long companyId, MultipartFile file, Jwt jwt) {
-        log.info("[{}] Добавление файла к компании с id={} ", getLogTag(), companyId);
+        log.info("[{}] Добавление файла к компании с id={}", getLogTag(), companyId);
         pictureInfo(file);
         var company = companyService.get(companyId);
         if (company.getLogo() == null) {
