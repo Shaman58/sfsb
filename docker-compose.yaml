@@ -37,7 +37,7 @@ services:
       context: .
       dockerfile: Dockerfile
     env_file:
-      - src/sfsb/.env
+      - src/sfsbs/.env
     restart: always
     ports:
       - "9000:9000"
