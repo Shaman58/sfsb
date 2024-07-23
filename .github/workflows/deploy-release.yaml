@@ -18,7 +18,8 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             cd /home/sfsb-github-actions/sfsb
-            git pull origin deploy/release-test
+            git checkout deploy/release-test
+            git git pull origin deploy/release-test --no-rebase            
             ./mvnw package            
             docker-compose build    
             docker-compose up -d
