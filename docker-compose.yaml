@@ -12,8 +12,6 @@ services:
       POSTGRES_PASSWORD: gFNQkM
       POSTGRES_DB: sfsb
       PGDATA: "/data/db"
-    ports:
-      - "5432:5432"
     healthcheck:
       test: pg_isready -d sfsb -U sfsb
       interval: 10s
