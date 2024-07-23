@@ -37,6 +37,8 @@ public class UserServiceImpl implements UserService {
     private final FileServerUtil fileServerUtil;
     private final static LogTag LOG_TAG = LogTag.USER_SERVICE;
 
+    static int counter=0;
+
     @Override
     public UserDto save(UserDto user) {
         log.info("[{}] Создание пользователя в KeyCloak БД", LOG_TAG);
@@ -92,6 +94,7 @@ public class UserServiceImpl implements UserService {
     @Cacheable("users")
     public UserDto get(String uuid) {
         log.info("[{}] Получение профиля пользователя c uuid={} из KeyCloak БД", LOG_TAG, uuid);
+        System.out.println("counter  :: "+(counter++));
         try {
             return repToUserDto(usersResource.get(uuid).toRepresentation());
         } catch (Exception e) {
