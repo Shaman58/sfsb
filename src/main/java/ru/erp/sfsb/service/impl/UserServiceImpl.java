@@ -63,7 +63,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @CacheEvict(value = "users",allEntries = true)
     public UserDto update(String uuid, UserDto user) {
         log.info("[{}] Обновление пользователя в KeyCloak БД", LOG_TAG);
         var kcUser = new UserRepresentation();
@@ -111,7 +110,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @CacheEvict(value = "users",allEntries = true)
+    @CacheEvict(value = "users", allEntries = true)
     public void delete(String uuid) {
         log.info("[{}] Удаление профиля с uuid={} из KeyCloak БД", LOG_TAG, uuid);
         var response = usersResource.delete(uuid).getStatus();
