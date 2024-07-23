@@ -19,7 +19,7 @@ jobs:
           script: |
             cd /home/sfsb-github-actions/sfsb
             git checkout deploy/release-test
-            git git pull origin deploy/release-test --no-rebase            
+            git pull origin deploy/release-test --no-rebase            
             ./mvnw package            
             docker-compose build    
             docker-compose up -d
