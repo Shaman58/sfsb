@@ -62,9 +62,9 @@ public class OrderServiceImpl extends AbstractService<OrderDto, Order, OrderEnti
     public void delete(Long id) {
         log.info("[{}] Удаление сущности типа {} с id={} из БД", getLogTag(), getEntityName(), id);
         Order order = repository.findById(id).orElseThrow(() -> getEntityWithIdNotFoundException(id));
-        order.getFiles().forEach(file -> file.setDeleted(true));
+        order.getItems().forEach(item -> item.setDeleted(true));
+        order.setDeleted(true);
         repository.save(order);
-        repository.setDeletedById(id);
     }
 
     private List<ItemDto> filteredItems(List<ItemDto> items, String query) {
