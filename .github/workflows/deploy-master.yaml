@@ -2,7 +2,7 @@ name: sfsb prod deploy
 
 on:
   push:
-    branches: [ "deploy/prod" ]
+    branches: [ "deploy/master" ]
 
 jobs:
 
