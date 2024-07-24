@@ -2,6 +2,7 @@ package ru.erp.sfsb.service.impl;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import ru.erp.sfsb.LogTag;
 import ru.erp.sfsb.dto.AbstractDto;
@@ -44,6 +45,13 @@ public abstract class AbstractService
         log.info("[{}] Поиск всех сущностей типа {} в БД постранично", logTag, entityName);
         var entities = repository.findAllByDeletedIsFalse(pageable);
         return mapper.toDto(entities.stream().toList());
+    }
+
+    @Override
+    public Page<D> getAllInPage(Pageable pageable) {
+        log.info("[{}] Поиск всех сущностей типа {} в БД постранично", logTag, entityName);
+        var entities = repository.findAllByDeletedIsFalse(pageable);
+        return entities.map(e -> getMapper().toDto(e));
     }
 
     @Override
