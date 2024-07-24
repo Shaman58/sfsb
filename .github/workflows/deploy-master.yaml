@@ -18,7 +18,7 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             cd /home/sfsb-github-actions/sfsb
-            git pull
+            git pull origin master
             ./mvnw package            
             docker-compose build    
             docker-compose up -d
