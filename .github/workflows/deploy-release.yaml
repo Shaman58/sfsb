@@ -1,11 +1,10 @@
 name: sfsb prod deploy
 
-
+on:
+  push:
+    branches: [ "deploy/prod" ]
 
 jobs:
-  on:
-    pull-request:
-      branches: [ "deploy/master" ]
 
   build:
     runs-on: ubuntu-latest
