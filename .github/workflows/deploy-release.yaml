@@ -3,6 +3,9 @@ name: sfsb prod deploy
 
 
 jobs:
+  on:
+    pull-request:
+      branches: [ "deploy/master" ]
 
   build:
     runs-on: ubuntu-latest
