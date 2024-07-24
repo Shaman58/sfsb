@@ -51,7 +51,7 @@ public abstract class AbstractService
     public Page<D> getAllInPage(Pageable pageable) {
         log.info("[{}] Поиск всех сущностей типа {} в БД постранично", logTag, entityName);
         var entities = repository.findAllByDeletedIsFalse(pageable);
-        return entities.map(e->getMapper().toDto(e));
+        return entities.map(e -> getMapper().toDto(e));
     }
 
     @Override

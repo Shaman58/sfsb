@@ -11,7 +11,7 @@ public interface Service<D> {
 
     List<D> getAll(Pageable pageable);
 
-    Page<D>getAllInPage(Pageable pageable);
+    Page<D> getAllInPage(Pageable pageable);
 
     D get(Long id);
 
