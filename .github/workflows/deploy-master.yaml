@@ -21,4 +21,5 @@ jobs:
             git pull
             ./mvnw package            
             docker-compose build    
+            docker stop sfsb-sfsb-1
             docker-compose up -d
