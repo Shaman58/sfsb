@@ -11,7 +11,6 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.erp.sfsb.dto.FileDto;
-import ru.erp.sfsb.dto.ItemDto;
 import ru.erp.sfsb.service.FileService;
 
 import java.util.List;

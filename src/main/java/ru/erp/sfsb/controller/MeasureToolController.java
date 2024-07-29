@@ -9,7 +9,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.erp.sfsb.dto.ItemDto;
 import ru.erp.sfsb.dto.MeasureToolDto;
 import ru.erp.sfsb.service.MeasureToolService;
 
@@ -44,7 +43,7 @@ public class MeasureToolController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/page")
     public Page<MeasureToolDto> getAllInPage(@RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
-                                      @RequestParam(value = "limit", defaultValue = "20") @Min(1) @Max(100) Integer limit) {
+                                             @RequestParam(value = "limit", defaultValue = "20") @Min(1) @Max(100) Integer limit) {
         return measureToolService.getAllInPage(PageRequest.of(offset, limit));
     }
 
