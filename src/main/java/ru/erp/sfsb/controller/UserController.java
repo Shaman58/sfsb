@@ -20,35 +20,30 @@ public class UserController {
     private final UserService userService;
 
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     @GetMapping("/user")
     public List<UserDto> getAllUsers() {
         return userService.getAll();
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     @GetMapping("/user/{uuid}")
     public UserDto getUserByUuid(@PathVariable String uuid) {
         return userService.get(uuid);
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     @GetMapping("/role")
     public List<String> getAllRoles() {
         return userService.getRoles();
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @ResponseBody
     @PostMapping("/user")
     public UserDto save(@RequestBody @Valid UserDto user) {
         return userService.save(user);
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     @PutMapping("/user/{uuid}")
     public UserDto update(@PathVariable String uuid, @RequestBody @Valid UserDto user) {
         log.debug(user.toString());
@@ -56,14 +51,12 @@ public class UserController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     @DeleteMapping("/user/{uuid}")
     public void delete(@PathVariable String uuid) {
         userService.delete(uuid);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @ResponseBody
     @PostMapping("/user/{uuid}")
     public void savePictureToUser(@PathVariable String uuid, MultipartFile file) {
         userService.setPicture(uuid, file);

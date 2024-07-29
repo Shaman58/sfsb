@@ -23,14 +23,12 @@ public class MaterialController {
 
     private final MaterialServiceImpl materialService;
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     public MaterialDto get(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         return materialService.get(id);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping()
     public List<MaterialDto> getAll(
@@ -41,7 +39,6 @@ public class MaterialController {
         return materialService.getByFilter(filter, geometry, PageRequest.of(offset, limit));
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/page")
     public Page<MaterialDto> getAllInPage(@RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,

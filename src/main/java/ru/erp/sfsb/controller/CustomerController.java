@@ -22,14 +22,12 @@ public class CustomerController {
 
     private final CustomerService customerService;
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     public CustomerDto get(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         return customerService.get(id);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping()
     public List<CustomerDto> getAll(
@@ -38,7 +36,6 @@ public class CustomerController {
         return customerService.getAll(PageRequest.of(offset, limit));
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/page")
     public Page<CustomerDto> getAllInPage(@RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
@@ -46,14 +43,12 @@ public class CustomerController {
         return customerService.getAllInPage(PageRequest.of(offset, limit));
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping()
     public CustomerDto save(@RequestBody CustomerDto customerDto) {
         return customerService.save(customerDto);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
     public CustomerDto update(@RequestBody @Valid CustomerDto customerDto,

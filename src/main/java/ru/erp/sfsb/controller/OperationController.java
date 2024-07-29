@@ -22,21 +22,18 @@ public class OperationController {
 
     private final OperationService service;
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     public OperationDto get(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         return service.get(id);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping()
     public List<OperationDto> getAll() {
         return service.getAll();
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/page")
     public Page<OperationDto> getAllInPage(@RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
@@ -44,14 +41,12 @@ public class OperationController {
         return service.getAllInPage(PageRequest.of(offset, limit));
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping()
     public OperationDto save(@RequestBody @Valid OperationDto operationDto) {
         return service.save(operationDto);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     @PutMapping("/{id}")
     public OperationDto update(@RequestBody @Valid OperationDto operationDto,
@@ -66,14 +61,12 @@ public class OperationController {
         service.delete(id);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/setup")
     public OperationDto getSetupPrice() {
         return service.getSetupPrice();
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     @PutMapping("/setup")
     public OperationDto updateSetupPrice(@RequestBody @Valid OperationDto operationDto) {

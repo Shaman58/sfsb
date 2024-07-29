@@ -22,14 +22,12 @@ public class CutterToolController {
 
     private final CutterToolService cutterToolService;
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     public CutterToolDto get(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         return cutterToolService.get(id);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping()
     public List<CutterToolDto> getAll(
@@ -39,7 +37,6 @@ public class CutterToolController {
         return cutterToolService.getByFilter(filter, PageRequest.of(offset, limit));
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/page")
     public Page<CutterToolDto> getAllInPage(@RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
@@ -47,14 +44,12 @@ public class CutterToolController {
         return cutterToolService.getAllInPage(PageRequest.of(offset, limit));
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping()
     public CutterToolDto save(@RequestBody @Valid CutterToolDto cutterToolDto) {
         return cutterToolService.save(cutterToolDto);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
     public CutterToolDto update(@RequestBody @Valid CutterToolDto cutterToolDto,

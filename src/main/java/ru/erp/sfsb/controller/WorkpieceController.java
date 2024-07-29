@@ -22,14 +22,12 @@ public class WorkpieceController {
 
     private final WorkpieceService workpieceService;
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     public WorkpieceDto get(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         return workpieceService.get(id);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping()
     public List<WorkpieceDto> getAll(
@@ -38,7 +36,6 @@ public class WorkpieceController {
         return workpieceService.getAll(PageRequest.of(offset, limit));
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/page")
     public Page<WorkpieceDto> getAllInPage(@RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
@@ -46,14 +43,12 @@ public class WorkpieceController {
         return workpieceService.getAllInPage(PageRequest.of(offset, limit));
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping()
     public WorkpieceDto save(@RequestBody @Valid WorkpieceDto workpieceDto) {
         return workpieceService.save(workpieceDto);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
     public WorkpieceDto update(@RequestBody @Valid WorkpieceDto workpieceDto,
