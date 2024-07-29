@@ -24,7 +24,6 @@ public class TechnologyController {
 
     private final TechnologyService technologyService;
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping()
     public List<TechnologyDto> getAll(@RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
@@ -32,7 +31,6 @@ public class TechnologyController {
         return technologyService.getAll(PageRequest.of(offset, limit));
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/page")
     public Page<TechnologyDto> getAllInPage(@RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
@@ -40,14 +38,12 @@ public class TechnologyController {
         return technologyService.getAllInPage(PageRequest.of(offset, limit));
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     public TechnologyDto get(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         return technologyService.get(id);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     @PutMapping("/{id}")
     public TechnologyDto update(@RequestBody @Valid TechnologyDto technologyDto,
@@ -57,7 +53,6 @@ public class TechnologyController {
         return technologyService.update(technologyDto, jwt);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}/block")
     public void block(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id,
@@ -65,7 +60,6 @@ public class TechnologyController {
         technologyService.block(id, jwt);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}/unblock")
     public void unblock(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id,

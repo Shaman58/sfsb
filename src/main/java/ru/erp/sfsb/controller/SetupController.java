@@ -22,14 +22,12 @@ public class SetupController {
 
     private final SetupService setupService;
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping()
     public List<SetupDto> getAll() {
         return setupService.getAll();
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/page")
     public Page<SetupDto> getAllInPage(@RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
@@ -37,21 +35,18 @@ public class SetupController {
         return setupService.getAllInPage(PageRequest.of(offset, limit));
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     public SetupDto get(@PathVariable Long id) {
         return setupService.get(id);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping()
     public SetupDto save(@RequestBody @Valid SetupDto setupDto) {
         return setupService.save(setupDto);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
     public SetupDto update(@RequestBody @Valid SetupDto setupDto,

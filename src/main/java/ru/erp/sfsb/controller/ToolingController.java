@@ -22,14 +22,12 @@ public class ToolingController {
 
     private final ToolingService toolingService;
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     public ToolingDto get(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         return toolingService.get(id);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping()
     public List<ToolingDto> getAll(
@@ -39,7 +37,6 @@ public class ToolingController {
         return toolingService.getByFilter(filter, PageRequest.of(offset, limit));
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/page")
     public Page<ToolingDto> getAllInPage(@RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
@@ -47,14 +44,12 @@ public class ToolingController {
         return toolingService.getAllInPage(PageRequest.of(offset, limit));
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping()
     public ToolingDto save(@RequestBody @Valid ToolingDto toolingDto) {
         return toolingService.save(toolingDto);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
     public ToolingDto update(@RequestBody @Valid ToolingDto toolingDto,

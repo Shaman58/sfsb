@@ -29,7 +29,6 @@ public class MaterialDensityTemplateController {
         return materialService.get(id);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping()
     public List<MaterialDensityTemplateDto> getAll(
@@ -38,7 +37,6 @@ public class MaterialDensityTemplateController {
         return materialService.getAll(PageRequest.of(offset, limit));
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/page")
     public Page<MaterialDensityTemplateDto> getAllInPage(@RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
@@ -46,14 +44,12 @@ public class MaterialDensityTemplateController {
         return materialService.getAllInPage(PageRequest.of(offset, limit));
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping()
     public MaterialDensityTemplateDto save(@RequestBody @Valid MaterialDensityTemplateDto materialDto) {
         return materialService.save(materialDto);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
     public MaterialDensityTemplateDto update(@RequestBody @Valid MaterialDensityTemplateDto materialDto,

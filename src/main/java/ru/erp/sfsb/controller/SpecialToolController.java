@@ -22,14 +22,12 @@ public class SpecialToolController {
 
     private final SpecialToolService specialToolService;
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     public SpecialToolDto get(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         return specialToolService.get(id);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping()
     public List<SpecialToolDto> getAll(
@@ -39,7 +37,6 @@ public class SpecialToolController {
         return specialToolService.getByFilter(filter, PageRequest.of(offset, limit));
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/page")
     public Page<SpecialToolDto> getAllInPage(@RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
@@ -47,14 +44,12 @@ public class SpecialToolController {
         return specialToolService.getAllInPage(PageRequest.of(offset, limit));
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping()
     public SpecialToolDto save(@RequestBody @Valid SpecialToolDto specialToolDto) {
         return specialToolService.save(specialToolDto);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
     public SpecialToolDto update(@RequestBody @Valid SpecialToolDto specialToolDto,

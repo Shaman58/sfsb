@@ -22,14 +22,12 @@ public class MeasureToolController {
 
     private final MeasureToolService measureToolService;
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     public MeasureToolDto get(@PathVariable Long id) {
         return measureToolService.get(id);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping()
     public List<MeasureToolDto> getAll(
@@ -39,7 +37,6 @@ public class MeasureToolController {
         return measureToolService.getByFilter(filter, PageRequest.of(offset, limit));
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/page")
     public Page<MeasureToolDto> getAllInPage(@RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
@@ -47,14 +44,12 @@ public class MeasureToolController {
         return measureToolService.getAllInPage(PageRequest.of(offset, limit));
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping()
     public MeasureToolDto save(@RequestBody @Valid MeasureToolDto measureToolDto) {
         return measureToolService.save(measureToolDto);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
     public MeasureToolDto update(@RequestBody @Valid MeasureToolDto measureToolDto,

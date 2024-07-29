@@ -22,7 +22,6 @@ public class ReportController {
 
     private final ReportService reportService;
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Получить OrderReport по 'orderId' и 'companyId'")
     @GetMapping("/cp")
@@ -39,7 +38,6 @@ public class ReportController {
         reportService.sendCpToStore(orderId, companyId);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Получить ToolsReport по 'orderId' и 'companyId'")
     @GetMapping("/tool-order")

@@ -24,14 +24,12 @@ public class ItemController {
 
     private final ItemService itemService;
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping()
     public List<ItemDto> getAll(@AuthenticationPrincipal Jwt jwt) {
         return itemService.getAllByTechnologyUser(jwt);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/page")
     public Page<ItemDto> getAllInPage(@RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
@@ -39,21 +37,18 @@ public class ItemController {
         return itemService.getAllInPage(PageRequest.of(offset, limit));
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     public ItemDto get(@PathVariable Long id) {
         return itemService.get(id);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping()
     public ItemDto save(@RequestBody @Valid ItemDto itemDto) {
         return itemService.save(itemDto);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
     public ItemDto update(@RequestBody @Valid ItemDto itemDto,

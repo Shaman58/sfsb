@@ -22,21 +22,18 @@ public class CompanyController {
 
     private final CompanyService companyService;
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/manager/{id}")
     public CompanyDto get(@PathVariable(required = false) Long id) {
         return companyService.get(id);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/manager")
     public List<CompanyDto> getAll() {
         return companyService.getAll();
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/page")
     public Page<CompanyDto> getAllInPage(@RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
@@ -44,7 +41,6 @@ public class CompanyController {
         return companyService.getAllInPage(PageRequest.of(offset, limit));
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/manager/{id}")
     public CompanyDto update(@RequestBody @Valid CompanyDto company,
@@ -53,14 +49,12 @@ public class CompanyController {
         return companyService.update(company);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/manager")
     public CompanyDto save(@RequestBody @Valid CompanyDto company) {
         return companyService.save(company);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/manager/{id}")
     public void delete(@PathVariable Long id) {

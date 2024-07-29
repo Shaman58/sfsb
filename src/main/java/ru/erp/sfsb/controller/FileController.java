@@ -22,14 +22,12 @@ public class FileController {
 
     private final FileService fileService;
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/order/{orderId}")
     public List<FileDto> getAllByOrderId(@PathVariable Long orderId) {
         return fileService.getFilesByOrderId(orderId);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/page")
     public Page<FileDto> getAllInPage(@RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
@@ -37,7 +35,6 @@ public class FileController {
         return fileService.getAllInPage(PageRequest.of(offset, limit));
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/order/{id}")
     public FileDto saveFileToOrder(@PathVariable Long id, @RequestBody MultipartFile file,
@@ -45,7 +42,6 @@ public class FileController {
         return fileService.addFileToOrder(id, file, jwt);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/company/{id}")
     public FileDto saveFileToCompany(@PathVariable Long id, @RequestBody MultipartFile file,

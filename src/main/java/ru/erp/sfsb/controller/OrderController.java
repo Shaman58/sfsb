@@ -20,7 +20,6 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping()
     public List<OrderDto> getAll(@RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
@@ -28,7 +27,6 @@ public class OrderController {
         return orderService.getAll(PageRequest.of(offset, limit));
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/page")
     public Page<OrderDto> getAllInPage(@RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
@@ -36,7 +34,6 @@ public class OrderController {
         return orderService.getAllInPage(PageRequest.of(offset, limit));
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/find")
     public List<OrderDto> getAllByQuery(@RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
@@ -45,21 +42,18 @@ public class OrderController {
         return orderService.getAllByQuery(search, PageRequest.of(offset, limit));
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     public OrderDto get(@PathVariable Long id) {
         return orderService.get(id);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping()
     public OrderDto save(@RequestBody @Valid OrderDto orderDto) {
         return orderService.save(orderDto);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
     public OrderDto update(@RequestBody @Valid OrderDto orderDto,

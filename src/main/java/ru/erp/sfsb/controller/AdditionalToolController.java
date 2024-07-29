@@ -22,14 +22,12 @@ public class AdditionalToolController {
 
     private final AdditionalToolService additionalToolService;
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     public AdditionalToolDto get(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         return additionalToolService.get(id);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping()
     public List<AdditionalToolDto> getAll(
@@ -38,7 +36,6 @@ public class AdditionalToolController {
         return additionalToolService.getAll(PageRequest.of(offset, limit));
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/page")
     public Page<AdditionalToolDto> getAllInPage(@RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
@@ -46,14 +43,12 @@ public class AdditionalToolController {
         return additionalToolService.getAllInPage(PageRequest.of(offset, limit));
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping()
     public AdditionalToolDto save(@RequestBody @Valid AdditionalToolDto additionalToolDto) {
         return additionalToolService.save(additionalToolDto);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
     public AdditionalToolDto update(@RequestBody @Valid AdditionalToolDto additionalToolDto,
