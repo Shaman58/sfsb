@@ -1,5 +1,6 @@
 package ru.erp.sfsb.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -23,12 +24,14 @@ public class CustomerController {
     private final CustomerService customerService;
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Просмотреть клиента по ID")
     @GetMapping("/{id}")
     public CustomerDto get(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         return customerService.get(id);
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Просмотреть всех клиентов")
     @GetMapping()
     public List<CustomerDto> getAll(
             @RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
@@ -37,6 +40,7 @@ public class CustomerController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Просмотреть всех клиентов")
     @GetMapping("/page")
     public Page<CustomerDto> getAllInPage(@RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
                                           @RequestParam(value = "limit", defaultValue = "20") @Min(1) @Max(100) Integer limit) {
@@ -44,12 +48,14 @@ public class CustomerController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Добавить нового клиента")
     @PostMapping()
     public CustomerDto save(@RequestBody CustomerDto customerDto) {
         return customerService.save(customerDto);
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Обновить данные о клиенте")
     @PutMapping("/{id}")
     public CustomerDto update(@RequestBody @Valid CustomerDto customerDto,
                               @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
@@ -58,6 +64,7 @@ public class CustomerController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Удалить клиента")
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         customerService.delete(id);

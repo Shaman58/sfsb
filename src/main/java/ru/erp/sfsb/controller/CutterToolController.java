@@ -1,5 +1,6 @@
 package ru.erp.sfsb.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -23,12 +24,14 @@ public class CutterToolController {
     private final CutterToolService cutterToolService;
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Просмотреть режущие инструменты по ID")
     @GetMapping("/{id}")
     public CutterToolDto get(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         return cutterToolService.get(id);
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Просмотреть все режущие инструменты")
     @GetMapping()
     public List<CutterToolDto> getAll(
             @RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
@@ -38,6 +41,7 @@ public class CutterToolController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Просмотреть все режущие инструменты")
     @GetMapping("/page")
     public Page<CutterToolDto> getAllInPage(@RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
                                             @RequestParam(value = "limit", defaultValue = "20") @Min(1) @Max(100) Integer limit) {
@@ -45,12 +49,14 @@ public class CutterToolController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Добавить режущий инструмент")
     @PostMapping()
     public CutterToolDto save(@RequestBody @Valid CutterToolDto cutterToolDto) {
         return cutterToolService.save(cutterToolDto);
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Обновить сведения о режущем инструменте")
     @PutMapping("/{id}")
     public CutterToolDto update(@RequestBody @Valid CutterToolDto cutterToolDto,
                                 @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
@@ -59,6 +65,7 @@ public class CutterToolController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Удалить режущий инструмент")
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         cutterToolService.delete(id);

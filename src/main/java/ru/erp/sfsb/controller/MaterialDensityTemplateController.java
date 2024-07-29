@@ -1,5 +1,6 @@
 package ru.erp.sfsb.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -23,12 +24,14 @@ public class MaterialDensityTemplateController {
     private final MaterialDensityTemplateService materialService;
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Просмотреть шаблон плотности материала по ID")
     @GetMapping("/{id}")
     public MaterialDensityTemplateDto get(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         return materialService.get(id);
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Просмотреть все шаблоны плотности материалов")
     @GetMapping()
     public List<MaterialDensityTemplateDto> getAll(
             @RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
@@ -37,6 +40,7 @@ public class MaterialDensityTemplateController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Просмотреть все шаблоны плотности материалов")
     @GetMapping("/page")
     public Page<MaterialDensityTemplateDto> getAllInPage(@RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
                                                          @RequestParam(value = "limit", defaultValue = "20") @Min(1) @Max(100) Integer limit) {
@@ -44,12 +48,14 @@ public class MaterialDensityTemplateController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Сохранить новый шаблон плотности материала")
     @PostMapping()
     public MaterialDensityTemplateDto save(@RequestBody @Valid MaterialDensityTemplateDto materialDto) {
         return materialService.save(materialDto);
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Обновить сведения о шаблоне плотности материала")
     @PutMapping("/{id}")
     public MaterialDensityTemplateDto update(@RequestBody @Valid MaterialDensityTemplateDto materialDto,
                                              @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
@@ -58,6 +64,7 @@ public class MaterialDensityTemplateController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Удалить шаблон плотности материала")
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         materialService.delete(id);

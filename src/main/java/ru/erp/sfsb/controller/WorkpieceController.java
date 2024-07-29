@@ -1,5 +1,6 @@
 package ru.erp.sfsb.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -23,12 +24,14 @@ public class WorkpieceController {
     private final WorkpieceService workpieceService;
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Просмотреть заготовку по ID")
     @GetMapping("/{id}")
     public WorkpieceDto get(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         return workpieceService.get(id);
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Просмотреть все заготовки")
     @GetMapping()
     public List<WorkpieceDto> getAll(
             @RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
@@ -37,6 +40,7 @@ public class WorkpieceController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Просмотреть все заготовки")
     @GetMapping("/page")
     public Page<WorkpieceDto> getAllInPage(@RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
                                            @RequestParam(value = "limit", defaultValue = "20") @Min(1) @Max(100) Integer limit) {
@@ -44,12 +48,14 @@ public class WorkpieceController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Добавить новую заготовку")
     @PostMapping()
     public WorkpieceDto save(@RequestBody @Valid WorkpieceDto workpieceDto) {
         return workpieceService.save(workpieceDto);
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Изменить заготовку")
     @PutMapping("/{id}")
     public WorkpieceDto update(@RequestBody @Valid WorkpieceDto workpieceDto,
                                @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
@@ -58,6 +64,7 @@ public class WorkpieceController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Удалить заготовку")
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         workpieceService.delete(id);

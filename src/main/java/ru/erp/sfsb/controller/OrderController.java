@@ -1,5 +1,6 @@
 package ru.erp.sfsb.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -21,6 +22,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Просмотреть все заказы")
     @GetMapping()
     public List<OrderDto> getAll(@RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
                                  @RequestParam(value = "limit", defaultValue = "20") @Min(1) @Max(100) Integer limit) {
@@ -28,6 +30,7 @@ public class OrderController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Просмотреть все заказы")
     @GetMapping("/page")
     public Page<OrderDto> getAllInPage(@RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
                                        @RequestParam(value = "limit", defaultValue = "20") @Min(1) @Max(100) Integer limit) {
@@ -35,6 +38,7 @@ public class OrderController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Просмотреть все заказы по запросу")
     @GetMapping("/find")
     public List<OrderDto> getAllByQuery(@RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
                                         @RequestParam(value = "limit", defaultValue = "20") @Min(1) @Max(100) Integer limit,
@@ -43,18 +47,21 @@ public class OrderController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Просмотреть заказ по ID")
     @GetMapping("/{id}")
     public OrderDto get(@PathVariable Long id) {
         return orderService.get(id);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Добавить новый заказ")
     @PostMapping()
     public OrderDto save(@RequestBody @Valid OrderDto orderDto) {
         return orderService.save(orderDto);
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Изменить сведения о заказе")
     @PutMapping("/{id}")
     public OrderDto update(@RequestBody @Valid OrderDto orderDto,
                            @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
@@ -63,6 +70,7 @@ public class OrderController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Удалить")
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         orderService.delete(id);

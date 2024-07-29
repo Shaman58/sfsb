@@ -1,5 +1,6 @@
 package ru.erp.sfsb.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -23,12 +24,14 @@ public class SpecialToolController {
     private final SpecialToolService specialToolService;
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Просмотреть специальный инструмент по ID")
     @GetMapping("/{id}")
     public SpecialToolDto get(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         return specialToolService.get(id);
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Просмотреть все спец. инструменты")
     @GetMapping()
     public List<SpecialToolDto> getAll(
             @RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
@@ -38,6 +41,7 @@ public class SpecialToolController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Просмотреть все спец. инструменты")
     @GetMapping("/page")
     public Page<SpecialToolDto> getAllInPage(@RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
                                              @RequestParam(value = "limit", defaultValue = "20") @Min(1) @Max(100) Integer limit) {
@@ -45,12 +49,14 @@ public class SpecialToolController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Добавить спец. инструмент")
     @PostMapping()
     public SpecialToolDto save(@RequestBody @Valid SpecialToolDto specialToolDto) {
         return specialToolService.save(specialToolDto);
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Обновить сведения о спец. инструменте")
     @PutMapping("/{id}")
     public SpecialToolDto update(@RequestBody @Valid SpecialToolDto specialToolDto,
                                  @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
@@ -59,6 +65,7 @@ public class SpecialToolController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Удалить спец. инструмент")
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         specialToolService.delete(id);

@@ -1,5 +1,6 @@
 package ru.erp.sfsb.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -25,6 +26,7 @@ public class TechnologyController {
     private final TechnologyService technologyService;
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Просмотреть все технологии")
     @GetMapping()
     public List<TechnologyDto> getAll(@RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
                                       @RequestParam(value = "limit", defaultValue = "20") @Min(1) @Max(100) Integer limit) {
@@ -32,6 +34,7 @@ public class TechnologyController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Просмотреть все технологии")
     @GetMapping("/page")
     public Page<TechnologyDto> getAllInPage(@RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
                                             @RequestParam(value = "limit", defaultValue = "20") @Min(1) @Max(100) Integer limit) {
@@ -39,12 +42,14 @@ public class TechnologyController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Просмотреть технологию по ID")
     @GetMapping("/{id}")
     public TechnologyDto get(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         return technologyService.get(id);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Изменить технологию")
     @PutMapping("/{id}")
     public TechnologyDto update(@RequestBody @Valid TechnologyDto technologyDto,
                                 @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id,
@@ -54,6 +59,7 @@ public class TechnologyController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Запретить доступ к технологии")
     @GetMapping("/{id}/block")
     public void block(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id,
                       @AuthenticationPrincipal Jwt jwt) {
@@ -61,6 +67,7 @@ public class TechnologyController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Разрешить доступ к технологии")
     @GetMapping("/{id}/unblock")
     public void unblock(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id,
                         @AuthenticationPrincipal Jwt jwt) {
@@ -68,6 +75,7 @@ public class TechnologyController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Установить флаг 'просчитано'")
     @GetMapping("/calculate/{id}")
     public TechnologyDto setCalculated(@PathVariable Long id, @AuthenticationPrincipal Jwt jwt, @RequestParam boolean isComputed) {
         return technologyService.setComputed(id, jwt, isComputed);
