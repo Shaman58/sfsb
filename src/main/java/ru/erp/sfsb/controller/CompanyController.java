@@ -4,10 +4,13 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.erp.sfsb.dto.CompanyDto;
+import ru.erp.sfsb.dto.ItemDto;
 import ru.erp.sfsb.service.CompanyService;
 
 import java.util.List;
@@ -32,6 +35,14 @@ public class CompanyController {
     @GetMapping("/manager")
     public List<CompanyDto> getAll() {
         return companyService.getAll();
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/page")
+    public Page<CompanyDto> getAllInPage(@RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
+                                      @RequestParam(value = "limit", defaultValue = "20") @Min(1) @Max(100) Integer limit) {
+        return companyService.getAllInPage(PageRequest.of(offset, limit));
     }
 
     @ResponseBody
