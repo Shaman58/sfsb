@@ -22,7 +22,6 @@ public class MaterialDensityTemplateController {
 
     private final MaterialDensityTemplateService materialService;
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     public MaterialDensityTemplateDto get(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {

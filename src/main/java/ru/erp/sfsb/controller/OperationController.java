@@ -73,14 +73,12 @@ public class OperationController {
         return service.updateSetupPrice(operationDto);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/technology")
     public OperationDto getTechnologyPrice() {
         return service.getTechnologyPrice();
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/technology")
     public OperationDto updateTechnologyPrice(@RequestBody @Valid OperationDto operationDto) {
