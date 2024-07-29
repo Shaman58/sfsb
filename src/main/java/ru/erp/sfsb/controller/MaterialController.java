@@ -46,28 +46,24 @@ public class MaterialController {
         return materialService.getAllInPage(PageRequest.of(offset, limit));
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/no-cost")
     public List<MaterialDto> getAllWithoutPrice() {
         return materialService.getMaterialWithoutPrice();
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/date-expired")
     public List<MaterialDto> getAllWithUpdateExpired() {
         return materialService.getMaterialWithExpiredDate();
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping()
     public MaterialDto save(@RequestBody @Valid MaterialDto materialDto) {
         return materialService.save(materialDto);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
     public MaterialDto update(@RequestBody @Valid MaterialDto materialDto,
@@ -76,7 +72,6 @@ public class MaterialController {
         return materialService.update(materialDto);
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}/price")
     public MaterialDto updatePrice(@RequestBody @Valid MaterialDto materialDto,
