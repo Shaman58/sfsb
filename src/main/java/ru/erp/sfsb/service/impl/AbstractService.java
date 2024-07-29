@@ -42,16 +42,12 @@ public abstract class AbstractService
 
     @Override
     public List<D> getAll(Pageable pageable) {
-        log.info("[{}] Поиск всех сущностей типа {} в БД постранично", logTag, entityName);
-        var entities = repository.findAllByDeletedIsFalse(pageable);
-        return mapper.toDto(entities.stream().toList());
+        return mapper.toDto(getEntities(pageable).stream().toList());
     }
 
     @Override
     public Page<D> getAllInPage(Pageable pageable) {
-        log.info("[{}] Поиск всех сущностей типа {} в БД постранично", logTag, entityName);
-        var entities = repository.findAllByDeletedIsFalse(pageable);
-        return entities.map(e -> getMapper().toDto(e));
+        return getEntities(pageable).map(e -> getMapper().toDto(e));
     }
 
     @Override
@@ -90,5 +86,10 @@ public abstract class AbstractService
     protected EntityNotFoundException getEntityWithIdNotFoundException(Long id) {
         return new EntityNotFoundException(
                 String.format("[%s] Сушность типа %s с id=%d не найдена", logTag, entityName, id));
+    }
+
+    private Page<E> getEntities(Pageable pageable) {
+        log.info("[{}] Поиск всех сущностей типа {} в БД постранично", logTag, entityName);
+        return repository.findAllByDeletedIsFalse(pageable);
     }
 }
