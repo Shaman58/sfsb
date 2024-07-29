@@ -90,7 +90,6 @@ public abstract class AbstractService
 
     private Page<E> getEntities(Pageable pageable) {
         log.info("[{}] Поиск всех сущностей типа {} в БД постранично", logTag, entityName);
-        var entities = repository.findAllByDeletedIsFalse(pageable);
-        return entities;
+        return repository.findAllByDeletedIsFalse(pageable);
     }
 }
