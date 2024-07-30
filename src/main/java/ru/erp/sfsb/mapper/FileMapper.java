@@ -2,6 +2,7 @@ package ru.erp.sfsb.mapper;
 
 import jakarta.annotation.PostConstruct;
 import org.modelmapper.Converter;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.erp.sfsb.dto.FileDto;
@@ -13,10 +14,12 @@ public class FileMapper extends AbstractMapper<File, FileDto> {
     private final UserConverter userConverter;
     @Value("${webclient.file-service.file-url}")
     private String fileExternalUrl;
+    private final ModelMapper mapper;
 
-    FileMapper(UserConverter userConverter) {
-        super(File.class, FileDto.class);
+    FileMapper(UserConverter userConverter, ModelMapper mapper) {
+        super(mapper, File.class, FileDto.class);
         this.userConverter = userConverter;
+        this.mapper = mapper;
     }
 
     @PostConstruct

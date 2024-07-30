@@ -39,7 +39,7 @@ public class TechnologyServiceImpl extends AbstractService<TechnologyDto, Techno
         var user = userService.get(uuid);
         dto.setUser(user);
         dto.setBlocked(technology.getBlocked());
-        return mapper.toDto(repository.save(mapper.toEntity(dto)));
+        return getMapper().toDto(getRepository().save(getMapper().toEntity(dto)));
     }
 
     @Override
@@ -79,7 +79,7 @@ public class TechnologyServiceImpl extends AbstractService<TechnologyDto, Techno
             throw new ReportGenerateException(
                     String.format("[%s] Нельзя пометить технологию без заготовки рассчитанной!", getLogTag()));
         }
-        if (technology.getSetups().size() == 0) {
+        if (technology.getSetups().isEmpty()) {
             throw new ReportGenerateException(
                     String.format("[%s] Нельзя пометить технологию без установок рассчитанной!", getLogTag()));
         }

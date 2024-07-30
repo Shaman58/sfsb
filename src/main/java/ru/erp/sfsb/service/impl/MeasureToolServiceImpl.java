@@ -26,7 +26,7 @@ public class MeasureToolServiceImpl extends AbstractService<MeasureToolDto, Meas
     @Override
     public List<MeasureToolDto> getByFilter(String filter, Pageable pageable) {
         log.info("[{}] Поиск всех сущностей типа {} в БД по фильтру {}", getLogTag(), getEntityName(), filter);
-        return mapper.toDto(repository
+        return getMapper().toDto(getRepository()
                 .getAllByToolNameContainingIgnoreCaseAndDeletedIsFalseOrDescriptionContainingIgnoreCaseAndDeletedFalseAndDeletedIsFalse(filter, filter, pageable));
     }
 }

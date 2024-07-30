@@ -83,7 +83,7 @@ public class FileServiceImpl extends AbstractService<FileDto, File, FileEntityRe
         log.info("[{}] Удаление файла с id={} из хранилища", getLogTag(), id);
         var filename = get(id).getFilename();
         fileServerUtil.deleteMultipart(filename);
-        repository.removeById(id);
+        getRepository().removeById(id);
     }
 
     @Override

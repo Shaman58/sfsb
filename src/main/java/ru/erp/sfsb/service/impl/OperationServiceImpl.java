@@ -27,14 +27,14 @@ public class OperationServiceImpl extends AbstractService<OperationDto, Operatio
     @Override
     public List<OperationDto> getAll() {
         log.info("[{}] Поиск всех сущностей типа Operation в БД", getLogTag());
-        var entities = repository.findAllByIdGreaterThan2();
-        return entities.stream().map(mapper::toDto).collect(toList());
+        var entities = getRepository().findAllByIdGreaterThan2();
+        return entities.stream().map(getMapper()::toDto).collect(toList());
     }
 
     @Override
     public OperationDto getSetupPrice() {
         log.info("[{}] Поиск цены наладки in БД", getLogTag());
-        return mapper.toDto(repository.findById(1L).orElseThrow(
+        return getMapper().toDto(getRepository().findById(1L).orElseThrow(
                 () -> getEntityWithIdNotFoundException(1L)));
     }
 
@@ -43,13 +43,13 @@ public class OperationServiceImpl extends AbstractService<OperationDto, Operatio
         log.info("[{}] Сохранить цену наладки в БД", getLogTag());
         checkExistById(1L);
         price.setId(1L);
-        return mapper.toDto(repository.save(mapper.toEntity(price)));
+        return getMapper().toDto(getRepository().save(getMapper().toEntity(price)));
     }
 
     @Override
     public OperationDto getTechnologistPrice() {
         log.info("[{}] Поиск цены технолога in БД", getLogTag());
-        return mapper.toDto(repository.findById(2L).orElseThrow(
+        return getMapper().toDto(getRepository().findById(2L).orElseThrow(
                 () -> getEntityWithIdNotFoundException(2L)));
     }
 
@@ -58,6 +58,6 @@ public class OperationServiceImpl extends AbstractService<OperationDto, Operatio
         log.info("[{}] Сохранить цену технолога в БД", getLogTag());
         checkExistById(2L);
         price.setId(2L);
-        return mapper.toDto(repository.save(mapper.toEntity(price)));
+        return getMapper().toDto(getRepository().save(getMapper().toEntity(price)));
     }
 }

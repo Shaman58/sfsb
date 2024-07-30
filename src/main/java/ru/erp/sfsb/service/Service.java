@@ -2,10 +2,11 @@ package ru.erp.sfsb.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import ru.erp.sfsb.dto.AbstractDto;
 
 import java.util.List;
 
-public interface Service<D> {
+public interface Service<D extends AbstractDto> {
 
     List<D> getAll();
 

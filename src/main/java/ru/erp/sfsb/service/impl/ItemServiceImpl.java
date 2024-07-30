@@ -22,14 +22,13 @@ public class ItemServiceImpl extends AbstractService<ItemDto, Item, ItemEntityRe
 
     public ItemServiceImpl(ItemMapper mapper, ItemEntityRepository repository) {
         super(mapper, repository, "Item", ITEM_SERVICE);
-        this.repository = repository;
     }
 
     @Override
     public List<ItemDto> getAllByTechnologyUser(Jwt jwt) {
         log.info("[{}] Поиск всех позиций по профилю пользователя в БД", getLogTag());
         var uuid = jwt.getClaim("sub").toString();
-        var entities = repository.getAllByTechnologyUser(uuid);
-        return mapper.toDto(entities);
+        var entities = getRepository().getAllByTechnologyUser(uuid);
+        return getMapper().toDto(entities);
     }
 }

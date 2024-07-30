@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto save(UserDto user) {
         log.info("[{}] Создание пользователя в KeyCloak БД", LOG_TAG);
-        if (user.getPassword() == null || user.getPassword().length() == 0) {
+        if (user.getPassword() == null || user.getPassword().isEmpty()) {
             throw new KeycloakOtherException(
                     String.format("[%s] При создании пользователя пароль должен быть задан", LOG_TAG));
         }
@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
         kcUser.setLastName(user.getLastName());
         kcUser.setEmail(user.getEmail());
         usersResource.get(uuid).update(kcUser);
-        if (user.getPassword() != null && user.getPassword().length() != 0) {
+        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
             log.info("[{}] Обновление пароля пользователя", LOG_TAG);
             usersResource.get(uuid).resetPassword(createCredentials(user.getPassword()));
         }

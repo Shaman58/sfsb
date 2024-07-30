@@ -133,7 +133,7 @@ public class ReportService {
                 .map(item ->
                         String.format("%s %s", item.getTechnology().getDrawingNumber(), item.getTechnology().getDrawingName()))
                 .toList();
-        if (items.size() > 0) {
+        if (!items.isEmpty()) {
             throw new ReportGenerateException(
                     String.format("[%s] Технологии %s не рассчитаны!", LOG_TAG, items));
         }
@@ -391,7 +391,7 @@ public class ReportService {
         var measurers = getToolList(getUniqueToolItems(getAllToolsFromOrderByType(order, MeasureToolItemDto.class)));
         var cutters = getToolList(getUniqueToolItems(getAllToolsFromOrderByType(order, CutterToolItemDto.class)));
         cutters.addAll(measurers);
-        if (cutters.size() == 0) {
+        if (cutters.isEmpty()) {
             throw new ReportGenerateException(
                     String.format("[%s] В заявке отсутствуют инструменты", LOG_TAG));
         }
