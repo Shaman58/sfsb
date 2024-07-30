@@ -39,7 +39,7 @@ public class SetupController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Просмотреть все установки")
+    @Operation(summary = "Просмотреть установку по ID")
     @GetMapping("/{id}")
     public SetupDto get(@PathVariable Long id) {
         return setupService.get(id);
@@ -53,7 +53,7 @@ public class SetupController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Обновить сведения о установке")
+    @Operation(summary = "Изменить установку")
     @PutMapping("/{id}")
     public SetupDto update(@RequestBody @Valid SetupDto setupDto,
                            @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {

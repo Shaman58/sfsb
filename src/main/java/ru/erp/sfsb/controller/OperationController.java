@@ -53,7 +53,7 @@ public class OperationController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Обновить сведения о операции")
+    @Operation(summary = "Обновить сведения об операции")
     @PutMapping("/{id}")
     public OperationDto update(@RequestBody @Valid OperationDto operationDto,
                                @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
@@ -69,14 +69,14 @@ public class OperationController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Просмотреть цену")
+    @Operation(summary = "Просмотреть цену установки")
     @GetMapping("/setup")
     public OperationDto getSetupPrice() {
         return service.getSetupPrice();
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Изменить цену")
+    @Operation(summary = "Изменить цену установки")
     @PutMapping("/setup")
     public OperationDto updateSetupPrice(@RequestBody @Valid OperationDto operationDto) {
         return service.updateSetupPrice(operationDto);

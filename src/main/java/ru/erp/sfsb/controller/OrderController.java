@@ -61,7 +61,7 @@ public class OrderController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Изменить сведения о заказе")
+    @Operation(summary = "Изменить заказ")
     @PutMapping("/{id}")
     public OrderDto update(@RequestBody @Valid OrderDto orderDto,
                            @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
@@ -70,7 +70,7 @@ public class OrderController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Удалить")
+    @Operation(summary = "Удалить заказ")
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         orderService.delete(id);

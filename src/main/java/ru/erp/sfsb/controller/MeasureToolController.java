@@ -56,7 +56,7 @@ public class MeasureToolController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Обновить сведения о инструменте измерения")
+    @Operation(summary = "Изменить инструмент измерения")
     @PutMapping("/{id}")
     public MeasureToolDto update(@RequestBody @Valid MeasureToolDto measureToolDto,
                                  @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {

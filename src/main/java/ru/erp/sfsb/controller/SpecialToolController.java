@@ -56,7 +56,7 @@ public class SpecialToolController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Обновить сведения о спец. инструменте")
+    @Operation(summary = "Изменить спец. инструмент")
     @PutMapping("/{id}")
     public SpecialToolDto update(@RequestBody @Valid SpecialToolDto specialToolDto,
                                  @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {

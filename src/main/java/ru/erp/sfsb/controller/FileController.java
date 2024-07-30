@@ -24,14 +24,14 @@ public class FileController {
     private final FileService fileService;
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Получить файл по Order ID ")
+    @Operation(summary = "Просмотреть файл по Order ID ")
     @GetMapping("/order/{orderId}")
     public List<FileDto> getAllByOrderId(@PathVariable Long orderId) {
         return fileService.getFilesByOrderId(orderId);
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Получить все файлы")
+    @Operation(summary = "Просмотреть все файлы")
     @GetMapping("/page")
     public Page<FileDto> getAllInPage(@RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
                                       @RequestParam(value = "limit", defaultValue = "20") @Min(1) @Max(100) Integer limit) {

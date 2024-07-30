@@ -24,7 +24,7 @@ public class CompanyController {
     private final CompanyService companyService;
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Получить компанию по ID")
+    @Operation(summary = "Просмотреть компанию по ID")
     @GetMapping("/manager/{id}")
     public CompanyDto get(@PathVariable(required = false) Long id) {
         return companyService.get(id);
@@ -55,7 +55,7 @@ public class CompanyController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Сохранить новую компанию")
+    @Operation(summary = "Добавить новую компанию")
     @PostMapping("/manager")
     public CompanyDto save(@RequestBody @Valid CompanyDto company) {
         return companyService.save(company);

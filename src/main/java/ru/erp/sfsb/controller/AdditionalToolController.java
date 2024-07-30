@@ -24,14 +24,14 @@ public class AdditionalToolController {
     private final AdditionalToolService additionalToolService;
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Получить доп. инструмент по ID")
+    @Operation(summary = "Просмотреть доп. инструмент по ID")
     @GetMapping("/{id}")
     public AdditionalToolDto get(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         return additionalToolService.get(id);
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Просмотреть доп. инструменты")
+    @Operation(summary = "Просмотреть все доп. инструменты")
     @GetMapping()
     public List<AdditionalToolDto> getAll(
             @RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
@@ -40,7 +40,7 @@ public class AdditionalToolController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Просмотреть доп. инструменты")
+    @Operation(summary = "Просмотреть все доп. инструменты")
     @GetMapping("/page")
     public Page<AdditionalToolDto> getAllInPage(@RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
                                                 @RequestParam(value = "limit", defaultValue = "20") @Min(1) @Max(100) Integer limit) {
@@ -48,14 +48,14 @@ public class AdditionalToolController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Сохранить доп. инструменты")
+    @Operation(summary = "Добавить доп. инструмент")
     @PostMapping()
     public AdditionalToolDto save(@RequestBody @Valid AdditionalToolDto additionalToolDto) {
         return additionalToolService.save(additionalToolDto);
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Изменить доп. инструмент по ID")
+    @Operation(summary = "Изменить доп. инструмент")
     @PutMapping("/{id}")
     public AdditionalToolDto update(@RequestBody @Valid AdditionalToolDto additionalToolDto,
                                     @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
@@ -64,7 +64,7 @@ public class AdditionalToolController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Удалить доп. инструмент по ID")
+    @Operation(summary = "Удалить доп. инструмент")
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         additionalToolService.delete(id);

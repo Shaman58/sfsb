@@ -56,7 +56,7 @@ public class ToolingController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Изменить сведения о оснащении")
+    @Operation(summary = "Изменить оснащение")
     @PutMapping("/{id}")
     public ToolingDto update(@RequestBody @Valid ToolingDto toolingDto,
                              @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {

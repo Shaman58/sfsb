@@ -48,7 +48,7 @@ public class MaterialDensityTemplateController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Сохранить новый шаблон плотности материала")
+    @Operation(summary = "Добавить новый шаблон плотности материала")
     @PostMapping()
     public MaterialDensityTemplateDto save(@RequestBody @Valid MaterialDensityTemplateDto materialDto) {
         return materialService.save(materialDto);

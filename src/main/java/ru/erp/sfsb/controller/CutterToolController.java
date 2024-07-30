@@ -24,7 +24,7 @@ public class CutterToolController {
     private final CutterToolService cutterToolService;
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Просмотреть режущие инструменты по ID")
+    @Operation(summary = "Просмотреть режущий инструмент по ID")
     @GetMapping("/{id}")
     public CutterToolDto get(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         return cutterToolService.get(id);
@@ -56,7 +56,7 @@ public class CutterToolController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Обновить сведения о режущем инструменте")
+    @Operation(summary = "Изменить режущий инструмент")
     @PutMapping("/{id}")
     public CutterToolDto update(@RequestBody @Valid CutterToolDto cutterToolDto,
                                 @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
