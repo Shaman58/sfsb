@@ -1,6 +1,7 @@
 package ru.erp.sfsb.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -18,6 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @Validated
+@Tag(name = "API взаимодействия с WorkpieceService")
 @RequestMapping("/api/workpiece")
 public class WorkpieceController {
 
@@ -55,7 +57,7 @@ public class WorkpieceController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Изменить заготовку")
+    @Operation(summary = "Изменить заготовку по ID")
     @PutMapping("/{id}")
     public WorkpieceDto update(@RequestBody @Valid WorkpieceDto workpieceDto,
                                @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
@@ -64,7 +66,7 @@ public class WorkpieceController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Удалить заготовку")
+    @Operation(summary = "Удалить заготовку по ID")
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         workpieceService.delete(id);

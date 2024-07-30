@@ -1,6 +1,7 @@
 package ru.erp.sfsb.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/api")
+@Tag(name = "API взаимодействия с UserService")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -49,7 +51,7 @@ public class UserController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Изменить сведения о пользователе")
+    @Operation(summary = "Изменить сведения о пользователе по ID")
     @PutMapping("/user/{uuid}")
     public UserDto update(@PathVariable String uuid, @RequestBody @Valid UserDto user) {
         log.debug(user.toString());
@@ -57,14 +59,14 @@ public class UserController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Удалить пользователя")
+    @Operation(summary = "Удалить пользователя по ID")
     @DeleteMapping("/user/{uuid}")
     public void delete(@PathVariable String uuid) {
         userService.delete(uuid);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Добавить аватар пользователю")
+    @Operation(summary = "Добавить аватар пользователю по ID")
     @PostMapping("/user/{uuid}")
     public void savePictureToUser(@PathVariable String uuid, MultipartFile file) {
         userService.setPicture(uuid, file);

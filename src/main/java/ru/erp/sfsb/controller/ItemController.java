@@ -1,6 +1,7 @@
 package ru.erp.sfsb.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -20,6 +21,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Validated
+@Tag(name = "API взаимодействия с ItemService")
 @RequestMapping("/api/item")
 public class ItemController {
 
@@ -55,7 +57,7 @@ public class ItemController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Обновить сведения о предмете")
+    @Operation(summary = "Обновить сведения о предмете по ID")
     @PutMapping("/{id}")
     public ItemDto update(@RequestBody @Valid ItemDto itemDto,
                           @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
@@ -64,7 +66,7 @@ public class ItemController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Удалить предмет")
+    @Operation(summary = "Удалить предмет по ID")
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         itemService.delete(id);

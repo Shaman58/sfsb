@@ -1,6 +1,7 @@
 package ru.erp.sfsb.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -18,6 +19,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Validated
+@Tag(name = "API взаимодействия с MaterialDensityService")
 @RequestMapping("/api/material-density-template")
 public class MaterialDensityTemplateController {
 
@@ -55,7 +57,7 @@ public class MaterialDensityTemplateController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Обновить сведения о шаблоне плотности материала")
+    @Operation(summary = "Обновить сведения о шаблоне плотности материала по ID")
     @PutMapping("/{id}")
     public MaterialDensityTemplateDto update(@RequestBody @Valid MaterialDensityTemplateDto materialDto,
                                              @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
@@ -64,7 +66,7 @@ public class MaterialDensityTemplateController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Удалить шаблон плотности материала")
+    @Operation(summary = "Удалить шаблон плотности материала по ID")
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         materialService.delete(id);

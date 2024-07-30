@@ -1,6 +1,7 @@
 package ru.erp.sfsb.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -19,6 +20,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Validated
+@Tag(name = "API взаимодействия с MaterialService")
 @RequestMapping("/api/material")
 public class MaterialController {
 
@@ -72,7 +74,7 @@ public class MaterialController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Обновить сведения о материале")
+    @Operation(summary = "Обновить сведения о материале по ID")
     @PutMapping("/{id}")
     public MaterialDto update(@RequestBody @Valid MaterialDto materialDto,
                               @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
@@ -81,7 +83,7 @@ public class MaterialController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Обновить цену на материал")
+    @Operation(summary = "Обновить цену на материал по ID")
     @PutMapping("/{id}/price")
     public MaterialDto updatePrice(@RequestBody @Valid MaterialDto materialDto,
                                    @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
@@ -90,7 +92,7 @@ public class MaterialController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Удалить материал")
+    @Operation(summary = "Удалить материал по ID")
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         materialService.delete(id);

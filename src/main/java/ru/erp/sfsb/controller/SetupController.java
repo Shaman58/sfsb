@@ -1,6 +1,7 @@
 package ru.erp.sfsb.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -18,6 +19,7 @@ import java.util.List;
 @RestController
 @Validated
 @RequiredArgsConstructor
+@Tag(name = "API взаимодействия с SetupService")
 @RequestMapping("/api/setup")
 public class SetupController {
 
@@ -53,7 +55,7 @@ public class SetupController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Изменить установку")
+    @Operation(summary = "Изменить установку по ID")
     @PutMapping("/{id}")
     public SetupDto update(@RequestBody @Valid SetupDto setupDto,
                            @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
@@ -62,7 +64,7 @@ public class SetupController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Удалить установку")
+    @Operation(summary = "Удалить установку по ID")
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         setupService.delete(id);

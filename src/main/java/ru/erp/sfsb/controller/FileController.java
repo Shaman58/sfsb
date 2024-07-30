@@ -1,6 +1,7 @@
 package ru.erp.sfsb.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
@@ -18,13 +19,14 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "API взаимодействия с FileService")
 @RequestMapping("/api/file")
 public class FileController {
 
     private final FileService fileService;
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Просмотреть файл по Order ID ")
+    @Operation(summary = "Просмотреть файл по Order ID")
     @GetMapping("/order/{orderId}")
     public List<FileDto> getAllByOrderId(@PathVariable Long orderId) {
         return fileService.getFilesByOrderId(orderId);
@@ -39,7 +41,7 @@ public class FileController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Сохранить файл в заказ")
+    @Operation(summary = "Сохранить файл в заказ по ID")
     @PostMapping("/order/{id}")
     public FileDto saveFileToOrder(@PathVariable Long id, @RequestBody MultipartFile file,
                                    @AuthenticationPrincipal Jwt jwt) {
@@ -47,7 +49,7 @@ public class FileController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Сохранить файл в компанию")
+    @Operation(summary = "Сохранить файл в компанию по ID")
     @PostMapping("/company/{id}")
     public FileDto saveFileToCompany(@PathVariable Long id, @RequestBody MultipartFile file,
                                      @AuthenticationPrincipal Jwt jwt) {

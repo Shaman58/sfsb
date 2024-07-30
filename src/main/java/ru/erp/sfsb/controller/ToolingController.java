@@ -1,6 +1,7 @@
 package ru.erp.sfsb.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -18,6 +19,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Validated
+@Tag(name = "API взаимодействия с ToolingService")
 @RequestMapping("/api/tooling")
 public class ToolingController {
 
@@ -56,7 +58,7 @@ public class ToolingController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Изменить оснащение")
+    @Operation(summary = "Изменить оснащение по ID")
     @PutMapping("/{id}")
     public ToolingDto update(@RequestBody @Valid ToolingDto toolingDto,
                              @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
@@ -65,7 +67,7 @@ public class ToolingController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Удалить оснащение")
+    @Operation(summary = "Удалить оснащение по ID")
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         toolingService.delete(id);

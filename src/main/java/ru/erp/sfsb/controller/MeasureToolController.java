@@ -1,6 +1,7 @@
 package ru.erp.sfsb.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -18,6 +19,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Validated
+@Tag(name = "API взаимодействия с MeasureToolService")
 @RequestMapping("/api/measure")
 public class MeasureToolController {
 
@@ -56,7 +58,7 @@ public class MeasureToolController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Изменить инструмент измерения")
+    @Operation(summary = "Изменить инструмент измерения по ID")
     @PutMapping("/{id}")
     public MeasureToolDto update(@RequestBody @Valid MeasureToolDto measureToolDto,
                                  @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
@@ -65,7 +67,7 @@ public class MeasureToolController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Удалить инструмент измерения")
+    @Operation(summary = "Удалить инструмент измерения по ID")
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         measureToolService.delete(id);

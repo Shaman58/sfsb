@@ -1,6 +1,7 @@
 package ru.erp.sfsb.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -20,6 +21,7 @@ import java.util.List;
 @RestController
 @Validated
 @RequiredArgsConstructor
+@Tag(name = "API взаимодействия с TechnologyService")
 @RequestMapping("/api/technology")
 public class TechnologyController {
 
@@ -49,7 +51,7 @@ public class TechnologyController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Изменить технологию")
+    @Operation(summary = "Изменить технологию по ID")
     @PutMapping("/{id}")
     public TechnologyDto update(@RequestBody @Valid TechnologyDto technologyDto,
                                 @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id,
@@ -59,7 +61,7 @@ public class TechnologyController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Запретить доступ к технологии")
+    @Operation(summary = "Запретить доступ к технологии по ID")
     @GetMapping("/{id}/block")
     public void block(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id,
                       @AuthenticationPrincipal Jwt jwt) {
@@ -67,7 +69,7 @@ public class TechnologyController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Разрешить доступ к технологии")
+    @Operation(summary = "Разрешить доступ к технологии по ID")
     @GetMapping("/{id}/unblock")
     public void unblock(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id,
                         @AuthenticationPrincipal Jwt jwt) {
@@ -75,7 +77,7 @@ public class TechnologyController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Установить флаг 'просчитано'")
+    @Operation(summary = "Установить флаг 'просчитано' по ID")
     @GetMapping("/calculate/{id}")
     public TechnologyDto setCalculated(@PathVariable Long id, @AuthenticationPrincipal Jwt jwt, @RequestParam boolean isComputed) {
         return technologyService.setComputed(id, jwt, isComputed);
