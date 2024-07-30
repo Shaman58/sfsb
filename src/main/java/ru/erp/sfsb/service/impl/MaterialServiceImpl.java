@@ -14,7 +14,6 @@ import ru.erp.sfsb.repository.repos.MaterialEntityRepository;
 import ru.erp.sfsb.service.MaterialService;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static ru.erp.sfsb.LogTag.MATERIAL_SERVICE;
@@ -33,16 +32,16 @@ public class MaterialServiceImpl extends AbstractService<MaterialDto, Material, 
     public List<MaterialDto> getMaterialWithoutPrice() {
         log.info("[{}] Поиск всех сущностей типа {} без цены в БД", getLogTag(), getEntityName());
         var money = Money.of(0, "RUB");
-        return repository.findMaterialByPriceIsAndDeletedIsFalseOrPriceBeforeAndDeletedIsFalse(money, money).stream()
-                .map(material -> mapper.toDto(material))
+        return getRepository().findMaterialByPriceIsAndDeletedIsFalseOrPriceBeforeAndDeletedIsFalse(money, money).stream()
+                .map(material -> getMapper().toDto(material))
                 .toList();
     }
 
     @Override
     public List<MaterialDto> getMaterialWithExpiredDate() {
         log.info("[{}] Поиск всех сущностей типа {} с истекшей датой в БД", getLogTag(), getEntityName());
-        return repository.findMaterialByUpdatedBeforeAndDeletedIsFalseOrUpdatedIsNullAndDeletedIsFalse(LocalDateTime.now().minus(1, ChronoUnit.MONTHS)).stream()
-                .map(material -> mapper.toDto(material))
+        return getRepository().findMaterialByUpdatedBeforeAndDeletedIsFalseOrUpdatedIsNullAndDeletedIsFalse(LocalDateTime.now().minusMonths(1)).stream()
+                .map(material -> getMapper().toDto(material))
                 .toList();
     }
 
@@ -50,7 +49,7 @@ public class MaterialServiceImpl extends AbstractService<MaterialDto, Material, 
     public MaterialDto save(MaterialDto materialDto) {
         log.info("[{}] Сохранение сущности типа {} в БД", getLogTag(), getEntityName());
         materialDto.setPrice(Money.of(0, "RUB"));
-        return mapper.toDto(repository.save(mapper.toEntity(materialDto)));
+        return getMapper().toDto(getRepository().save(getMapper().toEntity(materialDto)));
     }
 
     @Override
@@ -66,15 +65,14 @@ public class MaterialServiceImpl extends AbstractService<MaterialDto, Material, 
         log.info("[{}] Поиск всех сущностей типа {} в БД по фильтру {}", getLogTag(), getEntityName(), filter);
         Page<Material> page;
         if (geometry != null) {
-            page = repository
+            page = getRepository()
                     .getAllByMaterialNameContainingIgnoreCaseAndGeometryEqualsAndDeletedIsFalseOrGost1ContainingIgnoreCaseAndGeometryEqualsAndDeletedIsFalseOrGost2ContainingIgnoreCaseAndGeometryEqualsAndDeletedIsFalse(
                             filter, geometry, filter, geometry, filter, geometry, pageable);
         } else {
-            page = repository
+            page = getRepository()
                     .getAllByMaterialNameContainingIgnoreCaseAndDeletedIsFalseOrGost1ContainingIgnoreCaseAndDeletedIsFalseOrGost2ContainingIgnoreCaseAndDeletedIsFalse(
                             filter, filter, filter, pageable);
         }
-//        return new PageImpl<>(mapper.toDto(page.getContent()), page.getPageable(), page.getTotalElements());
-        return mapper.toDto(page.getContent());
+        return getMapper().toDto(page.getContent());
     }
 }

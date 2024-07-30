@@ -27,7 +27,7 @@ public class CutterToolServiceImpl extends AbstractService<CutterToolDto, Cutter
     @Override
     public List<CutterToolDto> getByFilter(String filter, Pageable pageable) {
         log.info("[{}] Поиск сушностей типа {} по фильтру {} в БД", getLogTag(), getEntityName(), filter);
-        return mapper.toDto(repository
+        return getMapper().toDto(getRepository()
                 .getAllByToolNameContainingIgnoreCaseAndDeletedIsFalseOrDescriptionContainingIgnoreCaseAndDeletedIsFalse(filter, filter, pageable));
     }
 }

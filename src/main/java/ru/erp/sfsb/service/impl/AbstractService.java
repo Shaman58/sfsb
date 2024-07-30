@@ -20,9 +20,8 @@ public abstract class AbstractService
         <D extends AbstractDto, E extends AbstractEntity, R extends EntityRepository<E>, M extends Mapper<E, D>>
         implements Service<D> {
 
-    M mapper;
-    R repository;
-
+    private final M mapper;
+    private final R repository;
     private final String entityName;
     private final LogTag logTag;
 

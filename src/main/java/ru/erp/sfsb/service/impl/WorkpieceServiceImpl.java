@@ -16,7 +16,5 @@ public class WorkpieceServiceImpl extends AbstractService<WorkpieceDto, Workpiec
 
     public WorkpieceServiceImpl(WorkpieceMapper mapper, WorkpieceEntityRepository repository) {
         super(mapper, repository, "Workpiece", WORKPIECE_SERVICE);
-        this.mapper = mapper;
-        this.repository = repository;
     }
 }

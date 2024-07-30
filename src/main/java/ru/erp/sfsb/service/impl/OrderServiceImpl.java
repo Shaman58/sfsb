@@ -35,8 +35,8 @@ public class OrderServiceImpl extends AbstractService<OrderDto, Order, OrderEnti
     @Override
     public List<OrderDto> getAllByQuery(String query, Pageable pageable) {
         log.info("[{}] Поиск всех сущностей типа {} по запросу {} в БД", getLogTag(), getEntityName(), query);
-        var orders = repository.getOrdersByQueryString(query, pageable.getPageSize(), pageable.getPageNumber());
-        var ordersDto = mapper.toDto(orders);
+        var orders = getRepository().getOrdersByQueryString(query, pageable.getPageSize(), pageable.getPageNumber());
+        var ordersDto = getMapper().toDto(orders);
         ordersDto.forEach(order ->
                 order.setItems(filteredItems(order.getItems(), query)));
         return ordersDto;
@@ -46,7 +46,7 @@ public class OrderServiceImpl extends AbstractService<OrderDto, Order, OrderEnti
     public OrderDto save(OrderDto order) {
         log.info("[{}] Сохранение сущности типа {} в БД", getLogTag(), getEntityName());
         order.setUser(getAuthUser());
-        return mapper.toDto(repository.save(mapper.toEntity(order)));
+        return getMapper().toDto(getRepository().save(getMapper().toEntity(order)));
     }
 
     @Override
@@ -54,17 +54,17 @@ public class OrderServiceImpl extends AbstractService<OrderDto, Order, OrderEnti
         log.info("[{}] Обновление сущности типа {} в БД", getLogTag(), getEntityName());
         checkExistById(order.getId());
         order.setUser(getAuthUser());
-        return mapper.toDto(repository.save(mapper.toEntity(order)));
+        return getMapper().toDto(getRepository().save(getMapper().toEntity(order)));
     }
 
     @Override
     @Transactional
     public void delete(Long id) {
         log.info("[{}] Удаление сущности типа {} с id={} из БД", getLogTag(), getEntityName(), id);
-        Order order = repository.findById(id).orElseThrow(() -> getEntityWithIdNotFoundException(id));
+        Order order = getRepository().findById(id).orElseThrow(() -> getEntityWithIdNotFoundException(id));
         order.getItems().forEach(item -> item.setDeleted(true));
         order.setDeleted(true);
-        repository.save(order);
+        getRepository().save(order);
     }
 
     private List<ItemDto> filteredItems(List<ItemDto> items, String query) {
@@ -74,7 +74,7 @@ public class OrderServiceImpl extends AbstractService<OrderDto, Order, OrderEnti
                                 item.getTechnology().getDrawingName().toLowerCase().contains(query.toLowerCase())
                 )
         ).toList();
-        if (filtered.size() == 0) {
+        if (filtered.isEmpty()) {
             return items;
         }
         return filtered;
