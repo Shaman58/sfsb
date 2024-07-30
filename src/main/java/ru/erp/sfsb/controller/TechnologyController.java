@@ -61,7 +61,7 @@ public class TechnologyController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Запретить доступ к технологии по ID")
+    @Operation(summary = "Снять блокировку к технологии с ID с пользователя")
     @GetMapping("/{id}/block")
     public void block(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id,
                       @AuthenticationPrincipal Jwt jwt) {
@@ -69,7 +69,7 @@ public class TechnologyController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Разрешить доступ к технологии по ID")
+    @Operation(summary = "Заблокировать технологию с ID по пользователю")
     @GetMapping("/{id}/unblock")
     public void unblock(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id,
                         @AuthenticationPrincipal Jwt jwt) {

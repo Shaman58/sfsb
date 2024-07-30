@@ -28,14 +28,14 @@ public class ItemController {
     private final ItemService itemService;
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Просмотреть все предметы")
+    @Operation(summary = "Просмотреть все позиции заказа")
     @GetMapping()
     public List<ItemDto> getAll(@AuthenticationPrincipal Jwt jwt) {
         return itemService.getAllByTechnologyUser(jwt);
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Просмотреть все предметы")
+    @Operation(summary = "Просмотреть все позиции заказа")
     @GetMapping("/page")
     public Page<ItemDto> getAllInPage(@RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
                                       @RequestParam(value = "limit", defaultValue = "20") @Min(1) @Max(100) Integer limit) {
@@ -43,21 +43,21 @@ public class ItemController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Просмотреть предмет по ID")
+    @Operation(summary = "Просмотреть позицию заказа по ID")
     @GetMapping("/{id}")
     public ItemDto get(@PathVariable Long id) {
         return itemService.get(id);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Добавить новый предмет")
+    @Operation(summary = "Добавить новый позицию заказа")
     @PostMapping()
     public ItemDto save(@RequestBody @Valid ItemDto itemDto) {
         return itemService.save(itemDto);
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Обновить сведения о предмете по ID")
+    @Operation(summary = "Обновить сведения о позиции заказа по ID")
     @PutMapping("/{id}")
     public ItemDto update(@RequestBody @Valid ItemDto itemDto,
                           @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
@@ -66,7 +66,7 @@ public class ItemController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Удалить предмет по ID")
+    @Operation(summary = "Удалить позицию заказа по ID")
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         itemService.delete(id);
