@@ -1,7 +1,6 @@
 package ru.erp.sfsb.mapper;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import ru.erp.sfsb.dto.AbstractDto;
 import ru.erp.sfsb.model.AbstractEntity;
 
@@ -11,13 +10,12 @@ import java.util.Objects;
 
 public abstract class AbstractMapper<E extends AbstractEntity, D extends AbstractDto> implements Mapper<E, D> {
 
-    @Autowired
-    ModelMapper mapper;
-
+    private final ModelMapper mapper;
     private final Class<E> entityClass;
     private final Class<D> dtoClass;
 
-    AbstractMapper(Class<E> entityClass, Class<D> dtoClass) {
+    AbstractMapper(ModelMapper mapper, Class<E> entityClass, Class<D> dtoClass) {
+        this.mapper = mapper;
         this.entityClass = entityClass;
         this.dtoClass = dtoClass;
     }
