@@ -85,16 +85,16 @@ public class OperationController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Просмотреть стоимость технологии")
-    @GetMapping("/technology")
-    public OperationDto getTechnologyPrice() {
-        return service.getTechnologyPrice();
+    @Operation(summary = "Просмотреть стоимость технологиста")
+    @GetMapping("/technologist")
+    public OperationDto getTechnologistPrice() {
+        return service.getTechnologistPrice();
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Изменить стоимость технологии")
-    @PutMapping("/technology")
-    public OperationDto updateTechnologyPrice(@RequestBody @Valid OperationDto operationDto) {
-        return service.updateTechnologyPrice(operationDto);
+    @Operation(summary = "Изменить стоимость технологиста")
+    @PutMapping("/technologist")
+    public OperationDto updateTechnologistPrice(@RequestBody @Valid OperationDto operationDto) {
+        return service.updateTechnologistPrice(operationDto);
     }
 }

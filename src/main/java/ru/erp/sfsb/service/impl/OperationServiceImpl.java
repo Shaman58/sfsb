@@ -47,14 +47,14 @@ public class OperationServiceImpl extends AbstractService<OperationDto, Operatio
     }
 
     @Override
-    public OperationDto getTechnologyPrice() {
+    public OperationDto getTechnologistPrice() {
         log.info("[{}] Поиск цены технолога in БД", getLogTag());
         return mapper.toDto(repository.findById(2L).orElseThrow(
                 () -> getEntityWithIdNotFoundException(2L)));
     }
 
     @Override
-    public OperationDto updateTechnologyPrice(OperationDto price) {
+    public OperationDto updateTechnologistPrice(OperationDto price) {
         log.info("[{}] Сохранить цену технолога в БД", getLogTag());
         checkExistById(2L);
         price.setId(2L);
