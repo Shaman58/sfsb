@@ -9,6 +9,6 @@ import ru.erp.sfsb.model.AdditionalTool;
 public class AdditionalToolMapper extends AbstractMapper<AdditionalTool, AdditionalToolDto> {
 
     public AdditionalToolMapper(ModelMapper mapper) {
-        super(mapper,AdditionalTool.class, AdditionalToolDto.class);
+        super(mapper, AdditionalTool.class, AdditionalToolDto.class);
     }
 }
