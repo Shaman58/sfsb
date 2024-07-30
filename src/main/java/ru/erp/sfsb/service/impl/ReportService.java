@@ -461,7 +461,7 @@ public class ReportService {
                 .reduce(MonetaryAmount::add)
                 .orElseThrow(() -> new EntityNullException(
                         String.format("[%s] Нет информации о стоимости инструмента с id=%s", LOG_TAG, item.getId())))
-                .add(operationService.getTechnologyPrice().getPaymentPerHour()
+                .add(operationService.getTechnologistPrice().getPaymentPerHour()
                         .divide(60 * 60 * 1000)
                         .multiply(item.getTechnology().getTechnologistTime().toMillis()))
                 .add(item.getTechnology().getOutsourcedCosts());
