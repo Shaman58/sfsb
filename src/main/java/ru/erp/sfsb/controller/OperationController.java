@@ -86,14 +86,14 @@ public class OperationController {
 
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Просмотреть стоимость технологиста")
-    @GetMapping("/technologist")
+    @GetMapping("/technology")
     public OperationDto getTechnologistPrice() {
         return service.getTechnologistPrice();
     }
 
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Изменить стоимость технологиста")
-    @PutMapping("/technologist")
+    @PutMapping("/technology")
     public OperationDto updateTechnologistPrice(@RequestBody @Valid OperationDto operationDto) {
         return service.updateTechnologistPrice(operationDto);
     }
