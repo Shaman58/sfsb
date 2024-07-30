@@ -1,5 +1,7 @@
 package ru.erp.sfsb.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
@@ -17,18 +19,21 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "API взаимодействия с FileService")
 @RequestMapping("/api/file")
 public class FileController {
 
     private final FileService fileService;
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Просмотреть файл по Order ID")
     @GetMapping("/order/{orderId}")
     public List<FileDto> getAllByOrderId(@PathVariable Long orderId) {
         return fileService.getFilesByOrderId(orderId);
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Просмотреть все файлы")
     @GetMapping("/page")
     public Page<FileDto> getAllInPage(@RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
                                       @RequestParam(value = "limit", defaultValue = "20") @Min(1) @Max(100) Integer limit) {
@@ -36,6 +41,7 @@ public class FileController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Сохранить файл в заказ по ID")
     @PostMapping("/order/{id}")
     public FileDto saveFileToOrder(@PathVariable Long id, @RequestBody MultipartFile file,
                                    @AuthenticationPrincipal Jwt jwt) {
@@ -43,6 +49,7 @@ public class FileController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Сохранить файл в компанию по ID")
     @PostMapping("/company/{id}")
     public FileDto saveFileToCompany(@PathVariable Long id, @RequestBody MultipartFile file,
                                      @AuthenticationPrincipal Jwt jwt) {
@@ -50,6 +57,7 @@ public class FileController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Удалить файл по ID")
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         fileService.delete(id);

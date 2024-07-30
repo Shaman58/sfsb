@@ -1,5 +1,7 @@
 package ru.erp.sfsb.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -17,18 +19,21 @@ import java.util.List;
 @RestController
 @Validated
 @RequiredArgsConstructor
+@Tag(name = "API взаимодействия с SetupService")
 @RequestMapping("/api/setup")
 public class SetupController {
 
     private final SetupService setupService;
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Просмотреть все установки")
     @GetMapping()
     public List<SetupDto> getAll() {
         return setupService.getAll();
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Просмотреть все установки")
     @GetMapping("/page")
     public Page<SetupDto> getAllInPage(@RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
                                        @RequestParam(value = "limit", defaultValue = "20") @Min(1) @Max(100) Integer limit) {
@@ -36,18 +41,21 @@ public class SetupController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Просмотреть установку по ID")
     @GetMapping("/{id}")
     public SetupDto get(@PathVariable Long id) {
         return setupService.get(id);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Добавить новую установку")
     @PostMapping()
     public SetupDto save(@RequestBody @Valid SetupDto setupDto) {
         return setupService.save(setupDto);
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Изменить установку по ID")
     @PutMapping("/{id}")
     public SetupDto update(@RequestBody @Valid SetupDto setupDto,
                            @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
@@ -56,6 +64,7 @@ public class SetupController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Удалить установку по ID")
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         setupService.delete(id);

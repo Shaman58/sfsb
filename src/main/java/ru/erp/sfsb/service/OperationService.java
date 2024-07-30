@@ -8,7 +8,7 @@ public interface OperationService extends Service<OperationDto> {
 
     OperationDto updateSetupPrice(OperationDto operationDto);
 
-    OperationDto getTechnologyPrice();
+    OperationDto getTechnologistPrice();
 
-    OperationDto updateTechnologyPrice(OperationDto operationDto);
+    OperationDto updateTechnologistPrice(OperationDto operationDto);
 }

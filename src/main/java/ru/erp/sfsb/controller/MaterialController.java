@@ -1,5 +1,7 @@
 package ru.erp.sfsb.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -18,18 +20,21 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Validated
+@Tag(name = "API взаимодействия с MaterialService")
 @RequestMapping("/api/material")
 public class MaterialController {
 
     private final MaterialServiceImpl materialService;
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Просмотреть материал по ID")
     @GetMapping("/{id}")
     public MaterialDto get(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         return materialService.get(id);
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Просмотреть все материалы")
     @GetMapping()
     public List<MaterialDto> getAll(
             @RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
@@ -40,6 +45,7 @@ public class MaterialController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Просмотреть все материалы")
     @GetMapping("/page")
     public Page<MaterialDto> getAllInPage(@RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
                                           @RequestParam(value = "limit", defaultValue = "20") @Min(1) @Max(100) Integer limit) {
@@ -47,24 +53,28 @@ public class MaterialController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Просмотреть все материалы без цены")
     @GetMapping("/no-cost")
     public List<MaterialDto> getAllWithoutPrice() {
         return materialService.getMaterialWithoutPrice();
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Просмотреть все материалы с истекшим сроком действия")
     @GetMapping("/date-expired")
     public List<MaterialDto> getAllWithUpdateExpired() {
         return materialService.getMaterialWithExpiredDate();
     }
 
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Добавить новый материал")
     @PostMapping()
     public MaterialDto save(@RequestBody @Valid MaterialDto materialDto) {
         return materialService.save(materialDto);
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Обновить сведения о материале по ID")
     @PutMapping("/{id}")
     public MaterialDto update(@RequestBody @Valid MaterialDto materialDto,
                               @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
@@ -73,6 +83,7 @@ public class MaterialController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Обновить цену на материал по ID")
     @PutMapping("/{id}/price")
     public MaterialDto updatePrice(@RequestBody @Valid MaterialDto materialDto,
                                    @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
@@ -81,6 +92,7 @@ public class MaterialController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Удалить материал по ID")
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id) {
         materialService.delete(id);
