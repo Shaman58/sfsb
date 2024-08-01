@@ -53,7 +53,6 @@ public class OrderServiceImpl extends AbstractService<OrderDto, Order, OrderEnti
     public OrderDto update(OrderDto order) {
         log.info("[{}] Обновление сущности типа {} в БД", getLogTag(), getEntityName());
         checkExistById(order.getId());
-        order.setUser(getAuthUser());
         return getMapper().toDto(getRepository().save(getMapper().toEntity(order)));
     }
 
