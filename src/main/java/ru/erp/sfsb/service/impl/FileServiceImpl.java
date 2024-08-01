@@ -127,6 +127,7 @@ public class FileServiceImpl extends AbstractService<FileDto, File, FileEntityRe
     private void checkSize(MultipartFile file) {
         try {
             if (file.getBytes().length == 0) {
+                log.error("[{}] Файл не должен быть пустым", getLogTag());
                 throw new FileReadException("Файл не должен быть пустым");
             }
         } catch (IOException e) {
