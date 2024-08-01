@@ -24,6 +24,7 @@ public class Order extends AbstractEntity {
     private String businessProposal;
     @ManyToOne
     private Customer customer;
+    @Column(unique = true)
     private Integer applicationNumber;
     private String userUuid;
     @ManyToMany
