@@ -128,7 +128,7 @@ public class FileServiceImpl extends AbstractService<FileDto, File, FileEntityRe
         try {
             if (file.getBytes().length == 0) {
                 log.error("[{}] Файл не должен быть пустым", getLogTag());
-                throw new FileReadException("Файл не должен быть пустым");
+                throw new FileReadException("Файл не должен быть пустым.");
             }
         } catch (IOException e) {
             throw new RuntimeException(String.format("[%s] Ошибка доступа к файлу", getLogTag()));
