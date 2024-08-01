@@ -89,7 +89,7 @@ public class FileServiceImpl extends AbstractService<FileDto, File, FileEntityRe
 
     @Override
     public FileDto addFileToOrder(Long orderId, MultipartFile file, Jwt jwt) {
-        log.info("[{}] Добавление файла к заявке с id={}", getLogTag());
+        log.info("[{}] Добавление файла к заявке с id={}", getLogTag(), orderId);
         checkSize(file);
         var order = orderService.get(orderId);
         var fileDto = save(file, jwt);
