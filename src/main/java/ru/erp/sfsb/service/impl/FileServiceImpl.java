@@ -94,7 +94,7 @@ public class FileServiceImpl extends AbstractService<FileDto, File, FileEntityRe
         var order = orderService.get(orderId);
         var fileDto = save(file, jwt);
         order.getFiles().add(fileDto);
-        orderService.save(order);
+        orderService.update(order);
         return fileDto;
     }
 
@@ -107,7 +107,7 @@ public class FileServiceImpl extends AbstractService<FileDto, File, FileEntityRe
         if (company.getLogo() == null) {
             var fileDto = save(file, jwt);
             company.setLogo(fileDto);
-            companyService.save(company);
+            companyService.update(company);
             return fileDto;
         } else {
             return update(company.getLogo().getId(), file, jwt);
