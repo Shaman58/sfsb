@@ -17,6 +17,7 @@ import ru.erp.sfsb.service.UserService;
 import ru.erp.sfsb.utils.FileServerUtil;
 
 import javax.imageio.ImageIO;
+import java.io.IOException;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -88,7 +89,8 @@ public class FileServiceImpl extends AbstractService<FileDto, File, FileEntityRe
 
     @Override
     public FileDto addFileToOrder(Long orderId, MultipartFile file, Jwt jwt) {
-        log.info("[{}] Добавление файла к заявке с id={}", getLogTag(), orderId);
+        log.info("[{}] Добавление файла к заявке с id={}", getLogTag());
+        checkSize(file);
         var order = orderService.get(orderId);
         var fileDto = save(file, jwt);
         order.getFiles().add(fileDto);
@@ -99,6 +101,7 @@ public class FileServiceImpl extends AbstractService<FileDto, File, FileEntityRe
     @Override
     public FileDto addFileToCompany(Long companyId, MultipartFile file, Jwt jwt) {
         log.info("[{}] Добавление файла к компании с id={}", getLogTag(), companyId);
+        checkSize(file);
         pictureInfo(file);
         var company = companyService.get(companyId);
         if (company.getLogo() == null) {
@@ -118,6 +121,16 @@ public class FileServiceImpl extends AbstractService<FileDto, File, FileEntityRe
         } catch (Exception e) {
             throw new FileReadException(
                     String.format("[%s] Ошибка доступа к файлу", getLogTag()));
+        }
+    }
+
+    private void checkSize(MultipartFile file) {
+        try {
+            if (file.getBytes().length == 0) {
+                throw new FileReadException("Файл не должен быть пустым");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(String.format("[%s] Ошибка доступа к файлу", getLogTag()));
         }
     }
 }

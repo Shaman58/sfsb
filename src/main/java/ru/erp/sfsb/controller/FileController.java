@@ -4,12 +4,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.erp.sfsb.dto.FileDto;
@@ -19,6 +21,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Validated
 @Tag(name = "API взаимодействия с FileService")
 @RequestMapping("/api/file")
 public class FileController {
@@ -43,7 +46,7 @@ public class FileController {
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Сохранить файл в заказ по ID")
     @PostMapping("/order/{id}")
-    public FileDto saveFileToOrder(@PathVariable Long id, @RequestBody MultipartFile file,
+    public FileDto saveFileToOrder(@PathVariable Long id, @RequestBody @NotNull MultipartFile file,
                                    @AuthenticationPrincipal Jwt jwt) {
         return fileService.addFileToOrder(id, file, jwt);
     }
@@ -51,7 +54,7 @@ public class FileController {
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Сохранить файл в компанию по ID")
     @PostMapping("/company/{id}")
-    public FileDto saveFileToCompany(@PathVariable Long id, @RequestBody MultipartFile file,
+    public FileDto saveFileToCompany(@PathVariable Long id, @RequestBody @NotNull MultipartFile file,
                                      @AuthenticationPrincipal Jwt jwt) {
         return fileService.addFileToCompany(id, file, jwt);
     }
