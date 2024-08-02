@@ -48,19 +48,14 @@ public class OrderServiceImpl extends AbstractService<OrderDto, Order, OrderEnti
     public OrderDto save(OrderDto order) {
         log.info("[{}] Сохранение сущности типа {} в БД", getLogTag(), getEntityName());
         order.setUser(getAuthUser());
-        try {
-            return getMapper().toDto(getRepository().save(getMapper().toEntity(order)));
-        } catch (DataIntegrityViolationException e) {
-            throw new UniqueDataException(String.format("[%s] Заявка с таким номером %s уже существует ", getLogTag(), order.getApplicationNumber()));
-        }
-
+        return saveOrder(order);
     }
 
     @Override
     public OrderDto update(OrderDto order) {
         log.info("[{}] Обновление сущности типа {} в БД", getLogTag(), getEntityName());
         checkExistById(order.getId());
-        return getMapper().toDto(getRepository().save(getMapper().toEntity(order)));
+        return saveOrder(order);
     }
 
     @Override
@@ -91,5 +86,13 @@ public class OrderServiceImpl extends AbstractService<OrderDto, Order, OrderEnti
         var jwt = (Jwt) authentication.getPrincipal();
         var uuid = jwt.getClaim("sub").toString();
         return userService.get(uuid);
+    }
+
+    private OrderDto saveOrder(OrderDto order) {
+        try {
+            return getMapper().toDto(getRepository().save(getMapper().toEntity(order)));
+        } catch (DataIntegrityViolationException e) {
+            throw new UniqueDataException(String.format("[%s] Заявка с таким номером %s уже существует", getLogTag(), order.getApplicationNumber()));
+        }
     }
 }
