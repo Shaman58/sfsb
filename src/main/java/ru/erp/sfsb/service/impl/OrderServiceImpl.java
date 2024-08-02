@@ -51,7 +51,7 @@ public class OrderServiceImpl extends AbstractService<OrderDto, Order, OrderEnti
         try {
             return getMapper().toDto(getRepository().save(getMapper().toEntity(order)));
         } catch (DataIntegrityViolationException e) {
-            throw new UniqueDataException(String.format("{[%s]} Заявка с таким номером [%s] уже существует ", getLogTag(), order.getApplicationNumber()));
+            throw new UniqueDataException(String.format("[%s] Заявка с таким номером %s уже существует ", getLogTag(), order.getApplicationNumber()));
         }
 
     }
