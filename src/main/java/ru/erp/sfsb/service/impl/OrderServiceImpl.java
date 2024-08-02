@@ -2,6 +2,7 @@ package ru.erp.sfsb.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import ru.erp.sfsb.dto.ItemDto;
 import ru.erp.sfsb.dto.OrderDto;
 import ru.erp.sfsb.dto.UserDto;
+import ru.erp.sfsb.exception.UniqueDataException;
 import ru.erp.sfsb.mapper.OrderMapper;
 import ru.erp.sfsb.model.Order;
 import ru.erp.sfsb.repository.repos.OrderEntityRepository;
@@ -46,7 +48,12 @@ public class OrderServiceImpl extends AbstractService<OrderDto, Order, OrderEnti
     public OrderDto save(OrderDto order) {
         log.info("[{}] Сохранение сущности типа {} в БД", getLogTag(), getEntityName());
         order.setUser(getAuthUser());
-        return getMapper().toDto(getRepository().save(getMapper().toEntity(order)));
+        try {
+            return getMapper().toDto(getRepository().save(getMapper().toEntity(order)));
+        } catch (DataIntegrityViolationException e) {
+            throw new UniqueDataException(String.format("[%s] Заявка с таким номером %s уже существует ", getLogTag(), order.getApplicationNumber()));
+        }
+
     }
 
     @Override
