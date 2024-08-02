@@ -117,4 +117,12 @@ public class ExceptionControllerAdvice {
         log.error(e.getMessage());
         return new ExceptionData(e.getMessage());
     }
+
+    @ResponseBody
+    @ExceptionHandler(UniqueDataException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ExceptionData handleException(UniqueDataException e) {
+        log.error(e.getMessage());
+        return new ExceptionData(e.getMessage());
+    }
 }

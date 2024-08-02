@@ -6,7 +6,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -60,11 +59,7 @@ public class OrderController {
     @Operation(summary = "Добавить новый заказ")
     @PostMapping()
     public OrderDto save(@RequestBody @Valid OrderDto orderDto) {
-        try {
-            return orderService.save(orderDto); //DataAccessException
-        } catch (DataIntegrityViolationException e) {
-            throw new DataIntegrityViolationException(String.format("Такой номер заявки уже существует [%s]", orderDto.getApplicationNumber()));
-        }
+        return orderService.save(orderDto);
     }
 
     @ResponseStatus(HttpStatus.OK)
