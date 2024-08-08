@@ -1,5 +1,6 @@
 package ru.erp.sfsb.repository.repos;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -25,9 +26,11 @@ public interface OrderEntityRepository extends EntityRepository<Order> {
                   FROM orders o
                            INNER JOIN items i ON i.order_id = o.id AND i.deleted = false
                            INNER JOIN technologies t ON i.technology_id = t.id AND t.deleted = false
+                           INNER JOIN companies c ON o.customer_id = c.id AND c.deleted = false
                   WHERE t.drawing_name ILIKE CONCAT('%', :query, '%')
                      OR t.drawing_number ILIKE CONCAT('%', :query, '%')
                      OR o.description ILIKE CONCAT('%', :query, '%')
+                     OR c.company_name ILIKE CONCAT('%', :query, '%')
                   UNION ALL
                   SELECT o.id,
                          o.created,
@@ -43,5 +46,6 @@ public interface OrderEntityRepository extends EntityRepository<Order> {
             ORDER BY application_number
             LIMIT :pageSize OFFSET :offset
             """, nativeQuery = true)
+    @Cacheable("users")
     List<Order> getOrdersByQueryString(@Param("query") String query, @Param("pageSize") int pageSize, @Param("offset") int offset);
 }
