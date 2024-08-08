@@ -25,9 +25,11 @@ public interface OrderEntityRepository extends EntityRepository<Order> {
                   FROM orders o
                            INNER JOIN items i ON i.order_id = o.id AND i.deleted = false
                            INNER JOIN technologies t ON i.technology_id = t.id AND t.deleted = false
+                           INNER JOIN companies c ON o.customer_id = c.id AND c.deleted = false
                   WHERE t.drawing_name ILIKE CONCAT('%', :query, '%')
                      OR t.drawing_number ILIKE CONCAT('%', :query, '%')
                      OR o.description ILIKE CONCAT('%', :query, '%')
+                     OR c.company_name ILIKE CONCAT('%', :query, '%')
                   UNION ALL
                   SELECT o.id,
                          o.created,
