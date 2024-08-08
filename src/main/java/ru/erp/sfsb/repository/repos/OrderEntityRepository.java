@@ -1,6 +1,5 @@
 package ru.erp.sfsb.repository.repos;
 
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -46,6 +45,5 @@ public interface OrderEntityRepository extends EntityRepository<Order> {
             ORDER BY application_number
             LIMIT :pageSize OFFSET :offset
             """, nativeQuery = true)
-    @Cacheable("users")
     List<Order> getOrdersByQueryString(@Param("query") String query, @Param("pageSize") int pageSize, @Param("offset") int offset);
 }
