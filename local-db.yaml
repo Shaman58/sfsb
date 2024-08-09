@@ -1,0 +1,21 @@
+version: '3.9'
+
+services:
+
+  db:
+    image: postgres
+    restart: always
+    volumes:
+      - ./db-data:/data/db
+    environment:
+      POSTGRES_USER: sfsb
+      POSTGRES_PASSWORD: gFNQkM
+      POSTGRES_DB: sfsb
+      PGDATA: "/data/db"
+    ports:
+      - "5432:5432"
+  pgadmin:
+    image: adminer
+    restart: always
+    ports:
+      - "8080:8080"

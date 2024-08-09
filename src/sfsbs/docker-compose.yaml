@@ -13,7 +13,7 @@ services:
       POSTGRES_DB: sfsb
       PGDATA: "/data/db"
     healthcheck:
-      test: pg_isready -d sfsb -U sfsb
+      test: pg_isready -d planner -U sfsb
       interval: 10s
       timeout: 5s
       retries: 3

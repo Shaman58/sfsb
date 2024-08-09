@@ -1,0 +1,3 @@
+id registry: 9e3be1d9f4d16c780d32de93a4720e81
+key registry: 7c4ab2bc6f891d009f950794a1b16ebc
+key for rsa: vv5fjTUcMgyKHUD5
