@@ -51,6 +51,8 @@ webclient:
     read-timeout: 5000
   cp-store:
     url: ${CP-STORE-URL}
+  task-planner:
+    url: ${TASK_PLANNER_URL}
 keycloak:
   auth-server-url: ${KC_AUTH_SERVER_URL}
   realm: ${KC_REALM}
