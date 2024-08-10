@@ -2,7 +2,6 @@ package ru.erp.sfsb.mapper;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.Converter;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import ru.erp.sfsb.dto.UserDto;
 import ru.erp.sfsb.exception.KeycloakOtherException;
@@ -14,12 +13,10 @@ public class UserConverter {
 
     private final UserService userService;
 
-    @Bean
     public Converter<String, UserDto> uuidToUser() {
         return c -> c.getSource() == null ? null : getUser(c.getSource());
     }
 
-    @Bean
     public Converter<UserDto, String> userToUuid() {
         return c -> c.getSource() == null ? null : c.getSource().getId();
     }
