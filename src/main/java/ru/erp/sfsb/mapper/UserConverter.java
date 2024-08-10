@@ -5,7 +5,6 @@ import org.modelmapper.Converter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import ru.erp.sfsb.dto.UserDto;
-import ru.erp.sfsb.exception.KeycloakOtherException;
 import ru.erp.sfsb.service.UserService;
 
 @RequiredArgsConstructor
@@ -25,10 +24,6 @@ public class UserConverter {
     }
 
     private UserDto getUser(String uuid) {
-        try {
-            return userService.get(uuid);
-        } catch (KeycloakOtherException e) {
-            return new UserDto();
-        }
+        return userService.getOrNullObject(uuid);
     }
 }

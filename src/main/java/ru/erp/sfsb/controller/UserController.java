@@ -54,7 +54,6 @@ public class UserController {
     @Operation(summary = "Изменить сведения о пользователе по ID")
     @PutMapping("/user/{uuid}")
     public UserDto update(@PathVariable String uuid, @RequestBody @Valid UserDto user) {
-        log.debug(user.toString());
         return userService.update(uuid, user);
     }
 
