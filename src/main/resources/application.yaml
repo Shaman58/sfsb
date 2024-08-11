@@ -2,10 +2,10 @@ server:
   port: 9000
 spring:
   datasource:
-    url: ${DB-URL}
-    driver-class-name: ${DB-DRIVER-CLASS-NAME}
-    username: ${DB-USERNAME}
-    password: ${DB-PASSWORD}
+    url: ${DB_URL}
+    driver-class-name: ${DB_DRIVER_CLASS_NAME}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: validate
@@ -23,7 +23,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: ${JWK-SET-URI}
+          jwk-set-uri: ${JWK_SET_URI}
   main:
     allow-circular-references: true
   banner:
@@ -46,11 +46,11 @@ logging:
     max-history: 7
 webclient:
   file-service:
-    file-url: ${FILE-URL}
+    file-url: ${FILE_URL}
     connect-timeout: 5000
     read-timeout: 5000
   cp-store:
-    url: ${CP-STORE-URL}
+    url: ${CP_STORE_URL}
 keycloak:
   auth-server-url: ${KC_AUTH_SERVER_URL}
   realm: ${KC_REALM}
@@ -59,4 +59,4 @@ keycloak:
   credentials:
     secret: ${KC_AUTH_SECRET}
   use-resource-role-mappings: true
-cors: ${CORS_URL}, ${CORS_CP}, http://localhost:3000, http://localhost:9000
+cors: ${CORS_URL}, ${CORS_CP}, http://localhost:3000
