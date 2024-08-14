@@ -89,14 +89,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Cacheable("users")
     public UserDto get(String uuid) {
         log.info("[{}] Получение профиля пользователя c uuid={} из KeyCloak БД", LOG_TAG, uuid);
         try {
             return repToUserDto(usersResource.get(uuid).toRepresentation());
         } catch (Exception e) {
+            log.warn("[{}] Профиль пользователя c uuid={} не обнаружен в KeyCloak БД", LOG_TAG, uuid);
             throw new KeycloakOtherException(
                     String.format("[%s] Сервер Keycloak недоступен или пользователь c uuid=%s отсутсвует", LOG_TAG, uuid));
+        }
+    }
+
+    @Override
+    @Cacheable("users")
+    public UserDto getOrNullObject(String uuid) {
+        log.info("[{}] Получение профиля пользователя c uuid={} из KeyCloak БД", LOG_TAG, uuid);
+        try {
+            return repToUserDto(usersResource.get(uuid).toRepresentation());
+        } catch (Exception e) {
+            log.warn("[{}] Профиль пользователя c uuid={} не обнаружен в KeyCloak БД", LOG_TAG, uuid);
+            return buildUser(uuid);
         }
     }
 
@@ -200,6 +212,12 @@ public class UserServiceImpl implements UserService {
             user.setPicture(String.format("%s?filename=%s", fileExternalUrl,
                     userRepresentation.getAttributes().get("picture").get(0)));
         }
+        return user;
+    }
+
+    private UserDto buildUser(String uuid) {
+        UserDto user = new UserDto();
+        user.setId(uuid);
         return user;
     }
 }
