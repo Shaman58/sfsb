@@ -6,10 +6,26 @@ import com.github.petrovich4j.NameType;
 import com.github.petrovich4j.Petrovich;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.*;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.erp.sfsb.LogTag;
-import ru.erp.sfsb.dto.*;
+import ru.erp.sfsb.dto.AdditionalToolDto;
+import ru.erp.sfsb.dto.CutterToolItemDto;
+import ru.erp.sfsb.dto.ItemDto;
+import ru.erp.sfsb.dto.MeasureToolItemDto;
+import ru.erp.sfsb.dto.OperationDto;
+import ru.erp.sfsb.dto.OrderDto;
+import ru.erp.sfsb.dto.SetupDto;
+import ru.erp.sfsb.dto.SpecialToolItemDto;
+import ru.erp.sfsb.dto.TechnologyDto;
+import ru.erp.sfsb.dto.ToolItemDto;
+import ru.erp.sfsb.dto.UserDto;
+import ru.erp.sfsb.dto.WorkpieceDto;
+import ru.erp.sfsb.dto.report.OrderPlannerData;
 import ru.erp.sfsb.dto.report.OrderReport;
 import ru.erp.sfsb.dto.report.ToolsReport;
 import ru.erp.sfsb.exception.EntityNullException;
@@ -22,6 +38,7 @@ import ru.erp.sfsb.service.OrderService;
 import ru.erp.sfsb.service.UserService;
 import ru.erp.sfsb.utils.CpStoreUtil;
 import ru.erp.sfsb.utils.DurationRuCustomFormatter;
+import ru.erp.sfsb.utils.TaskPlannerUtil;
 import ru.erp.sfsb.utils.XlsxReportUtil;
 
 import javax.money.Monetary;
@@ -35,6 +52,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -58,6 +76,7 @@ public class ReportService {
     private final DurationRuCustomFormatter durationFormatter;
     private final UserService userService;
     private final CpStoreUtil cpStoreUtil;
+    private final TaskPlannerUtil taskPlannerUtil;
     private final static LogTag LOG_TAG = LogTag.REPORT_SERVICE;
 
     public OrderReport generateCpData(Long orderId, Long companyId) {
@@ -114,6 +133,12 @@ public class ReportService {
         } catch (IOException e) {
             throw new FileReadException("Не удалось скачать файл. Ошибка записи файла в ответ");
         }
+    }
+
+    public void generateOrderReport(Long orderId) {
+        var order = orderService.get(orderId);
+        taskPlannerUtil.uploadOrderPlannerData(getOrderPlannerData(order));
+
     }
 
     private ResponseEntity<byte[]> getResponseEntity(OrderDto order, List<List<String>> data, String reportName) throws IOException {
@@ -351,6 +376,32 @@ public class ReportService {
         return data;
     }
 
+    private OrderPlannerData getOrderPlannerData(OrderDto order) {
+        return new OrderPlannerData(
+                order.getApplicationNumber(),
+                order.getItems().stream()
+                        .map(this::getTasks)
+                        .toList()
+        );
+    }
+
+    private OrderPlannerData.ItemData getTasks(ItemDto item) {
+        return new OrderPlannerData.ItemData(
+                item.getTechnology().getDrawingName(),
+                item.getTechnology().getDrawingNumber(),
+                item.getTechnology().getSetups().stream()
+                        .sorted(Comparator.comparing(SetupDto::getSetupNumber))
+                        .map(setupDto -> getTask(setupDto, getAmount(item)))
+                        .toList()
+        );
+    }
+
+    private int getAmount(ItemDto item) {
+        return item.getQuantity() +
+                item.getTechnology().getQuantityOfDefectiveParts() +
+                item.getTechnology().getQuantityOfSetUpParts();
+    }
+
     private List<List<String>> getItemDataList(ItemDto item) {
         var itemData = item
                 .getTechnology()
@@ -384,6 +435,18 @@ public class ReportService {
                 durationFormatter.getRusTimeFormat(setup.getSetupTime()),
                 durationFormatter.getRusTimeFormat(setup.getProcessTime()
                         .plus(setup.getInteroperativeTime()))
+        );
+    }
+
+    private OrderPlannerData.ItemData.Task getTask(SetupDto setup, Integer amount) {
+        return new OrderPlannerData.ItemData.Task(
+                setup.getOperation().getOperationName(),
+                amount,
+                setup.getInteroperativeTime()
+                        .plus(setup.getProcessTime())
+                        .multipliedBy(amount),
+                setup.getSetupTime(),
+                setup.isCooperate()
         );
     }
 

@@ -14,6 +14,8 @@ public class WebClientConfig {
     private String fileApiBaseUrl;
     @Value("${webclient.cp-store.url}")
     private String cpStoreUrl;
+    @Value("${webclient.task-planner.url}")
+    private String taskPlannerUrl;
 
     @Bean(name = "fileApiWebClient")
     public WebClient fileApiWebClient() {
@@ -26,6 +28,13 @@ public class WebClientConfig {
     public WebClient cpStoreWebClient() {
         return WebClient.builder()
                 .baseUrl(cpStoreUrl)
+                .build();
+    }
+
+    @Bean(name = "taskPlannerWebClient")
+    public WebClient taskPlannerWebClient() {
+        return WebClient.builder()
+                .baseUrl(taskPlannerUrl)
                 .build();
     }
 }

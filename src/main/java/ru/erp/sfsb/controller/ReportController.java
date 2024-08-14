@@ -60,4 +60,10 @@ public class ReportController {
     public ResponseEntity<byte[]> getOperationReport(@RequestParam Long orderId) {
         return reportService.generateOperationReport(orderId);
     }
+
+    @Operation(summary = "Получить производственный отчет по 'orderId'")
+    @GetMapping("/order-data")
+    public void transferOrderData(@RequestParam Long orderId) {
+        reportService.generateOrderReport(orderId);
+    }
 }
