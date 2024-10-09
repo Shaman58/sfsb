@@ -61,9 +61,15 @@ public class ReportController {
         return reportService.generateOperationReport(orderId);
     }
 
-    @Operation(summary = "Получить производственный отчет по 'orderId'")
+    @Operation(summary = "Отправить данные в планировщик по 'orderId'")
     @GetMapping("/order-data")
     public void transferOrderData(@RequestParam Long orderId) {
         reportService.generateOrderReport(orderId);
+    }
+
+    @Operation(summary = "Отправить данные в планировщик по 'orderId'")
+    @GetMapping("/operation-data")
+    public void transferOperationData(){
+        reportService.sendOperationsList();
     }
 }

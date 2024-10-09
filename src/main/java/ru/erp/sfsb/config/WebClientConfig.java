@@ -1,6 +1,8 @@
 package ru.erp.sfsb.config;
 
+import jakarta.ws.rs.core.MediaType;
 import lombok.RequiredArgsConstructor;
+import org.apache.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -16,6 +18,8 @@ public class WebClientConfig {
     private String cpStoreUrl;
     @Value("${webclient.task-planner.url}")
     private String taskPlannerUrl;
+    @Value("${webclient.task-planner-operation.url}")
+    private  String taskPlannerOperationUrl;
 
     @Bean(name = "fileApiWebClient")
     public WebClient fileApiWebClient() {
@@ -35,6 +39,15 @@ public class WebClientConfig {
     public WebClient taskPlannerWebClient() {
         return WebClient.builder()
                 .baseUrl(taskPlannerUrl)
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .build();
+    }
+
+    @Bean(name = "taskPlannerOperation")
+    public WebClient taskPlannerOperation() {
+        return WebClient.builder()
+                .baseUrl(taskPlannerOperationUrl)
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                 .build();
     }
 }

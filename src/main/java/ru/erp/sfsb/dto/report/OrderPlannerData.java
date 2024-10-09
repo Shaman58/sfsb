@@ -10,24 +10,25 @@ import java.util.List;
 @AllArgsConstructor
 public class OrderPlannerData {
 
+    private long orderId;
     private int applicationNumber;
     private List<ItemData> items;
 
     @Data
     @AllArgsConstructor
     public static class ItemData {
-        private String name;
+        private String itemName;
         private String decimal;
-        private List<Task> sequence;
+        private List<Task> technology;
 
         @Data
         @AllArgsConstructor
         public static class Task {
-            private String name;
+            private String operationName;
             private int amount;
             private Duration process;
             private Duration setup;
-            private boolean isCooperate;
+//            private boolean isCooperate;
         }
     }
 }

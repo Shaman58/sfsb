@@ -138,7 +138,13 @@ public class ReportService {
     public void generateOrderReport(Long orderId) {
         var order = orderService.get(orderId);
         taskPlannerUtil.uploadOrderPlannerData(getOrderPlannerData(order));
+    }
 
+    public void sendOperationsList(){
+        var operations = operationService.getAll().stream()
+                .map(OperationDto::getOperationName)
+                .toList();
+        taskPlannerUtil.uploadOperationData(operations);
     }
 
     private ResponseEntity<byte[]> getResponseEntity(OrderDto order, List<List<String>> data, String reportName) throws IOException {
@@ -378,6 +384,7 @@ public class ReportService {
 
     private OrderPlannerData getOrderPlannerData(OrderDto order) {
         return new OrderPlannerData(
+                order.getId(),
                 order.getApplicationNumber(),
                 order.getItems().stream()
                         .map(this::getTasks)
@@ -445,10 +452,12 @@ public class ReportService {
                 setup.getInteroperativeTime()
                         .plus(setup.getProcessTime())
                         .multipliedBy(amount),
-                setup.getSetupTime(),
-                setup.isCooperate()
+                setup.getSetupTime()
+//                setup.isCooperate()
         );
     }
+
+
 
     private List<ToolsReport.ToolData> getAllToolsFromOrder(OrderDto order) {
         var measurers = getToolList(getUniqueToolItems(getAllToolsFromOrderByType(order, MeasureToolItemDto.class)));
